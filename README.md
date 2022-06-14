@@ -1,5 +1,6 @@
 "# Snow" 
 
+Installation instructions:
 *. sudo apt update
 *. sudo apt upgrade
 *. sudo apt install nginx
@@ -25,3 +26,6 @@
 *. sudo apt-get install -y nodejs
 *. sudo apt install build-essential
 *. npm i -g pm2
+
+Notes:
+* On azure, have to do `sudo` from NPM installs

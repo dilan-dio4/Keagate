@@ -1,16 +1,16 @@
-import { GenericWallet, IWallet } from "../../Wallet";
+import { GenericWallet } from "../../Wallet";
 import { fGet, fPost } from "../../fetch";
 import { Transaction } from '@dashevo/dashcore-lib';
 import { convertChainsoToNativeUtxo } from '../../utils';
 
 // https://jestersimpps.github.io/my-first-experience-with-bitpay-bitcore/
-export default class Dash extends GenericWallet implements IWallet {
-    async getBalance(): Promise<number> {
+export default class Dash extends GenericWallet {
+    async getBalance() {
         const { data: { confirmed_balance, unconfirmed_balance } } = await fGet(`https://chain.so/api/v2/get_address_balance/DASH/${this.publicKey}`);
-        return confirmed_balance; // Balance in Dash
+        return { result: confirmed_balance }; // Balance in Dash
     }
 
-    async sendTransaction(destination: string, amount: number): Promise<string> {
+    async sendTransaction(destination: string, amount: number) {
         if (!this.isValidAddress(destination)) {
             throw new Error("Invalid destination address");
         }
@@ -47,6 +47,6 @@ export default class Dash extends GenericWallet implements IWallet {
             'Content-Type': 'application/json',
             'x-api-key': process.env.DASH_RPC_API_KEY
         })
-        return result;
+        return { result };
     }
 }

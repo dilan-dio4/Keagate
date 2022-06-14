@@ -1,8 +1,8 @@
 import { Connection, clusterApiUrl, PublicKey, Keypair, Transaction, SystemProgram, LAMPORTS_PER_SOL, sendAndConfirmTransaction } from '@solana/web3.js';
-import { GenericWallet, IWallet } from "../../Wallet";
+import { GenericWallet } from "../../Wallet";
 import base58 from "bs58";
 
-export default class Solana extends GenericWallet implements IWallet {
+export default class Solana extends GenericWallet {
     private connection: Connection;
 
     constructor(...args: ConstructorParameters<typeof GenericWallet>) {
@@ -10,12 +10,13 @@ export default class Solana extends GenericWallet implements IWallet {
         this.connection = new Connection(clusterApiUrl("mainnet-beta"), "confirmed");
     }
 
-    async getBalance(): Promise<number> {
+    async getBalance() {
         const balance = await this.connection.getBalance(new PublicKey(this.publicKey), "finalized")
-        return balance / LAMPORTS_PER_SOL;
+
+        return { result: balance / LAMPORTS_PER_SOL };
     }
 
-    async sendTransaction(destination: string, amount: number): Promise<string> {
+    async sendTransaction(destination: string, amount: number) {
         if (!this.isValidAddress(destination)) {
             throw new Error("Invalid destination address");
         }
@@ -36,6 +37,6 @@ export default class Solana extends GenericWallet implements IWallet {
         transaction.feePayer = adminKeypair.publicKey;
 
         const signature = await sendAndConfirmTransaction(this.connection, transaction, [adminKeypair]); // TODO: just send
-        return signature;
+        return { result: signature };
     }
 }

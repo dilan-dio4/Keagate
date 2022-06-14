@@ -1,19 +1,11 @@
 import { AvailableTickers, AvailableCoins } from "./currencies";
 import WAValidator from 'multicoin-address-validator';
 
-export interface IWallet {
-    ticker: AvailableTickers;
-    coinName: AvailableCoins;
-    publicKey: string;
-    privateKey: string;
-    getBalance(): Promise<number>;
-    sendTransaction(destination: string, amount: number): Promise<string>;
-    isValidAddress(address: string): boolean;
-    // confirmTransaction
-}
-
-export class GenericWallet {
+export abstract class GenericWallet {
     constructor(public ticker: AvailableTickers, public coinName: AvailableCoins, public publicKey: string, public privateKey: string) {}
+    abstract getBalance(): Promise<{ result: number }>;
+    abstract sendTransaction(destination: string, amount: number): Promise<{ result: string }>;
+    // confirmTransaction
     isValidAddress(address: string): boolean {
         return WAValidator.validate(address, this.ticker);
     }
