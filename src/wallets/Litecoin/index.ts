@@ -36,17 +36,17 @@ export default class Litecoin extends GenericWallet {
 
         // https://bitcoincore.org/en/doc/0.19.0/rpc/rawtransactions/sendrawtransaction/
         try {
-            const res = await fPost(process.env.LTC_RPC_URL, {
+            const res = await fPost('https://ltc.nownodes.io', {
                 "jsonrpc": "2.0",
                 "method": "sendrawtransaction",
                 "params": [
                     ltcTransaction.uncheckedSerialize(),
-                    0.0001
+                    0.001
                 ],
-                "id": "getblock.io"
+                "id": "test",
+                "API_key": "f994ff7a-12b4-405a-b214-941ab2df13ce"
             }, {
-                'Content-Type': 'application/json',
-                'x-api-key': process.env.LTC_RPC_API_KEY
+                'Content-Type': 'application/json'
             })
             console.log(res);
             return { result: res.result };
