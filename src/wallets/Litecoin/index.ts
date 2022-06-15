@@ -31,7 +31,7 @@ export default class Litecoin extends GenericWallet {
             .from(convertChainsoToNativeUtxo(txs, this.publicKey))
             .to(destination, Math.round(amount * 1E8))
             .change(this.publicKey)
-            .fee(0.000001)
+            .fee(0.0000001)
             .sign(this.privateKey);
 
 
