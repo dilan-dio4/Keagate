@@ -16,44 +16,65 @@ export default class Litecoin extends GenericWallet {
             throw new Error("Invalid destination address");
         }
 
-        const { data: { txs } } = await fGet(`https://chain.so/api/v2/get_tx_unspent/LTC/${this.publicKey}`);
+        const data = await fPost('https://api-eu1.tatum.io/v3/litecoin/transaction', {
+            fromAddress: [
+                {
+                    address: this.publicKey,
+                    privateKey: this.privateKey
+                }
+            ],
+            to: [
+                {
+                    address: destination,
+                    value: amount
+                }
+            ]
+        }, {
+            'Content-Type': 'application/json',
+            'x-api-key': 'e49fe445-9b56-40fc-88ec-fb953ee2ee11'
+        })
 
-        let totalBalance = 0;
-        for (const currUtxo of txs) {
-            totalBalance += +currUtxo.value;
-        }
+        console.log(data);
+        return { result: JSON.stringify(data) }
 
-        if (totalBalance < amount) {
-            throw new Error("Insufficient funds");
-        }
+        // const { data: { txs } } = await fGet(`https://chain.so/api/v2/get_tx_unspent/LTC/${this.publicKey}`);
 
-        const ltcTransaction: Transaction = new Transaction()
-            .from(convertChainsoToNativeUtxo(txs, this.publicKey))
-            .to(destination, Math.round(amount * 1E8))
-            .fee(0.0001)
-            .change(this.publicKey)
-            .sign(this.privateKey);
+        // let totalBalance = 0;
+        // for (const currUtxo of txs) {
+        //     totalBalance += +currUtxo.value;
+        // }
+
+        // if (totalBalance < amount) {
+        //     throw new Error("Insufficient funds");
+        // }
+
+        // const ltcTransaction: Transaction = new Transaction()
+        //     .from(convertChainsoToNativeUtxo(txs, this.publicKey))
+        //     .to(destination, Math.round(amount * 1E8))
+        //     .fee(0.0001)
+        //     .change(this.publicKey)
+        //     .sign(this.privateKey);
 
 
-        // https://bitcoincore.org/en/doc/0.19.0/rpc/rawtransactions/sendrawtransaction/
-        try {
-            const res = await fPost('https://ltc.nownodes.io', {
-                "jsonrpc": "2.0",
-                "method": "sendrawtransaction",
-                "params": [
-                    ltcTransaction.uncheckedSerialize(),
-                    1
-                ],
-                "id": "test",
-                "API_key": "f994ff7a-12b4-405a-b214-941ab2df13ce"
-            }, {
-                'Content-Type': 'application/json'
-            })
-            console.log(res);
-            return { result: res.result };
-        } catch (error) {
-            console.error(error);
-        }
+        // // https://bitcoincore.org/en/doc/0.19.0/rpc/rawtransactions/sendrawtransaction/
+        // try {
+        //     const res = await fPost('https://ltc.nownodes.io', {
+        //         "jsonrpc": "2.0",
+        //         "method": "sendrawtransaction",
+        //         "params": [
+        //             ltcTransaction.uncheckedSerialize(),
+        //             1
+        //         ],
+        //         "id": "test",
+        //         "API_key": "f994ff7a-12b4-405a-b214-941ab2df13ce"
+        //     }, {
+        //         'Content-Type': 'application/json'
+        //     })
+        //     console.log(res);
+        //     return { result: res.result };
+        // } catch (error) {
+        //     console.error(error);
+        // }
 
     }
 }
