@@ -3,7 +3,6 @@ import { fGet, fPost } from "../../fetch";
 
 const SATOSHIS_PER_ADA = 1E6;
 
-// https://jestersimpps.github.io/my-first-experience-with-bitpay-bitcore/
 export default class Cardano extends GenericWallet {
     async getBalance() {
         const txs = await fGet(`https://api-us-west1.tatum.io/v3/ada/${this.publicKey}/utxos`, {
@@ -29,26 +28,30 @@ export default class Cardano extends GenericWallet {
             throw new Error("Insufficient funds");
         }
 
-        const { txId: result } = await fPost(`https://api-us-west1.tatum.io/v3/ada/transaction`, {
-            changeAddress: this.publicKey,
-            fee: '0.17',
-            fromAddress: [
-                {
-                    address: this.publicKey,
-                    privateKey: this.privateKey
-                }
-            ],
-            to: [
-                {
-                    address: '2MzNGwuKvMEvKMQogtgzSqJcH2UW3Tc5oc7',
-                    value: amount
-                }
-            ]
-        }, {
-            'Content-Type': 'application/json',
-            'x-api-key': process.env['TATUM_API_KEY']
-        });
-
-        return { result };
+        try {
+            const res = await fPost(`https://api-us-west1.tatum.io/v3/ada/transaction`, {
+                changeAddress: this.publicKey,
+                fee: '0.17',
+                fromAddress: [
+                    {
+                        address: this.publicKey,
+                        privateKey: this.privateKey
+                    }
+                ],
+                to: [
+                    {
+                        address: '2MzNGwuKvMEvKMQogtgzSqJcH2UW3Tc5oc7',
+                        value: amount
+                    }
+                ]
+            }, {
+                'Content-Type': 'application/json',
+                'x-api-key': process.env['TATUM_API_KEY']
+            });
+            console.log(res)
+            return { result: res.txId };   
+        } catch (error) {
+            throw new Error(error);
+        }
     }
 }
