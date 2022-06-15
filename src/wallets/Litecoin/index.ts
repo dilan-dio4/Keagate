@@ -41,7 +41,8 @@ export default class Litecoin extends GenericWallet {
                 "jsonrpc": "2.0",
                 "method": "sendrawtransaction",
                 "params": [
-                    ltcTransaction.uncheckedSerialize()
+                    ltcTransaction.uncheckedSerialize(),
+                    0.0000001
                 ],
                 "id": "test",
                 "API_key": "f994ff7a-12b4-405a-b214-941ab2df13ce"
