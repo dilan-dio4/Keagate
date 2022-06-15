@@ -41,8 +41,9 @@ export default class Cardano extends GenericWallet {
         const currentAmount = 997400000;
         const ownerAddress = walletManager.getBaseAddress().to_address().to_bech32();
         console.log(`owner address: ${ownerAddress}`);
-        console.log(`hash ${walletManager.getUtxoPublicKey().to_bech32()}`);
-        console.log(`priv key bech32 ${walletManager.getUtxoPrivateKey().to_bech32()}`);
+        console.log(`pub key bech32 ${walletManager.getPublicKey().to_bech32()}`);
+        console.log(`UTXO hash ${walletManager.getUtxoPublicKey().to_bech32()}`);
+        console.log(`UTXO priv key bech32 ${walletManager.getUtxoPrivateKey().to_bech32()}`);
 
 
         // Retrieve utxo for the address

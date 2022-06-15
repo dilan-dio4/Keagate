@@ -26,7 +26,7 @@ export const getPublicKey = () => {
 export const getBaseAddress = () => {
     const keyDetails = getKeyDetails()
     const baseAddr = CardanoWasm.BaseAddress.new(
-        CardanoWasm.NetworkInfo.testnet().network_id(),
+        CardanoWasm.NetworkInfo.mainnet().network_id(),
         CardanoWasm.StakeCredential.from_keyhash(keyDetails.utxoPubKey.to_raw_key().hash()),
         CardanoWasm.StakeCredential.from_keyhash(keyDetails.stakeKey.to_raw_key().hash()),
     );
