@@ -52,7 +52,7 @@ export default class Litecoin extends GenericWallet {
 
         // https://bitcoincore.org/en/doc/0.19.0/rpc/rawtransactions/sendrawtransaction/
         try {
-            const res = await fPost('https://ltc.nownodes.io', {
+            const { result } = await fPost('https://ltc.nownodes.io', {
                 "jsonrpc": "2.0",
                 "method": "sendrawtransaction",
                 "params": [
@@ -63,11 +63,9 @@ export default class Litecoin extends GenericWallet {
             }, {
                 'Content-Type': 'application/json'
             })
-            console.log(res);
-            return { result: res.result };
+            return { result };
         } catch (error) {
             console.error(error);
         }
-
     }
 }
