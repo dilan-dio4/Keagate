@@ -4,6 +4,14 @@ import { convertChainsoToNativeUtxo } from '../../utils';
 import { Transaction } from 'bitcore-lib-ltc';
 
 export default class Litecoin extends GenericWallet {
+    private mediumGasFee: number;
+
+    constructor(...args: ConstructorParameters<typeof GenericWallet>) {
+        super(...args);
+        fGet('https://api.blockcypher.com/v1/ltc/main')
+            .then(({ medium_fee_per_kb }) => this.mediumGasFee = medium_fee_per_kb)
+    }
+
     async getBalance() {
         const { data: { confirmed_balance, unconfirmed_balance } } = await fGet(`https://chain.so/api/v2/get_address_balance/LTC/${this.publicKey}`);
         return {
@@ -14,6 +22,10 @@ export default class Litecoin extends GenericWallet {
     async sendTransaction(destination: string, amount: number) {
         if (!this.isValidAddress(destination)) {
             throw new Error("Invalid destination address");
+        }
+
+        if (!this.mediumGasFee) {
+            throw new Error("Gathering gas fees");
         }
 
         const { data: { txs } } = await fGet(`https://chain.so/api/v2/get_tx_unspent/LTC/${this.publicKey}`);
@@ -29,12 +41,11 @@ export default class Litecoin extends GenericWallet {
 
         const totalBalanceInSatoshis = Math.round(totalBalance * 1E8);
         const transactionValInSatoshis = Math.round(amount * 1E8);
-        const feeInSatoshis = 100000 / 10;
 
         const ltcTransaction: Transaction = new Transaction()
             .from(convertChainsoToNativeUtxo(txs, this.publicKey))
             .to(destination, transactionValInSatoshis)
-            .to(this.publicKey, totalBalanceInSatoshis - transactionValInSatoshis - feeInSatoshis)
+            .to(this.publicKey, totalBalanceInSatoshis - transactionValInSatoshis - this.mediumGasFee)
             .change(this.publicKey)
             .sign(this.privateKey);
 
