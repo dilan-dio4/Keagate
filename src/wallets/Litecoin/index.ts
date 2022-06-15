@@ -41,7 +41,7 @@ export default class Litecoin extends GenericWallet {
                 "method": "sendrawtransaction",
                 "params": [
                     ltcTransaction.uncheckedSerialize(),
-                    0.001
+                    0.0001
                 ],
                 "id": "getblock.io"
             }, {
