@@ -36,17 +36,23 @@ export default class Dash extends GenericWallet {
             throw error;
         }
 
-        const { result } = await fPost(process.env.DASH_RPC_URL, {
-            "jsonrpc": "2.0",
-            "method": "sendrawtransaction",
-            "params": [
-                dashTransaction.serialize(false)
-            ],
-            "id": "getblock.io"
-        }, {
-            'Content-Type': 'application/json',
-            'x-api-key': process.env.DASH_RPC_API_KEY
-        })
-        return { result };
+        try {
+            const res = await fPost(process.env.DASH_RPC_URL, {
+                "jsonrpc": "2.0",
+                "method": "sendrawtransaction",
+                "params": [
+                    dashTransaction.serialize(false)
+                ],
+                "id": "getblock.io"
+            }, {
+                'Content-Type': 'application/json',
+                'x-api-key': process.env.DASH_RPC_API_KEY
+            })
+            console.log(res)
+            return { result: res.result };
+        } catch (error) {
+            console.error(error);
+        }
+
     }
 }
