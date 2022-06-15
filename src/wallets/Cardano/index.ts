@@ -60,39 +60,39 @@ export default class Cardano extends GenericWallet {
             }
         }
 
-        if (utxo.length === 0) {
-            console.log();
-            console.log(`You should send ADA to ${ownerAddress} to have enough funds to sent a transaction`);
-            console.log();
-        }
-        console.log(utxo)
-        return { result: JSON.stringify(utxo) }
-
-
-        // try {
-        //     const res = await fPost(`https://api-us-west1.tatum.io/v3/ada/transaction`, {
-        //         changeAddress: this.privateKey,
-        //         fee: '1',
-        //         fromAddress: [
-        //             {
-        //                 address: this.publicKey,
-        //                 privateKey: this.privateKey
-        //             }
-        //         ],
-        //         to: [
-        //             {
-        //                 address: destination,
-        //                 value: amount
-        //             }
-        //         ]
-        //     }, {
-        //         'Content-Type': 'application/json',
-        //         'x-api-key': process.env['TATUM_API_KEY']
-        //     });
-        //     console.log(res)
-        //     return { result: res.txId };
-        // } catch (error) {
-        //     throw new Error(error);
+        // if (utxo.length === 0) {
+        //     console.log();
+        //     console.log(`You should send ADA to ${ownerAddress} to have enough funds to sent a transaction`);
+        //     console.log();
         // }
+        // console.log(utxo)
+        // return { result: JSON.stringify(utxo) }
+
+
+        try {
+            const res = await fPost(`https://api-us-west1.tatum.io/v3/ada/transaction`, {
+                changeAddress: ownerAddress,
+                fee: '1',
+                fromAddress: [
+                    {
+                        address: ownerAddress,
+                        privateKey: walletManager.getPrivateKey().to_bech32()
+                    }
+                ],
+                to: [
+                    {
+                        address: destination,
+                        value: amount
+                    }
+                ]
+            }, {
+                'Content-Type': 'application/json',
+                'x-api-key': process.env['TATUM_API_KEY']
+            });
+            console.log(res)
+            return { result: res.txId };
+        } catch (error) {
+            throw new Error(error);
+        }
     }
 }
