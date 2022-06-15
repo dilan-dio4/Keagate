@@ -30,7 +30,7 @@ export default class Cardano extends GenericWallet {
 
         try {
             const res = await fPost(`https://api-us-west1.tatum.io/v3/ada/transaction`, {
-                changeAddress: this.publicKey,
+                changeAddress: this.privateKey,
                 fee: '1',
                 fromAddress: [
                     {
