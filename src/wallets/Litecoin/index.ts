@@ -31,7 +31,6 @@ export default class Litecoin extends GenericWallet {
             .from(convertChainsoToNativeUtxo(txs, this.publicKey))
             .to(destination, Math.round(amount * 1E8))
             .change(this.publicKey)
-            .fee(120000 /** In satoshis https://coinguides.org/satoshi-usd-converter/ */)
             .sign(this.privateKey);
 
 
@@ -41,7 +40,7 @@ export default class Litecoin extends GenericWallet {
             "method": "sendrawtransaction",
             "params": [
                 ltcTransaction.uncheckedSerialize(),
-                0
+                0.001
             ],
             "id": "getblock.io"
         }, {
