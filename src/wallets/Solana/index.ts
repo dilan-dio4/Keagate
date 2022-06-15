@@ -36,7 +36,11 @@ export default class Solana extends GenericWallet {
         transaction.recentBlockhash = latestBlockhash.blockhash;
         transaction.feePayer = adminKeypair.publicKey;
 
-        const signature = await sendAndConfirmTransaction(this.connection, transaction, [adminKeypair]); // TODO: just send
-        return { result: signature };
+        try {
+            const signature = await sendAndConfirmTransaction(this.connection, transaction, [adminKeypair]);
+            return { result: signature };   
+        } catch (error) {
+            throw new Error(error);
+        }
     }
 }
