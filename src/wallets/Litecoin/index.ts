@@ -15,7 +15,7 @@ export default class Litecoin extends GenericWallet {
     async getBalance() {
         const { data: { confirmed_balance, unconfirmed_balance } } = await fGet(`https://chain.so/api/v2/get_address_balance/LTC/${this.publicKey}`);
         return {
-            result: confirmed_balance
+            result: +confirmed_balance
         };
     }
 
