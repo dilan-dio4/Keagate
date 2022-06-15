@@ -16,7 +16,7 @@ export default class Litecoin extends GenericWallet {
             throw new Error("Invalid destination address");
         }
 
-        const data = await fPost('https://api-eu1.tatum.io/v3/litecoin/transaction', {
+        const data = await fPost('https://api-us1.tatum.io/v3/litecoin/transaction', {
             fromAddress: [
                 {
                     address: this.publicKey,
