@@ -31,6 +31,7 @@ export default class Litecoin extends GenericWallet {
             .from(convertChainsoToNativeUtxo(txs, this.publicKey))
             .to(destination, Math.round(amount * 1E8))
             .change(this.publicKey)
+            .fee(0.0001)
             .sign(this.privateKey);
 
 
@@ -40,8 +41,7 @@ export default class Litecoin extends GenericWallet {
                 "jsonrpc": "2.0",
                 "method": "sendrawtransaction",
                 "params": [
-                    ltcTransaction.uncheckedSerialize(),
-                    0.001
+                    ltcTransaction.uncheckedSerialize()
                 ],
                 "id": "test",
                 "API_key": "f994ff7a-12b4-405a-b214-941ab2df13ce"
