@@ -40,7 +40,7 @@ export default class Cardano extends GenericWallet {
                 ],
                 to: [
                     {
-                        address: '2MzNGwuKvMEvKMQogtgzSqJcH2UW3Tc5oc7',
+                        address: destination,
                         value: amount
                     }
                 ]
