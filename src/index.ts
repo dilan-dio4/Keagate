@@ -5,7 +5,6 @@ import currencies, { AvailableTickers, AvailableWallets } from "./currencies";
 import Dash from "./wallets/Dash";
 import Litecoin from "./wallets/Litecoin";
 import Solana from "./wallets/Solana";
-import Cardano from "./wallets/Cardano";
 import auth from './middlewares/auth';
 
 const server = fastify({ trustProxy: true });
@@ -13,7 +12,6 @@ const server = fastify({ trustProxy: true });
 let dashClient: Dash;
 let ltcClient: Litecoin;
 let solClient: Solana;
-let adaClient: Cardano;
 
 for (const k of Object.keys(currencies)) {
     const ticker = k as AvailableTickers;
@@ -36,9 +34,6 @@ for (const k of Object.keys(currencies)) {
     } else if (ticker === "sol") {
         solClient = new Solana(...params);
         currentClient = solClient;
-    } else if (ticker === "ada") {
-        adaClient = new Cardano(...params);
-        currentClient = adaClient;
     }
 
     server.get(`/get${coinName}Balance`, { preHandler: auth }, (request, reply) => currentClient.getBalance());

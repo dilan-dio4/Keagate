@@ -1,11 +1,10 @@
-import Cardano from "./wallets/Cardano";
 import Dash from "./wallets/Dash";
 import Litecoin from "./wallets/Litecoin";
 import Solana from "./wallets/Solana";
 
-export type AvailableCoins = "Solana" | "Dash" | "Litecoin" | "Cardano";
-export type AvailableTickers = "sol" | "dash" | "ltc" | "ada";
-export type AvailableWallets = Dash | Litecoin | Solana | Cardano;
+export type AvailableCoins = "Solana" | "Dash" | "Litecoin";
+export type AvailableTickers = "sol" | "dash" | "ltc";
+export type AvailableWallets = Dash | Litecoin | Solana;
 
 const currencies: Record<AvailableTickers, { name: AvailableCoins }> = {
     "ltc": {
@@ -16,9 +15,6 @@ const currencies: Record<AvailableTickers, { name: AvailableCoins }> = {
     },
     "dash": {
         name: "Dash",
-    },
-    "ada": {
-        name: "Cardano"
     }
 }
 

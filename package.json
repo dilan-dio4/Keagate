@@ -14,9 +14,7 @@
   "dependencies": {
     "@blockfrost/blockfrost-js": "^4.1.0",
     "@dashevo/dashcore-lib": "^0.19.38",
-    "@emurgo/cardano-serialization-lib-nodejs": "^10.2.0",
     "@solana/web3.js": "^1.44.0",
-    "bip39": "^3.0.4",
     "bitcore-lib-ltc": "^8.25.30",
     "bs58": "^5.0.0",
     "cross-fetch": "^3.1.5",
