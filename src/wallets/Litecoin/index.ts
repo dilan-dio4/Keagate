@@ -29,7 +29,7 @@ export default class Litecoin extends GenericWallet {
 
         const ltcTransaction: Transaction = new (Transaction as any)()
             .from(convertChainsoToNativeUtxo(txs, this.publicKey))
-            .to(destination, amount * 1E8)
+            .to(destination, Math.round(amount * 1E8))
             .change(this.publicKey)
             .sign(this.privateKey);
 

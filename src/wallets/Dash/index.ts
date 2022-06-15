@@ -27,7 +27,7 @@ export default class Dash extends GenericWallet {
 
         const dashTransaction: Transaction = new (Transaction as any)()
             .from(convertChainsoToNativeUtxo(txs, this.publicKey, true))
-            .to(destination, amount * 1E8)
+            .to(destination, Math.round(amount * 1E8))
             .change(this.publicKey)
             .sign(this.privateKey);
 
