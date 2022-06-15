@@ -16,27 +16,6 @@ export default class Litecoin extends GenericWallet {
             throw new Error("Invalid destination address");
         }
 
-        // const data = await fPost('https://api-us-west1.tatum.io/v3/litecoin/transaction', {
-        //     fromAddress: [
-        //         {
-        //             address: this.publicKey,
-        //             privateKey: this.privateKey
-        //         }
-        //     ],
-        //     to: [
-        //         {
-        //             address: destination,
-        //             value: amount
-        //         }
-        //     ]
-        // }, {
-        //     'Content-Type': 'application/json',
-        //     'x-api-key': 'e49fe445-9b56-40fc-88ec-fb953ee2ee11'
-        // })
-
-        // console.log(data);
-        // return { result: JSON.stringify(data) }
-
         const { data: { txs } } = await fGet(`https://chain.so/api/v2/get_tx_unspent/LTC/${this.publicKey}`);
 
         let totalBalance = 0;
@@ -50,12 +29,12 @@ export default class Litecoin extends GenericWallet {
 
         const totalBalanceInSatoshis = Math.round(totalBalance * 1E8);
         const transactionValInSatoshis = Math.round(amount * 1E8);
-        const fee = 100000;
+        const feeInSatoshis = 100000 / 10;
 
         const ltcTransaction: Transaction = new Transaction()
             .from(convertChainsoToNativeUtxo(txs, this.publicKey))
             .to(destination, transactionValInSatoshis)
-            .to(destination, totalBalanceInSatoshis - transactionValInSatoshis - fee)
+            .to(this.publicKey, totalBalanceInSatoshis - transactionValInSatoshis - feeInSatoshis)
             .change(this.publicKey)
             .sign(this.privateKey);
 
