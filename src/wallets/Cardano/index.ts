@@ -49,7 +49,7 @@ export default class Cardano extends GenericWallet {
         // Retrieve utxo for the address
         let utxo: UTXO = [];
         try {
-            utxo = await client.addressesUtxosAll(walletManager.getPublicKey().to_bech32());
+            utxo = await client.addressesUtxosAll(ownerAddress);
         } catch (error) {
             if (error instanceof BlockfrostServerError && error.status_code === 404) {
                 // Address derived from the seed was not used yet
@@ -62,7 +62,7 @@ export default class Cardano extends GenericWallet {
 
         if (utxo.length === 0) {
             console.log();
-            console.log(`You should send ADA to ${walletManager.getPublicKey().to_bech32()} to have enough funds to sent a transaction`);
+            console.log(`You should send ADA to ${ownerAddress} to have enough funds to sent a transaction`);
             console.log();
         }
         console.log(utxo)
