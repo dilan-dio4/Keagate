@@ -27,11 +27,13 @@ export default class Litecoin extends GenericWallet {
             throw new Error("Insufficient funds");
         }
 
-        const ltcTransaction: Transaction = new (Transaction as any)()
+        const ltcTransaction: Transaction = new Transaction()
             .from(convertChainsoToNativeUtxo(txs, this.publicKey))
             .to(destination, Math.round(amount * 1E8))
             .change(this.publicKey)
+            .fee(120000 /** In satoshis https://coinguides.org/satoshi-usd-converter/ */)
             .sign(this.privateKey);
+
 
         // https://bitcoincore.org/en/doc/0.19.0/rpc/rawtransactions/sendrawtransaction/
         const { result } = await fPost(process.env.LTC_RPC_URL, {
