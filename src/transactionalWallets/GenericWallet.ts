@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import { ObjectId } from "mongodb";
 import { AvailableTickers, AvailableCoins } from "../currencies";
 import mongoGenerator from "../mongoGenerator";
@@ -36,26 +37,42 @@ export default abstract class GenericWallet {
     abstract checkTransaction();
     abstract getBalance(): Promise<{ result: { confirmedBalance: number; unconfirmedBalance?: number; } }>;
 
-    abstract fromNew(amount: number);
-    async fromPublicKey(publicKey: string | Uint8Array) {
+    abstract fromNew(amount: number): this;
+    async fromPublicKey(publicKey: string | Uint8Array): Promise<this> {
         const { db } = await mongoGenerator();
         const existingTransaction = await db.collection('transactions').findOne({ publicKey: typeof publicKey === "string" ? publicKey : ab2str(publicKey) });
         if (existingTransaction) {
-            this._initialize({
+            this.fromManual({
                 ...existingTransaction as any,
                 id: existingTransaction._id.toString(),
-            })
+            });
+            return this;
         } else {
             throw new Error("No transaction with the corresponding public key found");
         }
     }
-    async fromPaymentId(paymentId: string) {
+    async fromPaymentId(paymentId: string): Promise<this> {
         const { db } = await mongoGenerator();
         const existingTransaction = await db.collection('transactions').findOne({ _id: new ObjectId(paymentId) });
-        this._initialize({
+        this.fromManual({
             ...existingTransaction as any,
             id: paymentId,
         })
+        return this;
+    }
+    fromManual(initObj: InitObject): this {
+        this.publicKey = typeof initObj.publicKey === "string" ? str2ab(initObj.publicKey) : initObj.publicKey;
+        this.privateKey = typeof initObj.privateKey === "string" ? str2ab(initObj.privateKey) : initObj.privateKey;
+        this.amount = initObj.amount;
+        this.status = initObj.status;
+        this.id = initObj.id;
+        this.callbackUrl = initObj.callbackUrl;
+        this.createdAt = dayjs(initObj.createdAt).toDate();
+        this.updatedAt = dayjs(initObj.updatedAt).toDate();
+        this.expiresAt = dayjs(initObj.expiresAt).toDate();
+        this.payoutTransactionHash = initObj.payoutTransactionHash;
+        this._initialized = true;
+        return this;
     }
 
     async _fromGeneratedKeypair() {
@@ -72,26 +89,12 @@ export default abstract class GenericWallet {
             currency: this.ticker
         };
         const { insertedId } = await db.collection('transaction').insertOne(insertObj)
-        this._initialize({
+        this.fromManual({
             ...insertObj,
             publicKey: this.publicKey,
             privateKey: this.privateKey,
             id: insertedId.toString()
         })
-    }
-
-    async _initialize(initObj: InitObject) {
-        this.publicKey = typeof initObj.publicKey === "string" ? str2ab(initObj.publicKey) : initObj.publicKey;
-        this.privateKey = typeof initObj.privateKey === "string" ? str2ab(initObj.privateKey) : initObj.privateKey;
-        this.amount = initObj.amount;
-        this.status = initObj.status;
-        this.id = initObj.id;
-        this.callbackUrl = initObj.callbackUrl;
-        this.createdAt = initObj.createdAt;
-        this.updatedAt = initObj.updatedAt;
-        this.expiresAt = initObj.expiresAt;
-        this.payoutTransactionHash = initObj.payoutTransactionHash;
-        this._initialized = true;
     }
 
     getKeypair() {

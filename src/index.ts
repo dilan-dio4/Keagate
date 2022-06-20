@@ -2,16 +2,20 @@ import dotenv from 'dotenv';
 dotenv.config();
 import fastify from 'fastify'
 import currencies, { AvailableTickers, AvailableWallets } from "./currencies";
-import Dash from "./adminWallets/Dash";
-import Litecoin from "./adminWallets/Litecoin";
-import Solana from "./adminWallets/Solana";
+import AdminDash from "./adminWallets/Dash";
+import AdminLitecoin from "./adminWallets/Litecoin";
+import AdminSolana from "./adminWallets/Solana";
+import TransactionalSolana from "./transactionalWallets/Solana";
 import auth from './middlewares/auth';
+import mongoGenerator from "./mongoGenerator";
 
 const server = fastify({ trustProxy: true });
 
-let dashClient: Dash;
-let ltcClient: Litecoin;
-let solClient: Solana;
+const activeTransactions: Record<string, TransactionalSolana> = {};
+
+let adminDashClient: AdminDash;
+let adminLtcClient: AdminLitecoin;
+let adminSolClient: AdminSolana;
 
 for (const k of Object.keys(currencies)) {
     const ticker = k as AvailableTickers;
@@ -26,14 +30,14 @@ for (const k of Object.keys(currencies)) {
     const params = [publicKey, privateKey] as const;
     let currentClient: AvailableWallets;
     if (ticker === "dash") {
-        dashClient = new Dash(...params);
-        currentClient = dashClient;
+        adminDashClient = new AdminDash(...params);
+        currentClient = adminDashClient;
     } else if (ticker === "ltc") {
-        ltcClient = new Litecoin(...params);
-        currentClient = ltcClient;
+        adminLtcClient = new AdminLitecoin(...params);
+        currentClient = adminLtcClient;
     } else if (ticker === "sol") {
-        solClient = new Solana(...params);
-        currentClient = solClient;
+        adminSolClient = new AdminSolana(...params);
+        currentClient = adminSolClient;
     }
 
     server.get(`/get${coinName}Balance`, { preHandler: auth }, (request, reply) => currentClient.getBalance());
@@ -47,4 +51,21 @@ server.listen({ port: 8081 }, (err, address) => {
         process.exit(1)
     }
     console.log(`Server listening at ${address}`)
+    async function init() {
+        const { db } = await mongoGenerator();
+        const _activeTransactions = await db.collection('transactions').find({ status: "WAITING" }).toArray();
+        for (const _currActiveTransaction of _activeTransactions) {
+            switch (_currActiveTransaction.currency as AvailableTickers) {
+                case "sol":
+                    activeTransactions[_currActiveTransaction._id.toString()] = new TransactionalSolana().fromManual({
+                        ..._currActiveTransaction as any,
+                        id: _currActiveTransaction._id.toString()
+                    })
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+    init();
 })

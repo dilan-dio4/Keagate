@@ -14,10 +14,10 @@ export default class SolanaTransactional extends GenericWallet {
     
     constructor(...args: ConstructorParameters<typeof GenericWallet>) {
         super(...args);
-        this.connection = new Connection(clusterApiUrl("mainnet-beta"), "confirmed");
+        this.connection = new Connection(clusterApiUrl(process.env.TESTNETS ? "devnet" : "mainnet-beta"), "confirmed");
     }
 
-    async fromNew(amount: number, callbackUrl?: string) {
+    fromNew(amount: number, callbackUrl?: string) {
         const newKeypair = Keypair.generate();
         this.publicKey = newKeypair.publicKey.toBytes();
         this.privateKey = newKeypair.secretKey;
@@ -28,6 +28,7 @@ export default class SolanaTransactional extends GenericWallet {
         this.createdAt = now;
         this.updatedAt = now;
         this._fromGeneratedKeypair();
+        return this;
     }
 
     async getBalance() {
@@ -55,10 +56,14 @@ export default class SolanaTransactional extends GenericWallet {
         }
     }
 
-    async _updateStatus(status: PaymentStatus, error?: string) {
+    private async _updateStatus(status: PaymentStatus, error?: string) {
         const { db } = await mongoGenerator();
         this.updatedAt = dayjs().toDate();
-        db.collection('transactions').updateOne({ _id: new ObjectId(this.id) }, { $set: { status, updatedAt: this.updatedAt } })
+        if (error) {
+            db.collection('transactions').updateOne({ _id: new ObjectId(this.id) }, { $set: { status, updatedAt: this.updatedAt, error } })
+        } else {
+            db.collection('transactions').updateOne({ _id: new ObjectId(this.id) }, { $set: { status, updatedAt: this.updatedAt } })
+        }
         if (this.callbackUrl) {
             fetch(this.callbackUrl, {
                 method: "POST",
@@ -69,7 +74,8 @@ export default class SolanaTransactional extends GenericWallet {
                     createdAt: this.createdAt,
                     updatedAt: this.updatedAt,
                     expiresAt: this.expiresAt,
-                    payoutTransactionHash: this.payoutTransactionHash
+                    payoutTransactionHash: this.payoutTransactionHash,
+                    error
                 }),
                 headers: {
                     /** TODO: Hmac Verification */
@@ -78,7 +84,7 @@ export default class SolanaTransactional extends GenericWallet {
         }
     }
 
-    async _cashOut(balance: number) {
+    private async _cashOut(balance: number) {
         const [latestBlockhash] = await Promise.all([
             this.connection.getLatestBlockhash('confirmed'),
             this._updateStatus("SENDING")
