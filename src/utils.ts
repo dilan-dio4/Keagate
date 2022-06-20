@@ -21,3 +21,11 @@ export function convertChainsoToNativeUtxo(Utxos: Record<string, any>[], address
 }
 
 export const isBase58 = (value: string): boolean => /^[A-HJ-NP-Za-km-z1-9]*$/.test(value);
+
+export function ab2str(buf: Uint8Array) {
+    return Buffer.from(buf).toString('base64');
+}
+
+export function str2ab(str: string) {
+    return new Uint8Array(Buffer.from(str, 'base64'))
+}

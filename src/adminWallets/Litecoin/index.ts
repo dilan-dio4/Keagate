@@ -1,11 +1,14 @@
-import { GenericWallet } from "../../Wallet";
+import GenericWallet from "../GenericWallet";
 import { fGet, fPost } from "../../fetch";
 import { convertChainsoToNativeUtxo } from '../../utils';
 import { Transaction } from 'bitcore-lib-ltc';
+import { AvailableCoins, AvailableTickers } from "../../currencies";
 
 export default class Litecoin extends GenericWallet {
     private mediumGasFee: number;
-
+    public ticker: AvailableTickers = "ltc";
+    public coinName: AvailableCoins = "Litecoin";
+    
     constructor(...args: ConstructorParameters<typeof GenericWallet>) {
         super(...args);
         fGet('https://api.blockcypher.com/v1/ltc/main')

@@ -16,14 +16,14 @@ let solClient: Solana;
 for (const k of Object.keys(currencies)) {
     const ticker = k as AvailableTickers;
     const coinName = currencies[ticker].name;
-    const publicKey = process.env[`${ticker.toUpperCase()}_PUBLIC_KEY`];
-    const privateKey = process.env[`${ticker.toUpperCase()}_PRIVATE_KEY`];
+    const publicKey = process.env[`ADMIN_${ticker.toUpperCase()}_PUBLIC_KEY`];
+    const privateKey = process.env[`ADMIN_${ticker.toUpperCase()}_PRIVATE_KEY`];
 
     if (!publicKey || !privateKey) {
         continue;
     }
 
-    const params = [ticker, coinName, publicKey, privateKey] as const;
+    const params = [publicKey, privateKey] as const;
     let currentClient: AvailableWallets;
     if (ticker === "dash") {
         dashClient = new Dash(...params);

@@ -1,10 +1,14 @@
-import { GenericWallet } from "../../Wallet";
+import GenericWallet from "../GenericWallet";
 import { fGet, fPost } from "../../fetch";
 import { Transaction } from '@dashevo/dashcore-lib';
 import { convertChainsoToNativeUtxo } from '../../utils';
+import { AvailableCoins, AvailableTickers } from "../../currencies";
 
 // https://jestersimpps.github.io/my-first-experience-with-bitpay-bitcore/
 export default class Dash extends GenericWallet {
+    public ticker: AvailableTickers = "dash";
+    public coinName: AvailableCoins = "Dash";
+    
     async getBalance() {
         const { data: { confirmed_balance, unconfirmed_balance } } = await fGet(`https://chain.so/api/v2/get_address_balance/DASH/${this.publicKey}`);
         return { 
