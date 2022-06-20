@@ -8,10 +8,20 @@ import AdminSolana from "./adminWallets/Solana";
 import TransactionalSolana from "./transactionalWallets/Solana";
 import auth from './middlewares/auth';
 import mongoGenerator from "./mongoGenerator";
+import createPaymentRoute from './routes/createPayment';
+import createActivePaymentsRoute from './routes/activePayments';
 
-const server = fastify({ trustProxy: true });
+const server = fastify({
+    trustProxy: true,
+    ajv: {
+        customOptions: {
+            strict: 'log',
+            keywords: ['kind', 'modifier'],
+        }
+    }
+});
 
-const activeTransactions: Record<string, TransactionalSolana> = {};
+const activePayments: Record<string, TransactionalSolana> = {};
 
 let adminDashClient: AdminDash;
 let adminLtcClient: AdminLitecoin;
@@ -47,17 +57,20 @@ for (const k of Object.keys(currencies)) {
 
 function transactionIntervalRunner() {
     setInterval(() => {
-        Object.values(activeTransactions).forEach(ele => ele.checkTransaction());
-    }, +process.env.TRANSACTION_REFRESH_TIME)
+        Object.values(activePayments).forEach(ele => ele.checkTransaction());
+    }, +process.env.TRANSACTION_REFRESH_TIME * 1000)
 }
+
+createPaymentRoute(server, activePayments);
+createActivePaymentsRoute(server, activePayments);
 
 async function init() {
     const { db } = await mongoGenerator();
-    const _activeTransactions = await db.collection('transactions').find({ status: "WAITING" }).toArray();
+    const _activeTransactions = await db.collection('payments').find({ status: "WAITING" }).toArray();
     for (const _currActiveTransaction of _activeTransactions) {
         switch (_currActiveTransaction.currency as AvailableTickers) {
             case "sol":
-                activeTransactions[_currActiveTransaction._id.toString()] = new TransactionalSolana(id => delete activeTransactions[id]).fromManual({
+                activePayments[_currActiveTransaction._id.toString()] = new TransactionalSolana(id => delete activePayments[id]).fromManual({
                     ..._currActiveTransaction as any,
                     id: _currActiveTransaction._id.toString()
                 })
@@ -72,7 +85,7 @@ async function init() {
             console.error(err)
             process.exit(1)
         }
-        console.log(`Server listening at ${address}`)
+        console.log(`Server listening at ${address}`);
     });
 }
 

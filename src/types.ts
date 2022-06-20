@@ -1,9 +1,37 @@
-import { TLiteral, TUnion } from '@sinclair/typebox';
+import { AvailableTickers } from './currencies';
 
-export type PaymentStatus = "WAITING" | "CONFIRMING" | "CONFIRMED" | "SENDING" | "FINISHED" | "PARTIALLY_PAID" | "FAILED" | "EXPIRED";
+export const paymentStatuses = ["WAITING", "CONFIRMING", "CONFIRMED", "SENDING", "FINISHED", "PARTIALLY_PAID", "FAILED", "EXPIRED"] as const;
+export type PaymentStatusType = typeof paymentStatuses[number];
 
-type IntoStringUnion<T> = { [K in keyof T]: T[K] extends string ? TLiteral<T[K]> : never }
+interface PaymentRoot {
+    amount: number;
+    status: PaymentStatusType;
+    id: string;
+    callbackUrl?: string;
+    payoutTransactionHash?: string;
+    currency: AvailableTickers;
+}
 
-export function StringUnion<T extends string[]>(values: [...T]): TUnion<IntoStringUnion<T>> {
-    return { enum: values } as any
+export interface DbPayment extends PaymentRoot {
+    expiresAt: Date;
+    createdAt: Date;
+    updatedAt: Date;
+    publicKey: string;
+    privateKey: string;
+}
+
+export interface ClassPayment extends PaymentRoot {
+    expiresAt: Date;
+    createdAt: Date;
+    updatedAt: Date;
+    publicKey: Uint8Array;
+    privateKey: Uint8Array;
+}
+
+export interface RequestPayment extends PaymentRoot {
+    publicKey: string;
+    privateKey: string;
+    expiresAt: string;
+    createdAt: string;
+    updatedAt: string;
 }

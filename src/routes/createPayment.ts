@@ -1,45 +1,54 @@
 import { Static, Type } from '@sinclair/typebox';
 import { FastifyInstance, RouteShorthandOptions } from "fastify";
-import currencies from "../currencies";
 import mongoGenerator from '../mongoGenerator';
 import dayjs from 'dayjs';
-import { StringUnion } from '../types';
+import auth from "../middlewares/auth";
+import TransactionalSolana from '../transactionalWallets/Solana';
+import { DbPayment } from "../types";
+import { ab2str } from "../utils";
 
 const CreatePaymentBody = Type.Object({
-    currency: Type.Enum(StringUnion(Object.keys(currencies))),
+    currency: Type.String(),
     amount: Type.Number({ minimum: 0 }),
     callbackUrl: Type.Optional(Type.String({ format: "uri" }))
 })
 
 const CreatePaymentResponse = Type.Object({
-    currency: Type.Enum(StringUnion(Object.keys(currencies))),
-    amount: Type.Number({ minimum: 0 }),
+    publicKey: Type.String(),
+    // privateKey: Type.String(),
+    amount: Type.Number(),
+    expiresAt: Type.String(),
+    createdAt: Type.String(),
+    updatedAt: Type.String(),
+    status: Type.String(),
     id: Type.String(),
-    address: Type.String()
-})
+    callbackUrl: Type.Optional(Type.String()),
+    payoutTransactionHash: Type.Optional(Type.String())
+});
 
 const opts: RouteShorthandOptions = {
     schema: {
         body: CreatePaymentBody,
-        response: CreatePaymentResponse
-    }
+        response: {
+            200: CreatePaymentResponse
+        }
+    },
+    preHandler: auth
 }
 
-export default function createPaymentRoute(server: FastifyInstance) {
+export default function createPaymentRoute(server: FastifyInstance, activePayments: Record<string, TransactionalSolana>) {
     server.post<{ Body: Static<typeof CreatePaymentBody>; Reply: Static<typeof CreatePaymentResponse> }>(
         '/createPayment',
         opts,
         async (request, reply) => {
             const { body } = request;
-            const { db } = await mongoGenerator();
             // Create wallet
-            const { insertedId } = await db.collection('transactions').insertOne({
-                currency: body.currency,
-                amount: body.amount,
-                expiresAt: dayjs().unix() + process.env.TRANSACTION_TIMEOUT,
-                status: "WAITING"
-            });
-            reply.status(200).send();
+            const newWallet = await new TransactionalSolana((id) => delete activePayments[id]).fromNew(body.amount, body.callbackUrl);
+            const newWalletDetails: any = { ...newWallet.getDetails() };
+            activePayments[newWalletDetails.id] = newWallet;
+            delete newWalletDetails.privateKey;
+            newWalletDetails.publicKey = ab2str(newWalletDetails.publicKey);
+            reply.status(200).send(newWalletDetails);
         }
     )
 }

@@ -2,21 +2,8 @@ import dayjs from "dayjs";
 import { ObjectId } from "mongodb";
 import { AvailableTickers, AvailableCoins } from "../currencies";
 import mongoGenerator from "../mongoGenerator";
-import { PaymentStatus } from "../types";
+import { PaymentStatusType, ClassPayment, DbPayment } from "../types";
 import { ab2str, str2ab } from "../utils";
-
-interface InitObject {
-    publicKey: string | Uint8Array;
-    privateKey: string | Uint8Array;
-    amount: number;
-    expiresAt: Date;
-    createdAt: Date;
-    updatedAt: Date;
-    status: PaymentStatus;
-    id: string;
-    callbackUrl?: string;
-    payoutTransactionHash?: string;
-}
 
 export default abstract class GenericWallet {
     protected ticker: AvailableTickers;
@@ -29,7 +16,7 @@ export default abstract class GenericWallet {
     protected expiresAt: Date;
     protected createdAt: Date;
     protected updatedAt: Date;
-    protected status: PaymentStatus;
+    protected status: PaymentStatusType;
     protected id: string;
     protected callbackUrl?: string;
     protected payoutTransactionHash?: string;
@@ -39,7 +26,7 @@ export default abstract class GenericWallet {
     abstract checkTransaction();
     abstract getBalance(): Promise<{ result: { confirmedBalance: number; unconfirmedBalance?: number; } }>;
 
-    abstract fromNew(amount: number): this;
+    abstract fromNew(amount: number): Promise<this>;
     async fromPublicKey(publicKey: string | Uint8Array): Promise<this> {
         const { db } = await mongoGenerator();
         const existingTransaction = await db.collection('transactions').findOne({ publicKey: typeof publicKey === "string" ? publicKey : ab2str(publicKey) });
@@ -62,41 +49,42 @@ export default abstract class GenericWallet {
         })
         return this;
     }
-    fromManual(initObj: InitObject): this {
+    fromManual(initObj: ClassPayment): this {
         this.publicKey = typeof initObj.publicKey === "string" ? str2ab(initObj.publicKey) : initObj.publicKey;
         this.privateKey = typeof initObj.privateKey === "string" ? str2ab(initObj.privateKey) : initObj.privateKey;
         this.amount = initObj.amount;
         this.status = initObj.status;
         this.id = initObj.id;
         this.callbackUrl = initObj.callbackUrl;
-        this.createdAt = dayjs(initObj.createdAt).toDate();
-        this.updatedAt = dayjs(initObj.updatedAt).toDate();
-        this.expiresAt = dayjs(initObj.expiresAt).toDate();
+        this.createdAt = initObj.createdAt;
+        this.updatedAt = initObj.updatedAt;
+        this.expiresAt = initObj.expiresAt;
         this.payoutTransactionHash = initObj.payoutTransactionHash;
         this._initialized = true;
         return this;
     }
 
-    protected async _fromGeneratedKeypair() {
+    protected async _initInDatabase(publicKey: Uint8Array, privateKey: Uint8Array, amount: number, callbackUrl?: string): Promise<this> {
+        const now = dayjs().toDate();
         const { db } = await mongoGenerator();
-        const insertObj: Omit<InitObject, "id"> & { currency: string } = {
-            publicKey: ab2str(this.publicKey),
-            privateKey: ab2str(this.privateKey),
-            amount: this.amount,
-            expiresAt: this.expiresAt,
-            createdAt: this.createdAt,
-            updatedAt: this.updatedAt,
+        const insertObj: Omit<DbPayment, "id"> = {
+            publicKey: ab2str(publicKey),
+            privateKey: ab2str(privateKey),
+            amount: amount,
+            expiresAt: dayjs().add(+process.env.TRANSACTION_TIMEOUT, 'seconds').toDate(),
+            createdAt: now,
+            updatedAt: now,
             status: "WAITING",
-            callbackUrl: this.callbackUrl,
+            callbackUrl: callbackUrl,
             currency: this.ticker
         };
-        const { insertedId } = await db.collection('transaction').insertOne(insertObj)
-        this.fromManual({
+        const { insertedId } = await db.collection('payments').insertOne(insertObj);
+        return this.fromManual({
             ...insertObj,
-            publicKey: this.publicKey,
-            privateKey: this.privateKey,
+            publicKey,
+            privateKey,
             id: insertedId.toString()
-        })
+        });
     }
 
     getKeypair() {
@@ -108,5 +96,49 @@ export default abstract class GenericWallet {
             publicKey: ab2str(this.publicKey),
             privateKey: ab2str(this.privateKey)
         };
+    }
+
+    getDetails(): ClassPayment {
+        return {
+            amount: this.amount,
+            createdAt: this.createdAt,
+            expiresAt: this.expiresAt,
+            id: this.id,
+            privateKey: this.privateKey,
+            publicKey: this.publicKey,
+            status: this.status,
+            updatedAt: this.updatedAt,
+            callbackUrl: this.callbackUrl,
+            payoutTransactionHash: this.payoutTransactionHash,
+            currency: this.ticker
+        }
+    }
+
+    protected async _updateStatus(status: PaymentStatusType, error?: string) {
+        const { db } = await mongoGenerator();
+        this.updatedAt = dayjs().toDate();
+        if (error) {
+            db.collection('transactions').updateOne({ _id: new ObjectId(this.id) }, { $set: { status, updatedAt: this.updatedAt, error } })
+        } else {
+            db.collection('transactions').updateOne({ _id: new ObjectId(this.id) }, { $set: { status, updatedAt: this.updatedAt } })
+        }
+        if (this.callbackUrl) {
+            fetch(this.callbackUrl, {
+                method: "POST",
+                body: JSON.stringify({
+                    status,
+                    paymentId: this.id,
+                    currency: this.ticker,
+                    createdAt: this.createdAt,
+                    updatedAt: this.updatedAt,
+                    expiresAt: this.expiresAt,
+                    payoutTransactionHash: this.payoutTransactionHash,
+                    error
+                }),
+                headers: {
+                    /** TODO: Hmac Verification */
+                }
+            })
+        }
     }
 }
