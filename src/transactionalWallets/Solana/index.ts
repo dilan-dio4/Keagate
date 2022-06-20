@@ -45,6 +45,7 @@ export default class SolanaTransactional extends GenericWallet {
     async checkTransaction() {
         if (dayjs().isAfter(dayjs(this.expiresAt))) {
             this._updateStatus("EXPIRED");
+            this.onDie(this.id);
             return;
         }
         const { result: { confirmedBalance } } = await this.getBalance();
@@ -107,9 +108,10 @@ export default class SolanaTransactional extends GenericWallet {
             const signature = await sendAndConfirmTransaction(this.connection, transaction, [adminKeypair]);
             this.payoutTransactionHash = signature;
             this._updateStatus("FINISHED");
-            return { result: signature };   
+            this.onDie(this.id);
         } catch (error) {
             this._updateStatus("FAILED", JSON.stringify(error));
+            this.onDie(this.id);
         }
     }
 }

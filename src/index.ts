@@ -45,27 +45,36 @@ for (const k of Object.keys(currencies)) {
     server.post<{ Body: Record<string, any> }>(`/send${coinName}Transaction`, { preHandler: auth }, (request, reply) => currentClient.sendTransaction(request.body.destination, request.body.amount));
 }
 
-server.listen({ port: 8081 }, (err, address) => {
-    if (err) {
-        console.error(err)
-        process.exit(1)
-    }
-    console.log(`Server listening at ${address}`)
-    async function init() {
-        const { db } = await mongoGenerator();
-        const _activeTransactions = await db.collection('transactions').find({ status: "WAITING" }).toArray();
-        for (const _currActiveTransaction of _activeTransactions) {
-            switch (_currActiveTransaction.currency as AvailableTickers) {
-                case "sol":
-                    activeTransactions[_currActiveTransaction._id.toString()] = new TransactionalSolana().fromManual({
-                        ..._currActiveTransaction as any,
-                        id: _currActiveTransaction._id.toString()
-                    })
-                    break;
-                default:
-                    break;
-            }
+function transactionIntervalRunner() {
+    setInterval(() => {
+        Object.values(activeTransactions).forEach(ele => ele.checkTransaction());
+    }, +process.env.TRANSACTION_REFRESH_TIME)
+}
+
+async function init() {
+    const { db } = await mongoGenerator();
+    const _activeTransactions = await db.collection('transactions').find({ status: "WAITING" }).toArray();
+    for (const _currActiveTransaction of _activeTransactions) {
+        switch (_currActiveTransaction.currency as AvailableTickers) {
+            case "sol":
+                activeTransactions[_currActiveTransaction._id.toString()] = new TransactionalSolana(id => delete activeTransactions[id]).fromManual({
+                    ..._currActiveTransaction as any,
+                    id: _currActiveTransaction._id.toString()
+                })
+                break;
+            default:
+                break;
         }
     }
-    init();
-})
+    transactionIntervalRunner();
+    server.listen({ port: 8081 }, (err, address) => {
+        if (err) {
+            console.error(err)
+            process.exit(1)
+        }
+        console.log(`Server listening at ${address}`)
+    });
+}
+
+init();
+

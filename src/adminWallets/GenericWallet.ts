@@ -2,8 +2,8 @@ import { AvailableTickers, AvailableCoins } from "../currencies";
 import WAValidator from 'multicoin-address-validator';
 
 export default abstract class GenericWallet {
-    public ticker: AvailableTickers;
-    public coinName: AvailableCoins;
+    protected ticker: AvailableTickers;
+    protected coinName: AvailableCoins;
     
     constructor(public publicKey: string, public privateKey: string) {}
     abstract getBalance(): Promise<{ result: { confirmedBalance: number; unconfirmedBalance?: number; } }>;

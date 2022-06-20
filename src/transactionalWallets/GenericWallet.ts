@@ -19,20 +19,22 @@ interface InitObject {
 }
 
 export default abstract class GenericWallet {
-    public ticker: AvailableTickers;
-    public coinName: AvailableCoins;
-    public _initialized = false;
+    protected ticker: AvailableTickers;
+    protected coinName: AvailableCoins;
+    protected _initialized = false;
 
-    public publicKey: Uint8Array;
-    public privateKey: Uint8Array;
-    public amount: number;
-    public expiresAt: Date;
-    public createdAt: Date;
-    public updatedAt: Date;
-    public status: PaymentStatus;
-    public id: string;
-    public callbackUrl?: string;
-    public payoutTransactionHash?: string;
+    protected publicKey: Uint8Array;
+    protected privateKey: Uint8Array;
+    protected amount: number;
+    protected expiresAt: Date;
+    protected createdAt: Date;
+    protected updatedAt: Date;
+    protected status: PaymentStatus;
+    protected id: string;
+    protected callbackUrl?: string;
+    protected payoutTransactionHash?: string;
+
+    constructor(public onDie: (id: string) => any) { }
 
     abstract checkTransaction();
     abstract getBalance(): Promise<{ result: { confirmedBalance: number; unconfirmedBalance?: number; } }>;
@@ -75,7 +77,7 @@ export default abstract class GenericWallet {
         return this;
     }
 
-    async _fromGeneratedKeypair() {
+    protected async _fromGeneratedKeypair() {
         const { db } = await mongoGenerator();
         const insertObj: Omit<InitObject, "id"> & { currency: string } = {
             publicKey: ab2str(this.publicKey),
