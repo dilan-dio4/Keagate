@@ -7,7 +7,12 @@ import { convertChainsoToNativeUtxo } from '../../utils';
 export default class Dash extends GenericWallet {
     async getBalance() {
         const { data: { confirmed_balance, unconfirmed_balance } } = await fGet(`https://chain.so/api/v2/get_address_balance/DASH/${this.publicKey}`);
-        return { result: confirmed_balance }; // Balance in Dash
+        return { 
+            result: {
+                confirmedBalance: +confirmed_balance,
+                unconfirmedBalance: +unconfirmed_balance
+            } 
+        };
     }
 
     async sendTransaction(destination: string, amount: number) {

@@ -2,9 +2,9 @@ import dotenv from 'dotenv';
 dotenv.config();
 import fastify from 'fastify'
 import currencies, { AvailableTickers, AvailableWallets } from "./currencies";
-import Dash from "./wallets/Dash";
-import Litecoin from "./wallets/Litecoin";
-import Solana from "./wallets/Solana";
+import Dash from "./adminWallets/Dash";
+import Litecoin from "./adminWallets/Litecoin";
+import Solana from "./adminWallets/Solana";
 import auth from './middlewares/auth';
 
 const server = fastify({ trustProxy: true });

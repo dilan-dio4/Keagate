@@ -13,7 +13,12 @@ export default class Polygon extends GenericWallet {
 
     async getBalance() {
         const balance = await this.wallet.getBalance();
-        return { result: balance.toNumber() };
+        return {
+            result: {
+                confirmedBalance: balance.toNumber(),
+                unconfirmedBalance: null
+            }
+        };
     }
 
     async sendTransaction(destination: string, amount: number) {

@@ -11,9 +11,14 @@ export default class Solana extends GenericWallet {
     }
 
     async getBalance() {
-        const balance = await this.connection.getBalance(new PublicKey(this.publicKey), "finalized")
+        const balance = await this.connection.getBalance(new PublicKey(this.publicKey), "confirmed")
 
-        return { result: balance / LAMPORTS_PER_SOL };
+        return { 
+            result: {
+                confirmedBalance: balance / LAMPORTS_PER_SOL,
+                unconfirmedBalance: null
+            }
+        };
     }
 
     async sendTransaction(destination: string, amount: number) {
@@ -21,7 +26,7 @@ export default class Solana extends GenericWallet {
             throw new Error("Invalid destination address");
         }
 
-        const latestBlockhash = await this.connection.getLatestBlockhash('finalized');
+        const latestBlockhash = await this.connection.getLatestBlockhash('confirmed');
 
         const adminKeypair = Keypair.fromSecretKey(base58.decode(this.privateKey));
 

@@ -1,6 +1,6 @@
-import Dash from "./wallets/Dash";
-import Litecoin from "./wallets/Litecoin";
-import Solana from "./wallets/Solana";
+import Dash from "./adminWallets/Dash";
+import Litecoin from "./adminWallets/Litecoin";
+import Solana from "./adminWallets/Solana";
 
 export type AvailableCoins = "Solana" | "Dash" | "Litecoin";
 export type AvailableTickers = "sol" | "dash" | "ltc";
