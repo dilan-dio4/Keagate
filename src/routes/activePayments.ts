@@ -3,7 +3,6 @@ import { FastifyInstance, RouteShorthandOptions } from "fastify";
 import { RequestPayment } from '../types';
 import auth from "../middlewares/auth";
 import TransactionalSolana from '../transactionalWallets/Solana';
-import { ab2str } from "../utils";
 
 const ActivePaymentsResponse = Type.Array(Type.Object({
     publicKey: Type.String(),
@@ -38,7 +37,6 @@ export default function createActivePaymentsRoute(server: FastifyInstance, activ
                 delete details['privateKey'];
                 cleanedTransactions.push({
                     ...details as any,
-                    publicKey: ab2str(details.publicKey),
                     createdAt: details.createdAt.toISOString(),
                     updatedAt: details.updatedAt.toISOString(),
                     expiresAt: details.expiresAt.toISOString(),

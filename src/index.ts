@@ -57,8 +57,9 @@ for (const k of Object.keys(currencies)) {
 
 function transactionIntervalRunner() {
     setInterval(() => {
+        console.log("Checking payments...");
         Object.values(activePayments).forEach(ele => ele.checkTransaction());
-    }, +process.env.TRANSACTION_REFRESH_TIME * 1000)
+    }, +process.env.TRANSACTION_REFRESH_TIME)
 }
 
 createPaymentRoute(server, activePayments);
@@ -66,7 +67,7 @@ createActivePaymentsRoute(server, activePayments);
 
 async function init() {
     const { db } = await mongoGenerator();
-    const _activeTransactions = await db.collection('payments').find({ status: "WAITING" }).toArray();
+    const _activeTransactions = await db.collection('payments').find({ status: { $nin : ["FINISHED", "EXPIRED", "FAILED"] } }).toArray();
     for (const _currActiveTransaction of _activeTransactions) {
         switch (_currActiveTransaction.currency as AvailableTickers) {
             case "sol":

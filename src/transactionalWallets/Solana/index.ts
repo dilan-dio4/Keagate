@@ -2,12 +2,14 @@ import GenericWallet from '../GenericWallet';
 import { Connection, clusterApiUrl, PublicKey, Keypair, Transaction, SystemProgram, LAMPORTS_PER_SOL, sendAndConfirmTransaction } from '@solana/web3.js';
 import dayjs from "dayjs";
 import { AvailableCoins, AvailableTickers } from "../../currencies";
+import base58 from "bs58";
 
 export default class SolanaTransactional extends GenericWallet {
     private connection: Connection;
     public ticker: AvailableTickers = "sol";
     public coinName: AvailableCoins = "Solana";
-    
+    static TRANSFER_FEE_LAMPORTS = 5000;
+
     constructor(...args: ConstructorParameters<typeof GenericWallet>) {
         super(...args);
         this.connection = new Connection(clusterApiUrl(process.env.TESTNETS ? "devnet" : "mainnet-beta"), "confirmed");
@@ -15,7 +17,7 @@ export default class SolanaTransactional extends GenericWallet {
 
     async fromNew(amount: number, callbackUrl?: string) {
         const newKeypair = Keypair.generate();
-        return await this._initInDatabase(newKeypair.publicKey.toBytes(), newKeypair.secretKey, amount, callbackUrl);
+        return await this._initInDatabase(newKeypair.publicKey.toString(), base58.encode(newKeypair.secretKey), amount, callbackUrl);
     }
 
     async getBalance() {
@@ -50,13 +52,13 @@ export default class SolanaTransactional extends GenericWallet {
             this._updateStatus("SENDING")
         ])
 
-        const adminKeypair = Keypair.fromSecretKey(this.privateKey);
+        const adminKeypair = Keypair.fromSecretKey(base58.decode(this.privateKey));
 
         const transaction = new Transaction().add(
             SystemProgram.transfer({
                 fromPubkey: adminKeypair.publicKey,
-                toPubkey: new PublicKey(process.env.SOL_PUBLIC_KEY),
-                lamports: Math.round(balance * LAMPORTS_PER_SOL),
+                toPubkey: new PublicKey(process.env.ADMIN_SOL_PUBLIC_KEY),
+                lamports: Math.round(balance * LAMPORTS_PER_SOL) - SolanaTransactional.TRANSFER_FEE_LAMPORTS,
             })
         );
 

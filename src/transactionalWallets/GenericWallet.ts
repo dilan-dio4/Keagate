@@ -2,16 +2,15 @@ import dayjs from "dayjs";
 import { ObjectId } from "mongodb";
 import { AvailableTickers, AvailableCoins } from "../currencies";
 import mongoGenerator from "../mongoGenerator";
-import { PaymentStatusType, ClassPayment, DbPayment } from "../types";
-import { ab2str, str2ab } from "../utils";
+import { PaymentStatusType, ClassPayment } from "../types";
 
 export default abstract class GenericWallet {
     protected ticker: AvailableTickers;
     protected coinName: AvailableCoins;
     protected _initialized = false;
 
-    protected publicKey: Uint8Array;
-    protected privateKey: Uint8Array;
+    protected publicKey: string;
+    protected privateKey: string;
     protected amount: number;
     protected expiresAt: Date;
     protected createdAt: Date;
@@ -29,7 +28,7 @@ export default abstract class GenericWallet {
     abstract fromNew(amount: number): Promise<this>;
     async fromPublicKey(publicKey: string | Uint8Array): Promise<this> {
         const { db } = await mongoGenerator();
-        const existingTransaction = await db.collection('transactions').findOne({ publicKey: typeof publicKey === "string" ? publicKey : ab2str(publicKey) });
+        const existingTransaction = await db.collection('transactions').findOne({ publicKey });
         if (existingTransaction) {
             this.fromManual({
                 ...existingTransaction as any,
@@ -50,8 +49,8 @@ export default abstract class GenericWallet {
         return this;
     }
     fromManual(initObj: ClassPayment): this {
-        this.publicKey = typeof initObj.publicKey === "string" ? str2ab(initObj.publicKey) : initObj.publicKey;
-        this.privateKey = typeof initObj.privateKey === "string" ? str2ab(initObj.privateKey) : initObj.privateKey;
+        this.publicKey = initObj.publicKey;
+        this.privateKey = initObj.privateKey;
         this.amount = initObj.amount;
         this.status = initObj.status;
         this.id = initObj.id;
@@ -64,12 +63,12 @@ export default abstract class GenericWallet {
         return this;
     }
 
-    protected async _initInDatabase(publicKey: Uint8Array, privateKey: Uint8Array, amount: number, callbackUrl?: string): Promise<this> {
+    protected async _initInDatabase(publicKey: string, privateKey: string, amount: number, callbackUrl?: string): Promise<this> {
         const now = dayjs().toDate();
         const { db } = await mongoGenerator();
-        const insertObj: Omit<DbPayment, "id"> = {
-            publicKey: ab2str(publicKey),
-            privateKey: ab2str(privateKey),
+        const insertObj: Omit<ClassPayment, "id"> = {
+            publicKey: publicKey,
+            privateKey: privateKey,
             amount: amount,
             expiresAt: dayjs().add(+process.env.TRANSACTION_TIMEOUT, 'seconds').toDate(),
             createdAt: now,
@@ -81,8 +80,6 @@ export default abstract class GenericWallet {
         const { insertedId } = await db.collection('payments').insertOne(insertObj);
         return this.fromManual({
             ...insertObj,
-            publicKey,
-            privateKey,
             id: insertedId.toString()
         });
     }
@@ -93,8 +90,8 @@ export default abstract class GenericWallet {
         }
 
         return {
-            publicKey: ab2str(this.publicKey),
-            privateKey: ab2str(this.privateKey)
+            publicKey: this.publicKey,
+            privateKey:this.privateKey
         };
     }
 
@@ -118,9 +115,11 @@ export default abstract class GenericWallet {
         const { db } = await mongoGenerator();
         this.updatedAt = dayjs().toDate();
         if (error) {
-            db.collection('transactions').updateOne({ _id: new ObjectId(this.id) }, { $set: { status, updatedAt: this.updatedAt, error } })
+            console.log(`Status updated on ${this.ticker} payment ${this.id} error: `, error);
+            db.collection('payments').updateOne({ _id: new ObjectId(this.id) }, { $set: { status, updatedAt: this.updatedAt, error } })
         } else {
-            db.collection('transactions').updateOne({ _id: new ObjectId(this.id) }, { $set: { status, updatedAt: this.updatedAt } })
+            console.log(`Status updated on ${this.ticker} payment ${this.id}: `, status);
+            db.collection('payments').updateOne({ _id: new ObjectId(this.id) }, { $set: { status, updatedAt: this.updatedAt } })
         }
         if (this.callbackUrl) {
             fetch(this.callbackUrl, {

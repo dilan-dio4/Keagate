@@ -10,12 +10,6 @@ interface PaymentRoot {
     callbackUrl?: string;
     payoutTransactionHash?: string;
     currency: AvailableTickers;
-}
-
-export interface DbPayment extends PaymentRoot {
-    expiresAt: Date;
-    createdAt: Date;
-    updatedAt: Date;
     publicKey: string;
     privateKey: string;
 }
@@ -24,13 +18,9 @@ export interface ClassPayment extends PaymentRoot {
     expiresAt: Date;
     createdAt: Date;
     updatedAt: Date;
-    publicKey: Uint8Array;
-    privateKey: Uint8Array;
 }
 
 export interface RequestPayment extends PaymentRoot {
-    publicKey: string;
-    privateKey: string;
     expiresAt: string;
     createdAt: string;
     updatedAt: string;

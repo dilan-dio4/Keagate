@@ -1,11 +1,7 @@
 import { Static, Type } from '@sinclair/typebox';
 import { FastifyInstance, RouteShorthandOptions } from "fastify";
-import mongoGenerator from '../mongoGenerator';
-import dayjs from 'dayjs';
 import auth from "../middlewares/auth";
 import TransactionalSolana from '../transactionalWallets/Solana';
-import { DbPayment } from "../types";
-import { ab2str } from "../utils";
 
 const CreatePaymentBody = Type.Object({
     currency: Type.String(),
@@ -47,7 +43,6 @@ export default function createPaymentRoute(server: FastifyInstance, activePaymen
             const newWalletDetails: any = { ...newWallet.getDetails() };
             activePayments[newWalletDetails.id] = newWallet;
             delete newWalletDetails.privateKey;
-            newWalletDetails.publicKey = ab2str(newWalletDetails.publicKey);
             reply.status(200).send(newWalletDetails);
         }
     )
