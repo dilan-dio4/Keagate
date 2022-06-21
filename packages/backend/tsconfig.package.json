@@ -1,0 +1,16 @@
+{
+	"extends": "../../tsconfig.base.json",
+	"compilerOptions": {
+		"outDir": "./build",
+		"rootDir": "./src",
+		"composite": true
+	},
+	"include": [
+		"src"
+	],
+	"exclude": [
+		"test",
+		"build"
+	],
+	"references": []
+}

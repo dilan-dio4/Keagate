@@ -43,3 +43,5 @@ yarn-error.log*
 **/node_modules
 **/.env
 **/local.settings.json
+
+**/tsconfig.package.tsbuildinfo

@@ -5,8 +5,8 @@ import mongoGenerator from "../mongoGenerator";
 import { PaymentStatusType, ClassPayment } from "../types";
 
 export default abstract class GenericWallet {
-    protected ticker: AvailableTickers;
-    protected coinName: AvailableCoins;
+    public ticker: AvailableTickers;
+    public coinName: AvailableCoins;
     protected _initialized = false;
 
     protected publicKey: string;
@@ -22,7 +22,7 @@ export default abstract class GenericWallet {
 
     constructor(public onDie: (id: string) => any) { }
 
-    abstract checkTransaction();
+    protected abstract _cashOut(balance: number): Promise<void>;
     abstract getBalance(): Promise<{ result: { confirmedBalance: number; unconfirmedBalance?: number; } }>;
 
     abstract fromNew(amount: number): Promise<this>;
@@ -70,7 +70,7 @@ export default abstract class GenericWallet {
             publicKey: publicKey,
             privateKey: privateKey,
             amount: amount,
-            expiresAt: dayjs().add(+process.env.TRANSACTION_TIMEOUT, 'seconds').toDate(),
+            expiresAt: dayjs().add(+process.env.TRANSACTION_TIMEOUT!, 'seconds').toDate(),
             createdAt: now,
             updatedAt: now,
             status: "WAITING",
@@ -111,6 +111,21 @@ export default abstract class GenericWallet {
         }
     }
 
+    async checkTransaction() {
+        if (dayjs().isAfter(dayjs(this.expiresAt))) {
+            this._updateStatus("EXPIRED");
+            this.onDie(this.id);
+            return;
+        }
+        const { result: { confirmedBalance } } = await this.getBalance();
+        if (confirmedBalance >= (this.amount * (1 - +process.env.TRANSACTION_SLIPPAGE_TOLERANCE!))) {
+            this._updateStatus("CONFIRMED");
+            this._cashOut(confirmedBalance);
+        } else if (confirmedBalance > 0) {
+            this._updateStatus("PARTIALLY_PAID");
+        }
+    }
+
     protected async _updateStatus(status: PaymentStatusType, error?: string) {
         const { db } = await mongoGenerator();
         this.status = status;
@@ -123,7 +138,7 @@ export default abstract class GenericWallet {
             db.collection('payments').updateOne({ _id: new ObjectId(this.id) }, { $set: { status, updatedAt: this.updatedAt } })
         }
         if (this.callbackUrl) {
-            const details = this.getDetails();
+            const details: Record<string, any> = this.getDetails();
             delete details.privateKey;
             if (error) {
                 (details as any).error = error;

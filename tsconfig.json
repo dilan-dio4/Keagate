@@ -1,16 +1,12 @@
 {
+    "extends": "./tsconfig.base.json",
     "compilerOptions": {
-        "module": "CommonJS",
-        "target": "ES2018",
-        "outDir": "./build/",
-        "sourceMap": true,
-        "allowJs": true,
-        "esModuleInterop": true,
-        "skipLibCheck": true,
-        "allowSyntheticDefaultImports": true,
-        "declaration": true
-    },
-    "include": [
-        "src/**/*"
-    ],
+        "baseUrl": ".",
+        "noEmit": true,
+        "paths": {
+            "@snow/*": [
+                "./packages/*/src"
+            ]
+        }
+    }
 }

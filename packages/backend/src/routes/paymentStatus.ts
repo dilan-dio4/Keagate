@@ -42,7 +42,7 @@ export default function createPaymentStatusRoute(server: FastifyInstance) {
         async (request, reply) => {
             const id = request.query.id;
             const { db } = await mongoGenerator();
-            const selectedPayment: Record<string, any> = await db.collection('payments').findOne({ _id: new ObjectId(id) });
+            const selectedPayment: Record<string, any> | null = await db.collection('payments').findOne({ _id: new ObjectId(id) });
             if (!selectedPayment) {
                 return reply.status(300).send("No payment found");
             }

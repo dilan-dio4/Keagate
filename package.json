@@ -2,30 +2,17 @@
   "name": "Snow",
   "version": "1.0.0",
   "description": "\"# snow\"",
-  "main": "build/index.js",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc",
+    "build": "tsc --build ./tsconfig.project.json",
     "start": "tsc && node .",
     "run": "npm run build && pm2 restart build/index.js --name \"Snow\" --time && pm2 save"
   },
-  "author": "",
+  "author": "dilan-dio4",
   "license": "ISC",
-  "dependencies": {
-    "@blockfrost/blockfrost-js": "^4.1.0",
-    "@dashevo/dashcore-lib": "^0.19.38",
-    "@sinclair/typebox": "^0.23.5",
-    "@solana/web3.js": "^1.44.0",
-    "bitcore-lib-ltc": "^8.25.30",
-    "bs58": "^5.0.0",
-    "cross-fetch": "^3.1.5",
-    "dayjs": "^1.11.3",
-    "dotenv": "^16.0.0",
-    "ethers": "^5.6.8",
-    "fastify": "^4.0.1",
-    "mongodb": "^4.7.0",
-    "multicoin-address-validator": "^0.5.10"
-  },
   "devDependencies": {
     "@types/multicoin-address-validator": "^0.5.0",
     "@types/node": "^14.14.25",

@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "declaration": true,
+        "resolveJsonModule": true,
+        "sourceMap": true,
+        "allowJs": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "allowSyntheticDefaultImports": true,
+        "module": "CommonJS",
+        "target": "ES2018"
+    }
+}

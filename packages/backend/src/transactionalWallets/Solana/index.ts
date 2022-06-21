@@ -1,43 +1,48 @@
+import GenericWallet from '../GenericWallet';
 import { Connection, clusterApiUrl, PublicKey, Keypair, Transaction, SystemProgram, LAMPORTS_PER_SOL, sendAndConfirmTransaction } from '@solana/web3.js';
-import GenericWallet from "../GenericWallet";
-import base58 from "bs58";
 import { AvailableCoins, AvailableTickers } from "../../currencies";
+import base58 from "bs58";
 
-export default class Solana extends GenericWallet {
+export default class SolanaTransactional extends GenericWallet {
     private connection: Connection;
     public ticker: AvailableTickers = "sol";
     public coinName: AvailableCoins = "Solana";
+    static TRANSFER_FEE_LAMPORTS = 5000;
 
     constructor(...args: ConstructorParameters<typeof GenericWallet>) {
         super(...args);
-        this.connection = new Connection(clusterApiUrl("mainnet-beta"), "confirmed");
+        this.connection = new Connection(clusterApiUrl(process.env.TESTNETS ? "devnet" : "mainnet-beta"), "confirmed");
+    }
+
+    async fromNew(amount: number, callbackUrl?: string) {
+        const newKeypair = Keypair.generate();
+        return await this._initInDatabase(newKeypair.publicKey.toString(), base58.encode(newKeypair.secretKey), amount, callbackUrl);
     }
 
     async getBalance() {
         const balance = await this.connection.getBalance(new PublicKey(this.publicKey), "confirmed")
 
-        return { 
+        return {
             result: {
                 confirmedBalance: balance / LAMPORTS_PER_SOL,
-                unconfirmedBalance: null
+                unconfirmedBalance: undefined
             }
         };
     }
 
-    async sendTransaction(destination: string, amount: number) {
-        if (!this.isValidAddress(destination)) {
-            throw new Error("Invalid destination address");
-        }
-
-        const latestBlockhash = await this.connection.getLatestBlockhash('confirmed');
+    protected async _cashOut(balance: number) {
+        const [latestBlockhash] = await Promise.all([
+            this.connection.getLatestBlockhash('confirmed'),
+            this._updateStatus("SENDING")
+        ])
 
         const adminKeypair = Keypair.fromSecretKey(base58.decode(this.privateKey));
 
         const transaction = new Transaction().add(
             SystemProgram.transfer({
                 fromPubkey: adminKeypair.publicKey,
-                toPubkey: new PublicKey(destination),
-                lamports: Math.round(amount * LAMPORTS_PER_SOL),
+                toPubkey: new PublicKey(process.env.ADMIN_SOL_PUBLIC_KEY!),
+                lamports: Math.round(balance * LAMPORTS_PER_SOL) - SolanaTransactional.TRANSFER_FEE_LAMPORTS,
             })
         );
 
@@ -46,9 +51,12 @@ export default class Solana extends GenericWallet {
 
         try {
             const signature = await sendAndConfirmTransaction(this.connection, transaction, [adminKeypair]);
-            return { result: signature };   
+            this.payoutTransactionHash = signature;
+            this._updateStatus("FINISHED");
+            this.onDie(this.id);
         } catch (error) {
-            throw new Error(error);
+            this._updateStatus("FAILED", JSON.stringify(error));
+            this.onDie(this.id);
         }
     }
 }

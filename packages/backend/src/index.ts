@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
-dotenv.config();
+import { findUpSync } from 'find-up';
+dotenv.config({ path: findUpSync('.env') });
 import fastify from 'fastify';
 import currencies, { AvailableTickers, AvailableWallets } from "./currencies";
 import AdminDash from "./adminWallets/Dash";
@@ -60,7 +61,7 @@ function transactionIntervalRunner() {
     setInterval(() => {
         console.log("Checking payments...");
         Object.values(activePayments).forEach(ele => ele.checkTransaction());
-    }, +process.env.TRANSACTION_REFRESH_TIME)
+    }, +process.env.TRANSACTION_REFRESH_TIME!)
 }
 
 createPaymentRoute(server, activePayments);

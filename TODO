@@ -1,4 +1,4 @@
-* Checkout interface via link
+* Checkout interface via link (key being hash of _id)
 * API usage dashboard
 * Callback HMAC
 * Docker
