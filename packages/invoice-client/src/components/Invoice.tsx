@@ -61,7 +61,7 @@ export default function Invoice() {
             </div>
 
             <div className="bg-slate-100 py-8 px-5 h-full">
-                <div className="rounded-md bg-white py-4">
+                <div className="rounded-md bg-white py-5">
                     <div className="text-center px-4">
                         <p>Amount:</p>
                         <p
@@ -71,7 +71,7 @@ export default function Invoice() {
                             {payAmount} {coin.toUpperCase()} {!isTransactionDead && <BiCopy className="inline-block mb-1" size={16} />}
                         </p>
                     </div>
-                    <div className="h-[1px] bg-slate-200 my-4 mx-5"></div>
+                    <div className="h-[1px] bg-slate-200 my-5 mx-5"></div>
                     <div className="text-center px-4">
                         <p>Payment Address:</p>
                         <p
@@ -83,7 +83,7 @@ export default function Invoice() {
                         </p>
                     </div>
                     <div className="text-center px-4 mt-5">
-                        <p className="text-xs font-medium text-red-600">Please verify the address and amount before sending transaction.</p>
+                        <p className="text-xs font-thin text-red-600">Please verify the address and amount before sending transaction.</p>
                     </div>
                 </div>
                 <div className="flex mt-10">
@@ -96,7 +96,12 @@ export default function Invoice() {
                     </div>
                     <div className="basis-5/12 text-center">
                         <p className="text-sm text-slate-600">Amount due:</p>
-                        <p className="text-md font-bold">0.00000000 {coin.toUpperCase()}</p>
+                        <p 
+                            className={clsx("text-md font-bold transition-colors", isTransactionDead ? "text-gray-400" : "text-black cursor-pointer hover:text-gray-500")}
+                            onClick={_ => !isTransactionDead && copyToClipboard("" + payAmount, "Copied value to clipboard")}
+                        >
+                            0.00000000 {coin.toUpperCase()} {!isTransactionDead && <BiCopy className="inline-block mb-1" size={15} />}
+                        </p>
                     </div>
                 </div>
                 <h1 className="text-xs font-bold text-center text-slate-600 mt-10">Powered by open-source software <a href="https://github.com/dilan-dio4/Snow">Snow</a></h1>
