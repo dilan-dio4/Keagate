@@ -3,7 +3,13 @@
 	"compilerOptions": {
 		"outDir": "./build",
 		"rootDir": "./src",
-		"composite": true
+		"composite": true,
+		"lib": [
+			"dom",
+			"dom.iterable",
+			"esnext"
+		],
+		"target": "ES5"
 	},
 	"include": [
 		"src/**/*.ts",
