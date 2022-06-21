@@ -9,12 +9,14 @@
 			"dom.iterable",
 			"esnext"
 		],
-		"target": "ES5"
+		"target": "ES5",
+		"jsx": "react-jsx"
 	},
 	"include": [
 		"src/**/*.ts",
 		"src/**/*.js",
-		"src/**/*.tsx"
+		"src/**/*.tsx",
+		"src/**/*.jsx"
 	],
 	"exclude": [
 		"test",
