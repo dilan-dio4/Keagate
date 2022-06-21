@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
-import { findUpSync } from 'find-up';
-dotenv.config({ path: findUpSync('.env') });
+import path from 'path';
+dotenv.config({ path: path.join(__dirname,'..', '..', '..', '.env') });
 import fastify from 'fastify';
 import currencies, { AvailableTickers, AvailableWallets } from "./currencies";
 import AdminDash from "./adminWallets/Dash";

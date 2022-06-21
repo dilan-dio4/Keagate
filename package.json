@@ -9,7 +9,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc --build ./tsconfig.project.json",
     "start": "tsc && node .",
-    "run": "npm run build && pm2 restart build/index.js --name \"Snow\" --time && pm2 save"
+    "run": "npm run build && pm2 restart build/index.js --name \"Snow\" --time && pm2 save",
+    "clean": "npm run clean -ws"
   },
   "author": "dilan-dio4",
   "license": "ISC",
@@ -19,6 +20,7 @@
     "@typescript-eslint/eslint-plugin": "^4.14.2",
     "@typescript-eslint/parser": "^4.14.2",
     "eslint": "^7.19.0",
+    "shx": "^0.3.4",
     "typescript": "^4.1.3"
   }
 }

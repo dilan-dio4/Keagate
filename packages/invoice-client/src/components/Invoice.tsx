@@ -1,12 +1,33 @@
 import { Spinner } from "flowbite-react";
 import { ReactComponent as BtcIcon } from 'cryptocurrency-icons/svg/color/btc.svg';
-import currencies from '../../../backend/src/currencies';
 import { BiTimer, BiCopy } from 'react-icons/bi';
 import { FiChevronUp, FiChevronDown } from 'react-icons/fi';
 import dayjs from "dayjs";
 import clsx from 'clsx';
-import { useState } from "react";
-import { copyToClipboard } from '../../utils/utils';
+import { useRef, useState } from "react";
+import { copyToClipboard } from '../utils/utils';
+import useAsyncEffect from "use-async-effect";
+// import * as currs from '@snow/common';
+
+// console.log("currs", currs)
+
+const currencies: any = {
+    "ltc": {
+        name: "Litecoin",
+        explorer: "https://live.blockcypher.com/ltc/",
+    },
+    "sol": {
+        networkName: "Solana Mainnet",
+        name: "Solana",
+        explorer: "https://explorer.solana.com/"
+    },
+    "dash": {
+        networkName: "Dash Mainnet",
+        name: "Dash",
+        explorer: "https://explorer.dash.org/insight/"
+    }
+}
+
 
 export default function Invoice() {
     const coin = "sol";
@@ -14,12 +35,22 @@ export default function Invoice() {
     const payAmount = 0.0001;
     const payAddress = "3DkEkHTRxzsPc4T8mGaGKdhUfJs6vW6JBJ";
     const [isBlockchainInfoOpen, setIsBlockchainInfoOpen] = useState<boolean>(false);
+    const currentUrlRef = useRef<string>();
+
     const blockchainDetails: { key: string, value: string, Component: any }[] = [];
-    currencies[coin].networkName && blockchainDetails.push({ key: "Network Name", value: currencies[coin].networkName, Component: (props: any) => <span {...props} /> })
+    currencies[coin]?.networkName && blockchainDetails.push({ key: "Network Name", value: currencies[coin].networkName, Component: (props: any) => <span {...props} /> })
     blockchainDetails.push({ key: "Full Name", value: currencies[coin].name, Component: (props: any) => <span {...props} /> })
     blockchainDetails.push({ key: "Ticker", value: coin.toUpperCase(), Component: (props: any) => <span {...props} /> })
     blockchainDetails.push({ key: "Chain Explorer", value: currencies[coin].explorer, Component: (props: any) => <a {...props} href={currencies[coin].explorer} target="_blank" /> })
     
+    useAsyncEffect(async isMounted => {
+        let _currUrl = window.location.href;
+        if (_currUrl.endsWith("/")) {
+            _currUrl = _currUrl.slice(0, -1);
+        }
+        currentUrlRef.current = _currUrl;
+    }, [])
+
     return (
         <div className="overflow-hidden max-w-full mx-auto sm:my-14 sm:border sm:rounded-lg sm:max-w-[500px]">
             <div className="bg-indigo-500 text-center py-2.5 text-white">

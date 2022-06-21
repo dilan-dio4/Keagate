@@ -1,0 +1,14 @@
+{
+  "name": "@snow/common",
+  "version": "1.0.0",
+  "description": "\"# snow\"",
+  "main": "build/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc --build ./tsconfig.package.json",
+    "clean": "shx rm -rf build package-lock.json node_modules"
+  },
+  "dependencies": {
+    "cross-fetch": "^3.1.5"
+  }
+}

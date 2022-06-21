@@ -45,3 +45,4 @@ yarn-error.log*
 **/local.settings.json
 
 **/tsconfig.package.tsbuildinfo
+**/build/

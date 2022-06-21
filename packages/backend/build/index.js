@@ -4,8 +4,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const dotenv_1 = __importDefault(require("dotenv"));
-const find_up_1 = require("find-up");
-dotenv_1.default.config({ path: (0, find_up_1.findUpSync)('.env') });
+const path_1 = __importDefault(require("path"));
+dotenv_1.default.config({ path: path_1.default.join(__dirname, '..', '..', '..', '.env') });
 const fastify_1 = __importDefault(require("fastify"));
 const currencies_1 = __importDefault(require("./currencies"));
 const Dash_1 = __importDefault(require("./adminWallets/Dash"));

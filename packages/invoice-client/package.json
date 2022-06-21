@@ -2,7 +2,8 @@
   "name": "@snow/invoice-client",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --project tsconfig.build.json && vite build"
+    "build": "tsc --project tsconfig.build.json && vite build",
+    "clean": "shx rm -rf build package-lock.json node_modules"
   },
   "dependencies": {
     "clsx": "^1.1.1",

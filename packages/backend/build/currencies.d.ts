@@ -6,5 +6,7 @@ export declare type AvailableTickers = "sol" | "dash" | "ltc";
 export declare type AvailableWallets = Dash | Litecoin | Solana;
 declare const currencies: Record<AvailableTickers, {
     name: AvailableCoins;
+    explorer: string;
+    networkName?: string;
 }>;
 export default currencies;

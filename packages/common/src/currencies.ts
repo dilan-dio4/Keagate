@@ -1,6 +1,7 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const currencies = {
+export type AvailableCoins = "Solana" | "Dash" | "Litecoin";
+export type AvailableTickers = "sol" | "dash" | "ltc";
+
+export const currencies: Record<AvailableTickers, { name: AvailableCoins; explorer: string; networkName?: string; }> = {
     "ltc": {
         name: "Litecoin",
         explorer: "https://live.blockcypher.com/ltc/",
@@ -15,6 +16,4 @@ const currencies = {
         name: "Dash",
         explorer: "https://explorer.dash.org/insight/"
     }
-};
-exports.default = currencies;
-//# sourceMappingURL=currencies.js.map
+}
