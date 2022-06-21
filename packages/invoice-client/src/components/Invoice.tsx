@@ -19,6 +19,7 @@ export default function Invoice() {
     blockchainDetails.push({ key: "Full Name", value: currencies[coin].name, Component: (props: any) => <span {...props} /> })
     blockchainDetails.push({ key: "Ticker", value: coin.toUpperCase(), Component: (props: any) => <span {...props} /> })
     blockchainDetails.push({ key: "Chain Explorer", value: currencies[coin].explorer, Component: (props: any) => <a {...props} href={currencies[coin].explorer} target="_blank" /> })
+    
     return (
         <div className="overflow-hidden max-w-full mx-auto sm:my-14 sm:border sm:rounded-lg sm:max-w-[500px]">
             <div className="bg-indigo-500 text-center py-2.5 text-white">
@@ -31,13 +32,13 @@ export default function Invoice() {
                 <div className="flex items-center">
                     <BtcIcon width={50} />
                     <div className="ml-2">
-                        <p><b>Invoice</b></p>
-                        <p className="text-slate-600">#98970</p>
+                        <p className="tracking-tight"><b>Invoice</b></p>
+                        <p className="text-slate-600 tracking-tight">#98970</p>
                     </div>
                 </div>
                 <div>
-                    <p><b>Expires at</b></p>
-                    <p className="flex items-center text-slate-600">
+                    <p className="tracking-tight"><b>Expires at</b></p>
+                    <p className="flex items-center text-slate-600 tracking-tight">
                         <BiTimer size={20} className="mr-1" />
                         {dayjs().format("h:mm A")}
                     </p>
@@ -63,7 +64,7 @@ export default function Invoice() {
             <div className="bg-slate-100 py-8 px-5 h-full">
                 <div className="rounded-md bg-white py-5">
                     <div className="text-center px-4">
-                        <p>Amount:</p>
+                        <p className="tracking-tight mb-0.5">Amount:</p>
                         <p
                             className={clsx("text-lg font-bold transition-colors", isTransactionDead ? "text-gray-400" : "text-black cursor-pointer hover:text-gray-500")}
                             onClick={_ => !isTransactionDead && copyToClipboard("" + payAmount, "Copied value to clipboard")}
@@ -73,7 +74,7 @@ export default function Invoice() {
                     </div>
                     <div className="h-[1px] bg-slate-200 my-5 mx-5"></div>
                     <div className="text-center px-4">
-                        <p>Payment Address:</p>
+                        <p className="tracking-tight mb-1.5">Payment Address:</p>
                         <p
                             className={clsx("transition-colors font-semibold mt-1.5 text-xs leading-tight tracking-wide break-all", isTransactionDead ? "text-gray-400" : "cursor-pointer text-blue-500 hover:text-blue-600")}
                             onClick={_ => !isTransactionDead && copyToClipboard(payAddress, "Copied address to clipboard")}
@@ -82,20 +83,20 @@ export default function Invoice() {
                             {!isTransactionDead && <BiCopy className="ml-0.5 mb-[1px] inline-block" size={12} />}
                         </p>
                     </div>
-                    <div className="text-center px-4 mt-5">
-                        <p className="text-xs font-thin text-red-600">Please verify the address and amount before sending transaction.</p>
+                    <div className="text-center px-4 mt-6">
+                        <p className="text-xs font-thin text-red-600 tracking-tight">Please verify the address and amount before sending transaction.</p>
                     </div>
                 </div>
                 <div className="flex mt-10">
                     <div className="basis-5/12 text-center">
-                        <p className="text-sm text-slate-600">Amount collected:</p>
+                        <p className="text-sm text-slate-600 tracking-tight">Amount collected:</p>
                         <p className="text-md font-bold">0.00000000 {coin.toUpperCase()}</p>
                     </div>
                     <div className="basis-2/12 flex justify-center">
                         <div className="h-full bg-slate-300 w-1 rounded-md"></div>
                     </div>
                     <div className="basis-5/12 text-center">
-                        <p className="text-sm text-slate-600">Amount due:</p>
+                        <p className="text-sm text-slate-600 tracking-tight">Amount due:</p>
                         <p 
                             className={clsx("text-md font-bold transition-colors", isTransactionDead ? "text-gray-400" : "text-black cursor-pointer hover:text-gray-500")}
                             onClick={_ => !isTransactionDead && copyToClipboard("" + payAmount, "Copied value to clipboard")}
@@ -104,7 +105,7 @@ export default function Invoice() {
                         </p>
                     </div>
                 </div>
-                <h1 className="text-xs font-bold text-center text-slate-600 mt-10">Powered by open-source software <a href="https://github.com/dilan-dio4/Snow">Snow</a></h1>
+                <h1 className="text-xs font-bold text-center text-slate-600 mt-12 tracking-tight">Powered by open-source software <a href="https://github.com/dilan-dio4/Snow">Snow</a></h1>
             </div>
             <div className="bottom-0 absolute w-full -z-10 h-[20vh] bg-slate-100 sm:hidden sm:invisible"></div>
         </div>
