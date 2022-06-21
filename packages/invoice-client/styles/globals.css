@@ -1,6 +1,6 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
 
 html, body {
   padding: 0;
@@ -24,4 +24,8 @@ a {
   text-decoration: none;
   background-color: initial;
   outline: none;
+}
+
+.status-spinner {
+  @apply !text-indigo-600 !fill-white;
 }
