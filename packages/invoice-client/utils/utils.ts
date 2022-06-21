@@ -1,4 +1,4 @@
-import customToast from "../components/customToast";
+import customToast from "../src/components/customToast";
 
 const isDev = process.env.NODE_ENV === 'development';
 
