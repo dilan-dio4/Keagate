@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 dotenv.config();
-import fastify from 'fastify'
+import fastify from 'fastify';
 import currencies, { AvailableTickers, AvailableWallets } from "./currencies";
 import AdminDash from "./adminWallets/Dash";
 import AdminLitecoin from "./adminWallets/Litecoin";
@@ -10,6 +10,7 @@ import auth from './middlewares/auth';
 import mongoGenerator from "./mongoGenerator";
 import createPaymentRoute from './routes/createPayment';
 import createActivePaymentsRoute from './routes/activePayments';
+import createPaymentStatusRoute from './routes/paymentStatus';
 
 const server = fastify({
     trustProxy: true,
@@ -64,6 +65,7 @@ function transactionIntervalRunner() {
 
 createPaymentRoute(server, activePayments);
 createActivePaymentsRoute(server, activePayments);
+createPaymentStatusRoute(server);
 
 async function init() {
     const { db } = await mongoGenerator();

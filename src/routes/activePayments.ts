@@ -33,7 +33,7 @@ export default function createActivePaymentsRoute(server: FastifyInstance, activ
         async (request, reply) => {
             const cleanedTransactions: RequestPayment[] = [];
             Object.values(activePayments).forEach(ele => {
-                const details = ele.getDetails();
+                const details = { ...ele.getDetails() };
                 delete details['privateKey'];
                 cleanedTransactions.push({
                     ...details as any,

@@ -113,6 +113,7 @@ export default abstract class GenericWallet {
 
     protected async _updateStatus(status: PaymentStatusType, error?: string) {
         const { db } = await mongoGenerator();
+        this.status = status;
         this.updatedAt = dayjs().toDate();
         if (error) {
             console.log(`Status updated on ${this.ticker} payment ${this.id} error: `, error);
@@ -122,18 +123,14 @@ export default abstract class GenericWallet {
             db.collection('payments').updateOne({ _id: new ObjectId(this.id) }, { $set: { status, updatedAt: this.updatedAt } })
         }
         if (this.callbackUrl) {
+            const details = this.getDetails();
+            delete details.privateKey;
+            if (error) {
+                (details as any).error = error;
+            }
             fetch(this.callbackUrl, {
                 method: "POST",
-                body: JSON.stringify({
-                    status,
-                    paymentId: this.id,
-                    currency: this.ticker,
-                    createdAt: this.createdAt,
-                    updatedAt: this.updatedAt,
-                    expiresAt: this.expiresAt,
-                    payoutTransactionHash: this.payoutTransactionHash,
-                    error
-                }),
+                body: JSON.stringify(details),
                 headers: {
                     /** TODO: Hmac Verification */
                 }
