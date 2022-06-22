@@ -97,11 +97,11 @@ class GenericWallet {
             return;
         }
         const { result: { confirmedBalance } } = await this.getBalance();
-        if (confirmedBalance >= (this.amount * (1 - +process.env.TRANSACTION_SLIPPAGE_TOLERANCE))) {
+        if (confirmedBalance >= (this.amount * (1 - +process.env.TRANSACTION_SLIPPAGE_TOLERANCE)) && this.status !== "CONFIRMED") {
             this._updateStatus({ status: "CONFIRMED" });
             this._cashOut(confirmedBalance);
         }
-        else if (confirmedBalance > 0) {
+        else if (confirmedBalance > 0 && this.amountPaid !== confirmedBalance) {
             this._updateStatus({ status: "PARTIALLY_PAID", amountPaid: confirmedBalance });
         }
     }

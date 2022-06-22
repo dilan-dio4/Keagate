@@ -30,6 +30,7 @@ export default function Invoice() {
 
     const [isBlockchainInfoOpen, setIsBlockchainInfoOpen] = useState<boolean>(false);
     const [currency, setCurrency] = useState<AvailableTickers | "">("");
+    const [invoiceId, setInvoiceId] = useState<string>("");
     interface IInvoiceObject {
         amount: number;
         amountPaid: number;
@@ -50,14 +51,15 @@ export default function Invoice() {
 
     useEffect(() => {
         const params = window.location.pathname.split('/');
-        const invoiceId = params.pop();
+        const _invoiceId = params.pop();
+        setInvoiceId(_invoiceId);
         const _currency = params.pop().toLowerCase();
         setCurrency(_currency as AvailableTickers);
 
         // eslint-disable-next-line prefer-const
         let interval: NodeJS.Timer;
         async function runner() {
-            const _invoiceObj = await fGet(`/getInvoiceStatus?invoiceId=${invoiceId}`) as IInvoiceObject;
+            const _invoiceObj = await fGet(`/getInvoiceStatus?invoiceId=${_invoiceId}`) as IInvoiceObject;
             setInvoiceObject(_invoiceObj);
             if (_invoiceObj.status === "CONFIRMED" || _invoiceObj.status === "FAILED" || _invoiceObj.status === "FINISHED") {
                 clearInterval(interval);
@@ -83,7 +85,14 @@ export default function Invoice() {
                     </ReactPlaceholder>
                     <div className="ml-2">
                         <p className="tracking-tight"><b>Invoice</b></p>
-                        <p className="text-slate-600 tracking-tight">#98970</p>
+                        <ReactPlaceholder type="text" ready={!!invoiceObject} showLoadingAnimation style={{ width: 50 }}>
+                            <p 
+                                className="text-slate-600 cursor-pointer hover:text-slate-800 tracking-tight"
+                                onClick={_ => copyToClipboard(invoiceId, "Copied invoice ID to clipboard")}
+                            >
+                                {invoiceId.slice(0, 3)}{String.fromCharCode(8230)}{invoiceId.slice(-3)}
+                            </p>
+                        </ReactPlaceholder>
                     </div>
                 </div>
                 <div>
