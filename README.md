@@ -1,5 +1,15 @@
 <br />
+
+<h1 align="center">
+🌨️ Snow – A High-Performance Cryptocurrency Payment Gateway
+</h1>
+
+<h2 align="center">
+🚧 This project is actively in development 🚧
+</h2>
+
 <br />
+<!-- TODO: Snow Vector --->
 
 <!-- TABLE OF CONTENTS -->
 ## Table of Contents
@@ -19,6 +29,8 @@
 
 Snow is a self-hosted, high-performance cryptocurrency payment gateway. Payments can handled via API or with the built in invoicing client (image below).
 
+**Currently support currencies: Solana, Cardano, Litecoin, and Dash.**
+
 ### Purpose
 
 * No KYC
@@ -26,7 +38,7 @@ Snow is a self-hosted, high-performance cryptocurrency payment gateway. Payments
 * Private
 * Self-hosted
 * Support many currencies
-* Extremely performant
+* Highly performant
 
 Funds go directly to your wallet via one-time addresses that are created for each payment.
 
