@@ -5,7 +5,8 @@ interface PaymentRoot {
     amountPaid: number;
     status: PaymentStatusType;
     id: string;
-    callbackUrl?: string;
+    ipnCallbackUrl?: string;
+    invoiceCallbackUrl?: string;
     payoutTransactionHash?: string;
     currency: AvailableTickers;
     publicKey: string;
@@ -22,4 +23,10 @@ export interface RequestPayment extends PaymentRoot {
     expiresAt: string;
     createdAt: string;
     updatedAt: string;
+}
+
+export interface IFromNew {
+    amount: number;
+    ipnCallbackUrl?: string;
+    invoiceCallbackUrl: string;
 }

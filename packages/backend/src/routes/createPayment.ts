@@ -7,7 +7,8 @@ import { encrypt } from "../utils";
 const CreatePaymentBody = Type.Object({
     currency: Type.String(),
     amount: Type.Number({ minimum: 0 }),
-    callbackUrl: Type.Optional(Type.String({ format: "uri" }))
+    ipnCallbackUrl: Type.Optional(Type.String({ format: "uri" })),
+    invoiceCallbackUrl: Type.Optional(Type.String({ format: "uri" }))
 })
 
 const CreatePaymentResponse = Type.Object({
@@ -18,8 +19,9 @@ const CreatePaymentResponse = Type.Object({
     updatedAt: Type.String(),
     status: Type.String(),
     id: Type.String(),
-    callbackUrl: Type.Optional(Type.String()),
-    invoiceUrl: Type.String(),
+    ipnCallbackUrl: Type.Optional(Type.String({ format: "uri" })),
+    invoiceCallbackUrl: Type.Optional(Type.String({ format: "uri" })),
+    invoiceUrl: Type.String({ format: "uri" }),
     currency: Type.String()
 });
 
@@ -40,7 +42,11 @@ export default function createPaymentRoute(server: FastifyInstance, activePaymen
         async (request, reply) => {
             const { body } = request;
             // Create wallet
-            const newWallet = await new TransactionalSolana((id) => delete activePayments[id]).fromNew(body.amount, body.callbackUrl);
+            const newWallet = await new TransactionalSolana((id) => delete activePayments[id]).fromNew({
+                amount: body.amount,
+                invoiceCallbackUrl: body.invoiceCallbackUrl,
+                ipnCallbackUrl: body.ipnCallbackUrl
+            });
             const newWalletDetails: any = { ...newWallet.getDetails() };
             activePayments[newWalletDetails.id] = newWallet;
             delete newWalletDetails.privateKey;

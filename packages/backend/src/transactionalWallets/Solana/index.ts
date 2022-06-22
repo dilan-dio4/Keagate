@@ -2,6 +2,7 @@ import GenericWallet from '../GenericWallet';
 import { Connection, clusterApiUrl, PublicKey, Keypair, Transaction, SystemProgram, LAMPORTS_PER_SOL, sendAndConfirmTransaction } from '@solana/web3.js';
 import { AvailableCoins, AvailableTickers } from "@snow/common/src";
 import base58 from "bs58";
+import { IFromNew } from "../../types";
 
 export default class SolanaTransactional extends GenericWallet {
     private connection: Connection;
@@ -14,9 +15,13 @@ export default class SolanaTransactional extends GenericWallet {
         this.connection = new Connection(clusterApiUrl(process.env.TESTNETS ? "devnet" : "mainnet-beta"), "confirmed");
     }
 
-    async fromNew(amount: number, callbackUrl?: string) {
+    async fromNew(obj: IFromNew) {
         const newKeypair = Keypair.generate();
-        return await this._initInDatabase(newKeypair.publicKey.toString(), base58.encode(newKeypair.secretKey), amount, callbackUrl);
+        return await this._initInDatabase({
+            ...obj,
+            publicKey: newKeypair.publicKey.toString(),
+            privateKey: base58.encode(newKeypair.secretKey)
+        });
     }
 
     async getBalance() {

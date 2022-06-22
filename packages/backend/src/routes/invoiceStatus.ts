@@ -11,7 +11,8 @@ const InvoiceStatusResponse = Type.Object({
     amountPaid: Type.Number(),
     expiresAt: Type.String(),
     status: Type.String(),
-    currency: Type.String()
+    currency: Type.String(),
+    invoiceCallbackUrl: Type.Optional(Type.String({ format: "uri" })),
 });
 
 const InvoiceStatusQueryString = Type.Object({
@@ -47,7 +48,8 @@ export default function createInvoiceStatusRoute(server: FastifyInstance) {
                 expiresAt: selectedPayment.expiresAt.toISOString(),
                 status: selectedPayment.status,
                 amountPaid: selectedPayment.amountPaid,
-                currency: selectedPayment.currency
+                currency: selectedPayment.currency,
+                invoiceCallbackUrl: selectedPayment.invoiceCallbackUrl
             });
         }
     )

@@ -13,7 +13,8 @@ const ActivePaymentsResponse = Type.Array(Type.Object({
     updatedAt: Type.String(),
     status: Type.String(),
     id: Type.String(),
-    callbackUrl: Type.Optional(Type.String()),
+    ipnCallbackUrl: Type.Optional(Type.String()),
+    invoiceCallbackUrl: Type.Optional(Type.String()),
     payoutTransactionHash: Type.Optional(Type.String())
 }))
 

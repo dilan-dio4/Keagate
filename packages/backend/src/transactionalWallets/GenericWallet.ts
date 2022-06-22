@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import { ObjectId } from "mongodb";
 import { AvailableTickers, AvailableCoins, PaymentStatusType } from "@snow/common/src";
 import mongoGenerator from "../mongoGenerator";
-import { ClassPayment } from "../types";
+import { ClassPayment, IFromNew } from "../types";
 
 export default abstract class GenericWallet {
     public currency: AvailableTickers;
@@ -18,7 +18,8 @@ export default abstract class GenericWallet {
     protected updatedAt: Date;
     protected status: PaymentStatusType;
     protected id: string;
-    protected callbackUrl?: string;
+    protected ipnCallbackUrl?: string;
+    protected invoiceCallbackUrl?: string;
     protected payoutTransactionHash?: string;
 
     constructor(public onDie: (id: string) => any) { }
@@ -26,7 +27,7 @@ export default abstract class GenericWallet {
     protected abstract _cashOut(balance: number): Promise<void>;
     abstract getBalance(): Promise<{ result: { confirmedBalance: number; unconfirmedBalance?: number; } }>;
 
-    abstract fromNew(amount: number): Promise<this>;
+    abstract fromNew(obj: IFromNew): Promise<this>;
     async fromPublicKey(publicKey: string | Uint8Array): Promise<this> {
         const { db } = await mongoGenerator();
         const existingTransaction = await db.collection('transactions').findOne({ publicKey });
@@ -55,19 +56,16 @@ export default abstract class GenericWallet {
         return this;
     }
 
-    protected async _initInDatabase(publicKey: string, privateKey: string, amount: number, callbackUrl?: string): Promise<this> {
+    protected async _initInDatabase(obj: IFromNew & { publicKey: string, privateKey: string; }): Promise<this> {
         const now = dayjs().toDate();
         const { db } = await mongoGenerator();
         const insertObj: Omit<ClassPayment, "id"> = {
-            publicKey: publicKey,
-            privateKey: privateKey,
-            amount: amount,
+            ...obj,
             amountPaid: 0,
             expiresAt: dayjs().add(+process.env.TRANSACTION_TIMEOUT!, 'seconds').toDate(),
             createdAt: now,
             updatedAt: now,
             status: "WAITING",
-            callbackUrl: callbackUrl,
             currency: this.currency
         };
         const { insertedId } = await db.collection('payments').insertOne(insertObj);
@@ -77,7 +75,7 @@ export default abstract class GenericWallet {
         });
     }
 
-    private _setFromObject(update: Partial<ClassPayment>)  {
+    private _setFromObject(update: Partial<ClassPayment>) {
         for (const [key, val] of Object.entries(update)) {
             this[key] = val;
         }
@@ -90,7 +88,7 @@ export default abstract class GenericWallet {
 
         return {
             publicKey: this.publicKey,
-            privateKey:this.privateKey
+            privateKey: this.privateKey
         };
     }
 
@@ -104,7 +102,8 @@ export default abstract class GenericWallet {
             publicKey: this.publicKey,
             status: this.status,
             updatedAt: this.updatedAt,
-            callbackUrl: this.callbackUrl,
+            invoiceCallbackUrl: this.invoiceCallbackUrl,
+            ipnCallbackUrl: this.ipnCallbackUrl,
             payoutTransactionHash: this.payoutTransactionHash,
             currency: this.currency,
             amountPaid: this.amountPaid
@@ -137,13 +136,13 @@ export default abstract class GenericWallet {
             console.log(`Status updated on ${this.currency} payment ${this.id}: `, update.status);
             db.collection('payments').updateOne({ _id: new ObjectId(this.id) }, { $set: update })
         }
-        if (this.callbackUrl) {
+        if (this.ipnCallbackUrl) {
             const details: Partial<ClassPayment> = this.getDetails();
             delete details.privateKey;
             if (error) {
                 (details as any).error = error;
             }
-            fetch(this.callbackUrl, {
+            fetch(this.ipnCallbackUrl, {
                 method: "POST",
                 body: JSON.stringify(details),
                 headers: {
