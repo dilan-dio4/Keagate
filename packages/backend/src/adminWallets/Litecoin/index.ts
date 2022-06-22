@@ -1,14 +1,14 @@
-import GenericWallet from "../GenericWallet";
+import GenericAdminWallet from "../GenericAdminWallet";
 import { convertChainsoToNativeUtxo } from '../../utils';
 import { Transaction } from 'bitcore-lib-ltc';
 import { AvailableCoins, AvailableTickers, fGet, fPost } from "@snow/common/src";
 
-export default class Litecoin extends GenericWallet {
+export default class AdminLitecoin extends GenericAdminWallet {
     private mediumGasFee: number;
     public ticker: AvailableTickers = "ltc";
     public coinName: AvailableCoins = "Litecoin";
     
-    constructor(...args: ConstructorParameters<typeof GenericWallet>) {
+    constructor(...args: ConstructorParameters<typeof GenericAdminWallet>) {
         super(...args);
         fGet('https://api.blockcypher.com/v1/ltc/main')
             .then(({ medium_fee_per_kb }) => this.mediumGasFee = medium_fee_per_kb)

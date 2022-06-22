@@ -1,10 +1,10 @@
-import GenericWallet from "../GenericWallet";
+import GenericAdminWallet from "../GenericAdminWallet";
 import { Transaction } from '@dashevo/dashcore-lib';
 import { convertChainsoToNativeUtxo } from '../../utils';
 import { AvailableCoins, AvailableTickers, fGet, fPost } from "@snow/common/src";
 
 // https://jestersimpps.github.io/my-first-experience-with-bitpay-bitcore/
-export default class Dash extends GenericWallet {
+export default class AdminDash extends GenericAdminWallet {
     public ticker: AvailableTickers = "dash";
     public coinName: AvailableCoins = "Dash";
     

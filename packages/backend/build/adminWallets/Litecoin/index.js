@@ -3,11 +3,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const GenericWallet_1 = __importDefault(require("../GenericWallet"));
+const GenericAdminWallet_1 = __importDefault(require("../GenericAdminWallet"));
 const utils_1 = require("../../utils");
 const bitcore_lib_ltc_1 = require("bitcore-lib-ltc");
 const src_1 = require("@snow/common/src");
-class Litecoin extends GenericWallet_1.default {
+class AdminLitecoin extends GenericAdminWallet_1.default {
     constructor(...args) {
         super(...args);
         this.ticker = "ltc";
@@ -67,5 +67,5 @@ class Litecoin extends GenericWallet_1.default {
         }
     }
 }
-exports.default = Litecoin;
+exports.default = AdminLitecoin;
 //# sourceMappingURL=index.js.map

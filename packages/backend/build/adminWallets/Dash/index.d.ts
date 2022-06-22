@@ -1,6 +1,6 @@
-import GenericWallet from "../GenericWallet";
+import GenericAdminWallet from "../GenericAdminWallet";
 import { AvailableCoins, AvailableTickers } from "@snow/common/src";
-export default class Dash extends GenericWallet {
+export default class AdminDash extends GenericAdminWallet {
     ticker: AvailableTickers;
     coinName: AvailableCoins;
     getBalance(): Promise<{

@@ -2,7 +2,7 @@ import { Static, Type } from '@sinclair/typebox';
 import { FastifyInstance, RouteShorthandOptions } from "fastify";
 import { RequestPayment } from '../types';
 import auth from "../middlewares/auth";
-import TransactionalSolana from '../transactionalWallets/Solana';
+import GenericTransactionalWallet from "../transactionalWallets/GenericTransactionalWallet";
 
 const ActivePaymentsResponse = Type.Array(Type.Object({
     publicKey: Type.String(),
@@ -27,7 +27,7 @@ const opts: RouteShorthandOptions = {
     preHandler: auth
 }
 
-export default function createActivePaymentsRoute(server: FastifyInstance, activePayments: Record<string, TransactionalSolana>) {
+export default function createActivePaymentsRoute(server: FastifyInstance, activePayments: Record<string, GenericTransactionalWallet>) {
     server.get<{ Reply: Static<typeof ActivePaymentsResponse> }>(
         '/activePayments',
         opts,

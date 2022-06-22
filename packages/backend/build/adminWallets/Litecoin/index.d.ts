@@ -1,10 +1,10 @@
-import GenericWallet from "../GenericWallet";
+import GenericAdminWallet from "../GenericAdminWallet";
 import { AvailableCoins, AvailableTickers } from "@snow/common/src";
-export default class Litecoin extends GenericWallet {
+export default class AdminLitecoin extends GenericAdminWallet {
     private mediumGasFee;
     ticker: AvailableTickers;
     coinName: AvailableCoins;
-    constructor(...args: ConstructorParameters<typeof GenericWallet>);
+    constructor(...args: ConstructorParameters<typeof GenericAdminWallet>);
     getBalance(): Promise<{
         result: {
             confirmedBalance: number;

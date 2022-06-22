@@ -1,10 +1,10 @@
-import GenericWallet from "../GenericWallet";
+import GenericAdminWallet from "../GenericAdminWallet";
 import { AvailableTickers, AvailableCoins } from "@snow/common/src";
-export default class Solana extends GenericWallet {
+export default class AdminSolana extends GenericAdminWallet {
     private connection;
     ticker: AvailableTickers;
     coinName: AvailableCoins;
-    constructor(...args: ConstructorParameters<typeof GenericWallet>);
+    constructor(...args: ConstructorParameters<typeof GenericAdminWallet>);
     getBalance(): Promise<{
         result: {
             confirmedBalance: number;

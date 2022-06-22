@@ -1,7 +1,7 @@
 import { AvailableTickers, AvailableCoins } from "@snow/common/src";
 import WAValidator from 'multicoin-address-validator';
 
-export default abstract class GenericWallet {
+export default abstract class GenericAdminWallet {
     protected ticker: AvailableTickers;
     protected coinName: AvailableCoins;
     

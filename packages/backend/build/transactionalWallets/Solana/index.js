@@ -3,10 +3,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const GenericWallet_1 = __importDefault(require("../GenericWallet"));
+const GenericTransactionalWallet_1 = __importDefault(require("../GenericTransactionalWallet"));
 const web3_js_1 = require("@solana/web3.js");
 const bs58_1 = __importDefault(require("bs58"));
-class SolanaTransactional extends GenericWallet_1.default {
+class TransactionalSolana extends GenericTransactionalWallet_1.default {
     constructor(...args) {
         super(...args);
         this.currency = "sol";
@@ -39,7 +39,7 @@ class SolanaTransactional extends GenericWallet_1.default {
         const transaction = new web3_js_1.Transaction().add(web3_js_1.SystemProgram.transfer({
             fromPubkey: adminKeypair.publicKey,
             toPubkey: new web3_js_1.PublicKey(process.env.ADMIN_SOL_PUBLIC_KEY),
-            lamports: Math.round(balance * web3_js_1.LAMPORTS_PER_SOL) - SolanaTransactional.TRANSFER_FEE_LAMPORTS,
+            lamports: Math.round(balance * web3_js_1.LAMPORTS_PER_SOL) - TransactionalSolana.TRANSFER_FEE_LAMPORTS,
         }));
         transaction.recentBlockhash = latestBlockhash.blockhash;
         transaction.feePayer = adminKeypair.publicKey;
@@ -54,6 +54,6 @@ class SolanaTransactional extends GenericWallet_1.default {
         }
     }
 }
-exports.default = SolanaTransactional;
-SolanaTransactional.TRANSFER_FEE_LAMPORTS = 5000;
+exports.default = TransactionalSolana;
+TransactionalSolana.TRANSFER_FEE_LAMPORTS = 5000;
 //# sourceMappingURL=index.js.map

@@ -1,8 +1,11 @@
 import { Static, Type } from '@sinclair/typebox';
 import { FastifyInstance, RouteShorthandOptions } from "fastify";
 import auth from "../middlewares/auth";
+import GenericTransactionalWallet from "../transactionalWallets/GenericTransactionalWallet";
 import TransactionalSolana from '../transactionalWallets/Solana';
 import { encrypt } from "../utils";
+import currenciesToWallets from "../currenciesToWallets";
+import { AvailableTickers } from "@snow/common";
 
 const CreatePaymentBody = Type.Object({
     currency: Type.String(),
@@ -35,20 +38,27 @@ const opts: RouteShorthandOptions = {
     preHandler: auth
 }
 
-export default function createPaymentRoute(server: FastifyInstance, activePayments: Record<string, TransactionalSolana>) {
+export default function createPaymentRoute(server: FastifyInstance, activePayments: Record<string, GenericTransactionalWallet>) {
     server.post<{ Body: Static<typeof CreatePaymentBody>; Reply: Static<typeof CreatePaymentResponse> }>(
         '/createPayment',
         opts,
         async (request, reply) => {
             const { body } = request;
-            // Create wallet
-            const newWallet = await new TransactionalSolana((id) => delete activePayments[id]).fromNew({
-                amount: body.amount,
-                invoiceCallbackUrl: body.invoiceCallbackUrl,
-                ipnCallbackUrl: body.ipnCallbackUrl
-            });
-            const newWalletDetails: any = { ...newWallet.getDetails() };
-            activePayments[newWalletDetails.id] = newWallet;
+            body.currency = body.currency.toLowerCase();
+            let transactionalWallet: GenericTransactionalWallet;
+            if (currenciesToWallets[body.currency]) {
+                transactionalWallet = await new currenciesToWallets[body.currency as AvailableTickers].Transactional((id) => delete activePayments[id]).fromNew({
+                    amount: body.amount,
+                    invoiceCallbackUrl: body.invoiceCallbackUrl,
+                    ipnCallbackUrl: body.ipnCallbackUrl
+                });
+            } else {
+                console.error(`No transactional wallet found for currency ${body.currency}`);
+                return;
+            }
+
+            const newWalletDetails: any = { ...transactionalWallet.getDetails() };
+            activePayments[newWalletDetails.id] = transactionalWallet;
             delete newWalletDetails.privateKey;
             delete newWalletDetails.payoutTransactionHash;
             newWalletDetails.invoiceUrl = `/invoice/${newWalletDetails.currency}/${encrypt(newWalletDetails.id)}`

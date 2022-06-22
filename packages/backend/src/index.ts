@@ -3,10 +3,7 @@ import path from 'path';
 dotenv.config({ path: path.join(__dirname, '..', '..', '..', '.env') });
 import fastify from 'fastify';
 import { AvailableTickers, currencies } from "@snow/common/src";
-import AdminDash from "./adminWallets/Dash";
-import AdminLitecoin from "./adminWallets/Litecoin";
-import AdminSolana from "./adminWallets/Solana";
-import TransactionalSolana from "./transactionalWallets/Solana";
+import GenericAdminWallet from "./adminWallets/GenericAdminWallet";
 import auth from './middlewares/auth';
 import mongoGenerator from "./mongoGenerator";
 import createPaymentRoute from './routes/createPayment';
@@ -14,6 +11,8 @@ import createActivePaymentsRoute from './routes/activePayments';
 import createPaymentStatusRoute from './routes/paymentStatus';
 import createInvoiceClientRoute from "./routes/invoiceClient";
 import createInvoiceStatusRoute from './routes/invoiceStatus';
+import GenericTransactionalWallet from "./transactionalWallets/GenericTransactionalWallet";
+import currenciesToWallets from "./currenciesToWallets";
 
 const server = fastify({
     trustProxy: true,
@@ -25,37 +24,29 @@ const server = fastify({
     }
 });
 
-const activePayments: Record<string, TransactionalSolana> = {};
-
-let adminDashClient: AdminDash;
-let adminLtcClient: AdminLitecoin;
-let adminSolClient: AdminSolana;
+const activePayments: Record<string, GenericTransactionalWallet> = {};
 
 for (const k of Object.keys(currencies)) {
-    const ticker = k as AvailableTickers;
-    const coinName = currencies[ticker].name;
-    const publicKey = process.env[`ADMIN_${ticker.toUpperCase()}_PUBLIC_KEY`];
-    const privateKey = process.env[`ADMIN_${ticker.toUpperCase()}_PRIVATE_KEY`];
+    const _currency = k as AvailableTickers;
+    const coinName = currencies[_currency].name;
+    const publicKey = process.env[`ADMIN_${_currency.toUpperCase()}_PUBLIC_KEY`];
+    const privateKey = process.env[`ADMIN_${_currency.toUpperCase()}_PRIVATE_KEY`];
 
     if (!publicKey || !privateKey) {
+        console.error(`No admin public key and private key found for currency ${_currency}`);
         continue;
     }
 
     const params = [publicKey, privateKey] as const;
-    let currentClient: AdminDash | AdminLitecoin | AdminSolana;
-    if (ticker === "dash") {
-        adminDashClient = new AdminDash(...params);
-        currentClient = adminDashClient;
-    } else if (ticker === "ltc") {
-        adminLtcClient = new AdminLitecoin(...params);
-        currentClient = adminLtcClient;
-    } else if (ticker === "sol") {
-        adminSolClient = new AdminSolana(...params);
-        currentClient = adminSolClient;
+    let currentClient: GenericAdminWallet;
+    if (currenciesToWallets[_currency]) {
+        currentClient = new currenciesToWallets[_currency].Admin(...params);
+    } else {
+        console.error(`No admin wallet found for currency ${_currency}`);
+        continue;
     }
 
     server.get(`/get${coinName}Balance`, { preHandler: auth }, (request, reply) => currentClient.getBalance());
-
     server.post<{ Body: Record<string, any> }>(`/send${coinName}Transaction`, { preHandler: auth }, (request, reply) => currentClient.sendTransaction(request.body.destination, request.body.amount));
 }
 
@@ -76,15 +67,14 @@ async function init() {
     const { db } = await mongoGenerator();
     const _activeTransactions = await db.collection('payments').find({ status: { $nin: ["FINISHED", "EXPIRED", "FAILED"] } }).toArray();
     for (const _currActiveTransaction of _activeTransactions) {
-        switch (_currActiveTransaction.currency as AvailableTickers) {
-            case "sol":
-                activePayments[_currActiveTransaction._id.toString()] = new TransactionalSolana(id => delete activePayments[id]).fromManual({
-                    ..._currActiveTransaction as any,
-                    id: _currActiveTransaction._id.toString()
-                })
-                break;
-            default:
-                break;
+        if (currenciesToWallets[_currActiveTransaction.currency]) {
+            activePayments[_currActiveTransaction._id.toString()] = new currenciesToWallets[_currActiveTransaction.currency as AvailableTickers].Transactional(id => delete activePayments[id]).fromManual({
+                ..._currActiveTransaction as any,
+                id: _currActiveTransaction._id.toString()
+            })
+        } else {
+            console.error(`No transactional wallet found for currency ${_currActiveTransaction.currency}`);
+            continue;
         }
     }
     transactionIntervalRunner();

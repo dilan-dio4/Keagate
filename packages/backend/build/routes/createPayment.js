@@ -5,8 +5,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const typebox_1 = require("@sinclair/typebox");
 const auth_1 = __importDefault(require("../middlewares/auth"));
-const Solana_1 = __importDefault(require("../transactionalWallets/Solana"));
 const utils_1 = require("../utils");
+const currenciesToWallets_1 = __importDefault(require("../currenciesToWallets"));
 const CreatePaymentBody = typebox_1.Type.Object({
     currency: typebox_1.Type.String(),
     amount: typebox_1.Type.Number({ minimum: 0 }),
@@ -38,14 +38,21 @@ const opts = {
 function createPaymentRoute(server, activePayments) {
     server.post('/createPayment', opts, async (request, reply) => {
         const { body } = request;
-        // Create wallet
-        const newWallet = await new Solana_1.default((id) => delete activePayments[id]).fromNew({
-            amount: body.amount,
-            invoiceCallbackUrl: body.invoiceCallbackUrl,
-            ipnCallbackUrl: body.ipnCallbackUrl
-        });
-        const newWalletDetails = { ...newWallet.getDetails() };
-        activePayments[newWalletDetails.id] = newWallet;
+        body.currency = body.currency.toLowerCase();
+        let transactionalWallet;
+        if (currenciesToWallets_1.default[body.currency]) {
+            transactionalWallet = await new currenciesToWallets_1.default[body.currency].Transactional((id) => delete activePayments[id]).fromNew({
+                amount: body.amount,
+                invoiceCallbackUrl: body.invoiceCallbackUrl,
+                ipnCallbackUrl: body.ipnCallbackUrl
+            });
+        }
+        else {
+            console.error(`No transactional wallet found for currency ${body.currency}`);
+            return;
+        }
+        const newWalletDetails = { ...transactionalWallet.getDetails() };
+        activePayments[newWalletDetails.id] = transactionalWallet;
         delete newWalletDetails.privateKey;
         delete newWalletDetails.payoutTransactionHash;
         newWalletDetails.invoiceUrl = `/invoice/${newWalletDetails.currency}/${(0, utils_1.encrypt)(newWalletDetails.id)}`;

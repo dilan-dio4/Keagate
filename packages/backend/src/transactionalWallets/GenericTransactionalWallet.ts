@@ -4,7 +4,7 @@ import { AvailableTickers, AvailableCoins, PaymentStatusType } from "@snow/commo
 import mongoGenerator from "../mongoGenerator";
 import { ClassPayment, IFromNew } from "../types";
 
-export default abstract class GenericWallet {
+export default abstract class GenericTransactionalWallet {
     public currency: AvailableTickers;
     public coinName: AvailableCoins;
     protected _initialized = false;

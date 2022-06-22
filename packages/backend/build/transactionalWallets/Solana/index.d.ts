@@ -1,12 +1,12 @@
-import GenericWallet from '../GenericWallet';
+import GenericTransactionalWallet from '../GenericTransactionalWallet';
 import { AvailableCoins, AvailableTickers } from "@snow/common/src";
 import { IFromNew } from "../../types";
-export default class SolanaTransactional extends GenericWallet {
+export default class TransactionalSolana extends GenericTransactionalWallet {
     private connection;
     currency: AvailableTickers;
     coinName: AvailableCoins;
     static TRANSFER_FEE_LAMPORTS: number;
-    constructor(...args: ConstructorParameters<typeof GenericWallet>);
+    constructor(...args: ConstructorParameters<typeof GenericTransactionalWallet>);
     fromNew(obj: IFromNew): Promise<this>;
     getBalance(): Promise<{
         result: {

@@ -4,9 +4,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const web3_js_1 = require("@solana/web3.js");
-const GenericWallet_1 = __importDefault(require("../GenericWallet"));
+const GenericAdminWallet_1 = __importDefault(require("../GenericAdminWallet"));
 const bs58_1 = __importDefault(require("bs58"));
-class Solana extends GenericWallet_1.default {
+class AdminSolana extends GenericAdminWallet_1.default {
     constructor(...args) {
         super(...args);
         this.ticker = "sol";
@@ -44,5 +44,5 @@ class Solana extends GenericWallet_1.default {
         }
     }
 }
-exports.default = Solana;
+exports.default = AdminSolana;
 //# sourceMappingURL=index.js.map

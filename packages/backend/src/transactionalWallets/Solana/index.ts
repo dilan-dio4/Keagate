@@ -1,16 +1,16 @@
-import GenericWallet from '../GenericWallet';
+import GenericTransactionalWallet from '../GenericTransactionalWallet';
 import { Connection, clusterApiUrl, PublicKey, Keypair, Transaction, SystemProgram, LAMPORTS_PER_SOL, sendAndConfirmTransaction } from '@solana/web3.js';
 import { AvailableCoins, AvailableTickers } from "@snow/common/src";
 import base58 from "bs58";
 import { IFromNew } from "../../types";
 
-export default class SolanaTransactional extends GenericWallet {
+export default class TransactionalSolana extends GenericTransactionalWallet {
     private connection: Connection;
     public currency: AvailableTickers = "sol";
     public coinName: AvailableCoins = "Solana";
     static TRANSFER_FEE_LAMPORTS = 5000;
 
-    constructor(...args: ConstructorParameters<typeof GenericWallet>) {
+    constructor(...args: ConstructorParameters<typeof GenericTransactionalWallet>) {
         super(...args);
         this.connection = new Connection(clusterApiUrl(process.env.TESTNETS ? "devnet" : "mainnet-beta"), "confirmed");
     }
@@ -47,7 +47,7 @@ export default class SolanaTransactional extends GenericWallet {
             SystemProgram.transfer({
                 fromPubkey: adminKeypair.publicKey,
                 toPubkey: new PublicKey(process.env.ADMIN_SOL_PUBLIC_KEY!),
-                lamports: Math.round(balance * LAMPORTS_PER_SOL) - SolanaTransactional.TRANSFER_FEE_LAMPORTS,
+                lamports: Math.round(balance * LAMPORTS_PER_SOL) - TransactionalSolana.TRANSFER_FEE_LAMPORTS,
             })
         );
 

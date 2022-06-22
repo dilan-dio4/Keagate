@@ -3,12 +3,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const GenericWallet_1 = __importDefault(require("../GenericWallet"));
+const GenericAdminWallet_1 = __importDefault(require("../GenericAdminWallet"));
 const dashcore_lib_1 = require("@dashevo/dashcore-lib");
 const utils_1 = require("../../utils");
 const src_1 = require("@snow/common/src");
 // https://jestersimpps.github.io/my-first-experience-with-bitpay-bitcore/
-class Dash extends GenericWallet_1.default {
+class AdminDash extends GenericAdminWallet_1.default {
     constructor() {
         super(...arguments);
         this.ticker = "dash";
@@ -58,5 +58,5 @@ class Dash extends GenericWallet_1.default {
         return { result };
     }
 }
-exports.default = Dash;
+exports.default = AdminDash;
 //# sourceMappingURL=index.js.map
