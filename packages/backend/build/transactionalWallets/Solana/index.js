@@ -29,7 +29,7 @@ class SolanaTransactional extends GenericWallet_1.default {
     async _cashOut(balance) {
         const [latestBlockhash] = await Promise.all([
             this.connection.getLatestBlockhash('confirmed'),
-            this._updateStatus("SENDING")
+            this._updateStatus({ status: "SENDING" })
         ]);
         const adminKeypair = web3_js_1.Keypair.fromSecretKey(bs58_1.default.decode(this.privateKey));
         const transaction = new web3_js_1.Transaction().add(web3_js_1.SystemProgram.transfer({
@@ -41,12 +41,11 @@ class SolanaTransactional extends GenericWallet_1.default {
         transaction.feePayer = adminKeypair.publicKey;
         try {
             const signature = await (0, web3_js_1.sendAndConfirmTransaction)(this.connection, transaction, [adminKeypair]);
-            this.payoutTransactionHash = signature;
-            this._updateStatus("FINISHED");
+            this._updateStatus({ status: "FINISHED", payoutTransactionHash: signature });
             this.onDie(this.id);
         }
         catch (error) {
-            this._updateStatus("FAILED", JSON.stringify(error));
+            this._updateStatus({ status: "FAILED" }, JSON.stringify(error));
             this.onDie(this.id);
         }
     }

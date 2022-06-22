@@ -29,11 +29,12 @@ export default abstract class GenericWallet {
     fromPaymentId(paymentId: string): Promise<this>;
     fromManual(initObj: ClassPayment): this;
     protected _initInDatabase(publicKey: string, privateKey: string, amount: number, callbackUrl?: string): Promise<this>;
+    private _setFromObject;
     getKeypair(): {
         publicKey: string;
         privateKey: string;
     };
     getDetails(): ClassPayment;
     checkTransaction(): Promise<void>;
-    protected _updateStatus(status: PaymentStatusType, error?: string): Promise<void>;
+    protected _updateStatus(update: Partial<ClassPayment>, error?: string): Promise<void>;
 }

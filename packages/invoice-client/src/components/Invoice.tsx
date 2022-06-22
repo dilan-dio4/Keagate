@@ -10,10 +10,10 @@ import { FiChevronUp, FiChevronDown } from 'react-icons/fi';
 import { HiInformationCircle } from 'react-icons/hi';
 import dayjs from "dayjs";
 import clsx from 'clsx';
-import React, { useRef, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { copyToClipboard } from '../utils/utils';
 import useAsyncEffect from "use-async-effect";
-import { AvailableTickers, currencies, fGet } from '@snow/common/src';
+import { AvailableTickers, currencies, fGet, PaymentStatusType } from '@snow/common/src';
 import ReactPlaceholder from 'react-placeholder';
 import "react-placeholder/lib/reactPlaceholder.css";
 
@@ -36,7 +36,7 @@ export default function Invoice() {
         currency: AvailableTickers;
         expiresAt: string;
         publicKey: string;
-        status: string;
+        status: PaymentStatusType;
     }
     const [invoiceObject, setInvoiceObject] = useState<IInvoiceObject>();
 
@@ -48,17 +48,24 @@ export default function Invoice() {
         blockchainDetails.push({ key: "Chain Explorer", value: currencies[currency].explorer, Component: (props: any) => <a {...props} href={currencies[currency].explorer} target="_blank" /> })
     }
 
-    useAsyncEffect(async isMounted => {
+    useEffect(() => {
         const params = window.location.pathname.split('/');
         const invoiceId = params.pop();
         const _currency = params.pop().toLowerCase();
         setCurrency(_currency as AvailableTickers);
 
-        const _invoiceObj = await fGet(`/getInvoiceStatus?invoiceId=${invoiceId}`);
-        if (!isMounted()) {
-            return;
+        // eslint-disable-next-line prefer-const
+        let interval: NodeJS.Timer;
+        async function runner() {
+            const _invoiceObj = await fGet(`/getInvoiceStatus?invoiceId=${invoiceId}`) as IInvoiceObject;
+            setInvoiceObject(_invoiceObj);
+            if (_invoiceObj.status === "CONFIRMED" || _invoiceObj.status === "FAILED" || _invoiceObj.status === "FINISHED") {
+                clearInterval(interval);
+            }
         }
-        setInvoiceObject(_invoiceObj as any);
+        runner();
+        interval = setInterval(runner, 6000);
+        return () => clearInterval(interval);
     }, [])
 
     return (

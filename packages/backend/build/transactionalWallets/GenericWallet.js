@@ -35,17 +35,7 @@ class GenericWallet {
         return this;
     }
     fromManual(initObj) {
-        this.publicKey = initObj.publicKey;
-        this.privateKey = initObj.privateKey;
-        this.amount = initObj.amount;
-        this.status = initObj.status;
-        this.id = initObj.id;
-        this.callbackUrl = initObj.callbackUrl;
-        this.createdAt = initObj.createdAt;
-        this.updatedAt = initObj.updatedAt;
-        this.expiresAt = initObj.expiresAt;
-        this.payoutTransactionHash = initObj.payoutTransactionHash;
-        this.amountPaid = initObj.amountPaid;
+        this._setFromObject(initObj);
         this._initialized = true;
         return this;
     }
@@ -69,6 +59,11 @@ class GenericWallet {
             ...insertObj,
             id: insertedId.toString()
         });
+    }
+    _setFromObject(update) {
+        for (const [key, val] of Object.entries(update)) {
+            this[key] = val;
+        }
     }
     getKeypair() {
         if (!this._initialized) {
@@ -97,31 +92,30 @@ class GenericWallet {
     }
     async checkTransaction() {
         if ((0, dayjs_1.default)().isAfter((0, dayjs_1.default)(this.expiresAt))) {
-            this._updateStatus("EXPIRED");
+            this._updateStatus({ status: "EXPIRED" });
             this.onDie(this.id);
             return;
         }
         const { result: { confirmedBalance } } = await this.getBalance();
         if (confirmedBalance >= (this.amount * (1 - +process.env.TRANSACTION_SLIPPAGE_TOLERANCE))) {
-            this._updateStatus("CONFIRMED");
+            this._updateStatus({ status: "CONFIRMED" });
             this._cashOut(confirmedBalance);
         }
         else if (confirmedBalance > 0) {
-            this.amountPaid = confirmedBalance;
-            this._updateStatus("PARTIALLY_PAID");
+            this._updateStatus({ status: "PARTIALLY_PAID", amountPaid: confirmedBalance });
         }
     }
-    async _updateStatus(status, error) {
+    async _updateStatus(update, error) {
         const { db } = await (0, mongoGenerator_1.default)();
-        this.status = status;
-        this.updatedAt = (0, dayjs_1.default)().toDate();
+        update.updatedAt = (0, dayjs_1.default)().toDate();
+        this._setFromObject(update);
         if (error) {
             console.log(`Status updated on ${this.currency} payment ${this.id} error: `, error);
-            db.collection('payments').updateOne({ _id: new mongodb_1.ObjectId(this.id) }, { $set: { status, updatedAt: this.updatedAt, error } });
+            db.collection('payments').updateOne({ _id: new mongodb_1.ObjectId(this.id) }, { $set: update });
         }
         else {
-            console.log(`Status updated on ${this.currency} payment ${this.id}: `, status);
-            db.collection('payments').updateOne({ _id: new mongodb_1.ObjectId(this.id) }, { $set: { status, updatedAt: this.updatedAt } });
+            console.log(`Status updated on ${this.currency} payment ${this.id}: `, update.status);
+            db.collection('payments').updateOne({ _id: new mongodb_1.ObjectId(this.id) }, { $set: update });
         }
         if (this.callbackUrl) {
             const details = this.getDetails();

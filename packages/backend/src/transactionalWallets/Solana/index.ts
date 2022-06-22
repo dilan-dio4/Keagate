@@ -33,7 +33,7 @@ export default class SolanaTransactional extends GenericWallet {
     protected async _cashOut(balance: number) {
         const [latestBlockhash] = await Promise.all([
             this.connection.getLatestBlockhash('confirmed'),
-            this._updateStatus("SENDING")
+            this._updateStatus({ status: "SENDING" })
         ])
 
         const adminKeypair = Keypair.fromSecretKey(base58.decode(this.privateKey));
@@ -51,11 +51,10 @@ export default class SolanaTransactional extends GenericWallet {
 
         try {
             const signature = await sendAndConfirmTransaction(this.connection, transaction, [adminKeypair]);
-            this.payoutTransactionHash = signature;
-            this._updateStatus("FINISHED");
+            this._updateStatus({ status: "FINISHED", payoutTransactionHash: signature });
             this.onDie(this.id);
         } catch (error) {
-            this._updateStatus("FAILED", JSON.stringify(error));
+            this._updateStatus({ status: "FAILED" }, JSON.stringify(error));
             this.onDie(this.id);
         }
     }

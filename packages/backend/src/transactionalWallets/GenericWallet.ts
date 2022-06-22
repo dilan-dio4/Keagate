@@ -50,17 +50,7 @@ export default abstract class GenericWallet {
         return this;
     }
     fromManual(initObj: ClassPayment): this {
-        this.publicKey = initObj.publicKey;
-        this.privateKey = initObj.privateKey;
-        this.amount = initObj.amount;
-        this.status = initObj.status;
-        this.id = initObj.id;
-        this.callbackUrl = initObj.callbackUrl;
-        this.createdAt = initObj.createdAt;
-        this.updatedAt = initObj.updatedAt;
-        this.expiresAt = initObj.expiresAt;
-        this.payoutTransactionHash = initObj.payoutTransactionHash;
-        this.amountPaid = initObj.amountPaid;
+        this._setFromObject(initObj);
         this._initialized = true;
         return this;
     }
@@ -85,6 +75,12 @@ export default abstract class GenericWallet {
             ...insertObj,
             id: insertedId.toString()
         });
+    }
+
+    private _setFromObject(update: Partial<ClassPayment>)  {
+        for (const [key, val] of Object.entries(update)) {
+            this[key] = val;
+        }
     }
 
     getKeypair() {
@@ -117,33 +113,32 @@ export default abstract class GenericWallet {
 
     async checkTransaction() {
         if (dayjs().isAfter(dayjs(this.expiresAt))) {
-            this._updateStatus("EXPIRED");
+            this._updateStatus({ status: "EXPIRED" });
             this.onDie(this.id);
             return;
         }
         const { result: { confirmedBalance } } = await this.getBalance();
-        if (confirmedBalance >= (this.amount * (1 - +process.env.TRANSACTION_SLIPPAGE_TOLERANCE!))) {
-            this._updateStatus("CONFIRMED");
+        if (confirmedBalance >= (this.amount * (1 - +process.env.TRANSACTION_SLIPPAGE_TOLERANCE!)) && this.status !== "CONFIRMED") {
+            this._updateStatus({ status: "CONFIRMED" });
             this._cashOut(confirmedBalance);
-        } else if (confirmedBalance > 0) {
-            this.amountPaid = confirmedBalance;
-            this._updateStatus("PARTIALLY_PAID");
+        } else if (confirmedBalance > 0 && this.amountPaid !== confirmedBalance) {
+            this._updateStatus({ status: "PARTIALLY_PAID", amountPaid: confirmedBalance });
         }
     }
 
-    protected async _updateStatus(status: PaymentStatusType, error?: string) {
+    protected async _updateStatus(update: Partial<ClassPayment>, error?: string) {
         const { db } = await mongoGenerator();
-        this.status = status;
-        this.updatedAt = dayjs().toDate();
+        update.updatedAt = dayjs().toDate();
+        this._setFromObject(update);
         if (error) {
             console.log(`Status updated on ${this.currency} payment ${this.id} error: `, error);
-            db.collection('payments').updateOne({ _id: new ObjectId(this.id) }, { $set: { status, updatedAt: this.updatedAt, error } })
+            db.collection('payments').updateOne({ _id: new ObjectId(this.id) }, { $set: update })
         } else {
-            console.log(`Status updated on ${this.currency} payment ${this.id}: `, status);
-            db.collection('payments').updateOne({ _id: new ObjectId(this.id) }, { $set: { status, updatedAt: this.updatedAt } })
+            console.log(`Status updated on ${this.currency} payment ${this.id}: `, update.status);
+            db.collection('payments').updateOne({ _id: new ObjectId(this.id) }, { $set: update })
         }
         if (this.callbackUrl) {
-            const details: Record<string, any> = this.getDetails();
+            const details: Partial<ClassPayment> = this.getDetails();
             delete details.privateKey;
             if (error) {
                 (details as any).error = error;
