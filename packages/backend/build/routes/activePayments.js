@@ -14,7 +14,8 @@ const ActivePaymentsResponse = typebox_1.Type.Array(typebox_1.Type.Object({
     updatedAt: typebox_1.Type.String(),
     status: typebox_1.Type.String(),
     id: typebox_1.Type.String(),
-    callbackUrl: typebox_1.Type.Optional(typebox_1.Type.String()),
+    ipnCallbackUrl: typebox_1.Type.Optional(typebox_1.Type.String()),
+    invoiceCallbackUrl: typebox_1.Type.Optional(typebox_1.Type.String()),
     payoutTransactionHash: typebox_1.Type.Optional(typebox_1.Type.String())
 }));
 const opts = {

@@ -17,7 +17,8 @@ const PaymentStatusResponse = typebox_1.Type.Object({
     updatedAt: typebox_1.Type.String(),
     status: typebox_1.Type.String(),
     id: typebox_1.Type.String(),
-    callbackUrl: typebox_1.Type.Optional(typebox_1.Type.String()),
+    ipnCallbackUrl: typebox_1.Type.Optional(typebox_1.Type.String({ format: "uri" })),
+    invoiceCallbackUrl: typebox_1.Type.Optional(typebox_1.Type.String({ format: "uri" })),
     payoutTransactionHash: typebox_1.Type.Optional(typebox_1.Type.String()),
     invoiceUrl: typebox_1.Type.String(),
 });

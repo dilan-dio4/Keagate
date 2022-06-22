@@ -1,5 +1,5 @@
 import { AvailableTickers, AvailableCoins, PaymentStatusType } from "@snow/common/src";
-import { ClassPayment } from "../types";
+import { ClassPayment, IFromNew } from "../types";
 export default abstract class GenericWallet {
     onDie: (id: string) => any;
     currency: AvailableTickers;
@@ -14,7 +14,8 @@ export default abstract class GenericWallet {
     protected updatedAt: Date;
     protected status: PaymentStatusType;
     protected id: string;
-    protected callbackUrl?: string;
+    protected ipnCallbackUrl?: string;
+    protected invoiceCallbackUrl?: string;
     protected payoutTransactionHash?: string;
     constructor(onDie: (id: string) => any);
     protected abstract _cashOut(balance: number): Promise<void>;
@@ -24,11 +25,14 @@ export default abstract class GenericWallet {
             unconfirmedBalance?: number;
         };
     }>;
-    abstract fromNew(amount: number): Promise<this>;
+    abstract fromNew(obj: IFromNew): Promise<this>;
     fromPublicKey(publicKey: string | Uint8Array): Promise<this>;
     fromPaymentId(paymentId: string): Promise<this>;
     fromManual(initObj: ClassPayment): this;
-    protected _initInDatabase(publicKey: string, privateKey: string, amount: number, callbackUrl?: string): Promise<this>;
+    protected _initInDatabase(obj: IFromNew & {
+        publicKey: string;
+        privateKey: string;
+    }): Promise<this>;
     private _setFromObject;
     getKeypair(): {
         publicKey: string;

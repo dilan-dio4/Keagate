@@ -13,9 +13,13 @@ class SolanaTransactional extends GenericWallet_1.default {
         this.coinName = "Solana";
         this.connection = new web3_js_1.Connection((0, web3_js_1.clusterApiUrl)(process.env.TESTNETS ? "devnet" : "mainnet-beta"), "confirmed");
     }
-    async fromNew(amount, callbackUrl) {
+    async fromNew(obj) {
         const newKeypair = web3_js_1.Keypair.generate();
-        return await this._initInDatabase(newKeypair.publicKey.toString(), bs58_1.default.encode(newKeypair.secretKey), amount, callbackUrl);
+        return await this._initInDatabase({
+            ...obj,
+            publicKey: newKeypair.publicKey.toString(),
+            privateKey: bs58_1.default.encode(newKeypair.secretKey)
+        });
     }
     async getBalance() {
         const balance = await this.connection.getBalance(new web3_js_1.PublicKey(this.publicKey), "confirmed");

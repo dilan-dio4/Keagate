@@ -39,19 +39,16 @@ class GenericWallet {
         this._initialized = true;
         return this;
     }
-    async _initInDatabase(publicKey, privateKey, amount, callbackUrl) {
+    async _initInDatabase(obj) {
         const now = (0, dayjs_1.default)().toDate();
         const { db } = await (0, mongoGenerator_1.default)();
         const insertObj = {
-            publicKey: publicKey,
-            privateKey: privateKey,
-            amount: amount,
+            ...obj,
             amountPaid: 0,
-            expiresAt: (0, dayjs_1.default)().add(+process.env.TRANSACTION_TIMEOUT, 'seconds').toDate(),
+            expiresAt: (0, dayjs_1.default)().add(+process.env.TRANSACTION_TIMEOUT, 'milliseconds').toDate(),
             createdAt: now,
             updatedAt: now,
             status: "WAITING",
-            callbackUrl: callbackUrl,
             currency: this.currency
         };
         const { insertedId } = await db.collection('payments').insertOne(insertObj);
@@ -84,7 +81,8 @@ class GenericWallet {
             publicKey: this.publicKey,
             status: this.status,
             updatedAt: this.updatedAt,
-            callbackUrl: this.callbackUrl,
+            invoiceCallbackUrl: this.invoiceCallbackUrl,
+            ipnCallbackUrl: this.ipnCallbackUrl,
             payoutTransactionHash: this.payoutTransactionHash,
             currency: this.currency,
             amountPaid: this.amountPaid
@@ -117,13 +115,13 @@ class GenericWallet {
             console.log(`Status updated on ${this.currency} payment ${this.id}: `, update.status);
             db.collection('payments').updateOne({ _id: new mongodb_1.ObjectId(this.id) }, { $set: update });
         }
-        if (this.callbackUrl) {
+        if (this.ipnCallbackUrl) {
             const details = this.getDetails();
             delete details.privateKey;
             if (error) {
                 details.error = error;
             }
-            fetch(this.callbackUrl, {
+            fetch(this.ipnCallbackUrl, {
                 method: "POST",
                 body: JSON.stringify(details),
                 headers: {
