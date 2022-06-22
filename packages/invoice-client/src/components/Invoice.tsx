@@ -34,6 +34,7 @@ export default function Invoice() {
         expiresAt: string;
         publicKey: string;
         status: PaymentStatusType;
+        invoiceCallbackUrl?: string;
     }
     const [invoiceObject, setInvoiceObject] = useState<IInvoiceObject>();
 
@@ -52,6 +53,9 @@ export default function Invoice() {
             if (_invoiceObj.status === "CONFIRMED" || _invoiceObj.status === "FAILED" || _invoiceObj.status === "FINISHED") {
                 clearInterval(interval);
                 setIsTransactionDead(true);
+                if (invoiceObject.invoiceCallbackUrl) {
+                    window.location.href = invoiceObject.invoiceCallbackUrl + `?status=${_invoiceObj.status}`;
+                }
             }
         }
         runner();
