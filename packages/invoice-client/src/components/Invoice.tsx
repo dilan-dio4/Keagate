@@ -7,27 +7,7 @@ import clsx from 'clsx';
 import { useRef, useState } from "react";
 import { copyToClipboard } from '../utils/utils';
 import useAsyncEffect from "use-async-effect";
-// import * as currs from '@snow/common';
-
-// console.log("currs", currs)
-
-const currencies: any = {
-    "ltc": {
-        name: "Litecoin",
-        explorer: "https://live.blockcypher.com/ltc/",
-    },
-    "sol": {
-        networkName: "Solana Mainnet",
-        name: "Solana",
-        explorer: "https://explorer.solana.com/"
-    },
-    "dash": {
-        networkName: "Dash Mainnet",
-        name: "Dash",
-        explorer: "https://explorer.dash.org/insight/"
-    }
-}
-
+import { currencies } from '@snow/common/src/index';
 
 export default function Invoice() {
     const coin = "sol";
@@ -42,7 +22,7 @@ export default function Invoice() {
     blockchainDetails.push({ key: "Full Name", value: currencies[coin].name, Component: (props: any) => <span {...props} /> })
     blockchainDetails.push({ key: "Ticker", value: coin.toUpperCase(), Component: (props: any) => <span {...props} /> })
     blockchainDetails.push({ key: "Chain Explorer", value: currencies[coin].explorer, Component: (props: any) => <a {...props} href={currencies[coin].explorer} target="_blank" /> })
-    console.log("HELLO")
+
     useAsyncEffect(async isMounted => {
         let _currUrl = window.location.href;
         if (_currUrl.endsWith("/")) {
