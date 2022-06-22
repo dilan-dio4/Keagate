@@ -26,7 +26,8 @@ a {
 }
 
 .status-spinner {
-  @apply  !text-indigo-600 !fill-white;
+  @apply !fill-white;
+  color: rgb(0 0 0 / 23%) !important;
 }
 
 .alert-root>div {

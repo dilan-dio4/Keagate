@@ -17,10 +17,6 @@ import { AvailableTickers, currencies, fGet, PaymentStatusType } from '@snow/com
 import ThreeDotsOverlay from "./ThreeDotsOverlay";
 
 export default function Invoice() {
-    const isTransactionDead = false;
-    const payAmount = 0.0001;
-    const payAddress = "3DkEkHTRxzsPc4T8mGaGKdhUfJs6vW6JBJ";
-
     const currencyToIcon: Record<AvailableTickers, React.ReactChild> = {
         dash: <DashIcon width={50} height={50} />,
         ltc: <LtcIcon width={50} height={50} />,
@@ -28,6 +24,7 @@ export default function Invoice() {
     }
 
     const [isBlockchainInfoOpen, setIsBlockchainInfoOpen] = useState<boolean>(false);
+    const [isTransactionDead, setIsTransactionDead] = useState<boolean>(false);
     const [currency, setCurrency] = useState<AvailableTickers>();
     const [invoiceId, setInvoiceId] = useState<string>("");
     interface IInvoiceObject {
@@ -54,6 +51,7 @@ export default function Invoice() {
             setInvoiceObject(_invoiceObj);
             if (_invoiceObj.status === "CONFIRMED" || _invoiceObj.status === "FAILED" || _invoiceObj.status === "FINISHED") {
                 clearInterval(interval);
+                setIsTransactionDead(true);
             }
         }
         runner();
@@ -72,12 +70,37 @@ export default function Invoice() {
     blockchainDetails.push({ key: "Ticker", value: currency.toUpperCase(), Component: (props: any) => <span {...props} /> })
     blockchainDetails.push({ key: "Chain Explorer", value: currencies[currency].explorer, Component: (props: any) => <a {...props} href={currencies[currency].explorer} target="_blank" /> })
 
+    function getSpinnerText(): string {
+        switch (invoiceObject.status) {
+            case "WAITING":
+                return "Awaiting for payment confirmation";
+            case "PARTIALLY_PAID":
+                return "Payment partially fulfilled";
+            case "EXPIRED":
+                return "Invoice expired";
+            case "CONFIRMING":
+                return "Confirming transaction";
+            case "CONFIRMED":
+                return "Successfully confirmed transaction";
+            case "FAILED":
+                return "Payment failed";
+        }
+    }
+
+    function isSpinnerBackgroundRed() {
+        if (invoiceObject.status === "EXPIRED" || invoiceObject.status === "FAILED") {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     return (
         <div className="overflow-hidden max-w-full mx-auto sm:my-14 sm:border sm:rounded-lg sm:max-w-[500px]">
-            <div className="bg-indigo-500 text-center py-2.5 text-white">
+            <div className={clsx("text-center py-2.5 text-white", isSpinnerBackgroundRed() ? "bg-red-600" : "bg-indigo-500")}>
                 <span className="flex justify-center items-center">
-                    <Spinner color="pink" className="status-spinner" />
-                    <p className="ml-3 text-sm font-medium sm:text-lg sm:font-semibold">Awaiting for payment confirmation</p>
+                    <Spinner className="status-spinner" />
+                    <p className="ml-3 text-sm font-medium sm:text-lg sm:font-semibold">{getSpinnerText()}</p>
                 </span>
             </div>
             <div className="border-b flex justify-between items-center py-4 px-5">
@@ -97,7 +120,7 @@ export default function Invoice() {
                     <p className="tracking-tight"><b>Expires at</b></p>
                     <p className="flex items-center text-slate-600 tracking-tight">
                         <BiTimer size={20} className="mr-1" />
-                        {invoiceObject ? dayjs(invoiceObject.expiresAt).format("h:mm A") : ""}
+                        {dayjs(invoiceObject.expiresAt).format("h:mm A")}
                     </p>
                 </div>
             </div>
@@ -124,9 +147,9 @@ export default function Invoice() {
                         <p className="tracking-tight mb-0.5">Amount:</p>
                         <p
                             className={clsx("text-lg font-bold transition-colors", isTransactionDead ? "text-gray-400" : "text-black cursor-pointer hover:text-gray-500")}
-                            onClick={_ => !isTransactionDead && copyToClipboard("" + payAmount, "Copied value to clipboard")}
+                            onClick={_ => !isTransactionDead && copyToClipboard("" + invoiceObject.amount, "Copied value to clipboard")}
                         >
-                            {payAmount} {currency.toUpperCase()} {!isTransactionDead && <BiCopy className="inline-block mb-1" size={16} />}
+                            {invoiceObject.amount} {currency.toUpperCase()} {!isTransactionDead && <BiCopy className="inline-block mb-1" size={16} />}
                         </p>
                     </div>
                     <div className="h-[1px] bg-slate-200 my-5 mx-5"></div>
@@ -134,9 +157,9 @@ export default function Invoice() {
                         <p className="tracking-tight mb-1.5">Payment Address:</p>
                         <p
                             className={clsx("transition-colors font-semibold mt-1.5 text-xs leading-tight tracking-wide break-all", isTransactionDead ? "text-gray-400" : "cursor-pointer text-blue-500 hover:text-blue-600")}
-                            onClick={_ => !isTransactionDead && copyToClipboard(payAddress, "Copied address to clipboard")}
+                            onClick={_ => !isTransactionDead && copyToClipboard(invoiceObject.publicKey, "Copied address to clipboard")}
                         >
-                            {payAddress}
+                            {invoiceObject.publicKey}
                             {!isTransactionDead && <BiCopy className="ml-0.5 mb-[1px] inline-block" size={12} />}
                         </p>
                     </div>
@@ -151,7 +174,7 @@ export default function Invoice() {
                 <div className="flex mt-10">
                     <div className="basis-5/12 text-center">
                         <p className="text-sm text-slate-600 tracking-tight">Amount collected:</p>
-                        <p className="text-md font-bold">0.00000000 {currency.toUpperCase()}</p>
+                        <p className="text-md font-bold">{invoiceObject.amountPaid.toFixed(7)} {currency.toUpperCase()}</p>
                     </div>
                     <div className="basis-2/12 flex justify-center">
                         <div className="h-full bg-slate-300 w-[3px] rounded-md"></div>
@@ -160,9 +183,9 @@ export default function Invoice() {
                         <p className="text-sm text-slate-600 tracking-tight">Amount due:</p>
                         <p
                             className={clsx("text-md font-bold transition-colors", isTransactionDead ? "text-gray-400" : "text-black cursor-pointer hover:text-gray-500")}
-                            onClick={_ => !isTransactionDead && copyToClipboard("" + payAmount, "Copied value to clipboard")}
+                            onClick={_ => !isTransactionDead && copyToClipboard("" + (invoiceObject.amount - invoiceObject.amountPaid), "Copied value to clipboard")}
                         >
-                            0.00000000 {currency.toUpperCase()} {!isTransactionDead && <BiCopy className="inline-block mb-1" size={15} />}
+                            {(invoiceObject.amount - invoiceObject.amountPaid).toFixed(7)} {currency.toUpperCase()} {!isTransactionDead && <BiCopy className="inline-block mb-1" size={15} />}
                         </p>
                     </div>
                 </div>
