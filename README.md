@@ -39,14 +39,14 @@ Snow is a self-hosted, high-performance cryptocurrency payment gateway. Payments
 ### Purpose
 
 * No KYC
-* No fees (besides network)
+* No fees (besides network) or middleman
 * Private
 * Self-hosted
 * Easily extensible for new currencies
 * Highly performant
 * No IP Blocking
 
-Funds go directly to your wallet via one-time addresses that are created for each payment.
+Funds go directly to your wallet via the one-time addresses that are created for each payment.
 
 ## Getting Started
 
@@ -117,7 +117,6 @@ There's four steps in adding a currency to this package.
 **And that's it!** Start the dev environment and create a new payment of any amount with your new ticker.
 
 </details>
-
 <details>
 
 <summary>
@@ -128,7 +127,6 @@ There's four steps in adding a currency to this package.
 
 
 </details>
-
 <details>
 
 <summary>
