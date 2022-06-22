@@ -18,10 +18,11 @@
   * [Prerequisites](#prerequisites)
   * [Installation](#installation)
 * [Usage](#usage)
-* [Documentation]()
-* [Troubleshoot](#troubleshoot)
 * [Development](#development)
-* [Contact](#contact)
+  * [Adding a currency](#adding-a-currency)
+  * [Adding an API route](#adding-a-currency)
+  * [Customizing the invoice interface](#customizing-the-invoice-interface)
+* [Troubleshoot](#troubleshoot)
 
 ## About The Project
 
@@ -94,16 +95,27 @@ Development experience and extensibility are a high priority for this package.
     * Any changes in `packages/invoice-client/src` will be automatically reflected on refresh.
     * Any changes to the source of `packages/backend/src` will be reflected automatically via `ts-node-dev`.
 
+<details>
+
+<summary>
+
 ### Adding a currency
+
+</summary>
 
 There's four steps in adding a currency to this package.
 
 1. Add the ticker, along with some metadata, to the currencies type in [packages/common/src/currencies.ts](packages/common/src/currencies.ts).
 2. Create the admin wallet. This is where payments are finally sent to and presumably the real wallet of the client. Note that the admin wallet can also be used to programmatically send transactions as well.
-    * Start by taking a look at [Solana's admin wallet](packages/backend/src/adminWallets/Solana/index.ts) and note that you only need to implement two functions: `getBalance` and `sendTransaction`. The class that admin wallets inherit from, [GenericAdminWallet](packages/backend/src/adminWallets/GenericAdminWallet.ts), handles the rest.
-3. Create the transactional wallet. This class can be thought of a payment, since a new one is created for every payment, along with a new Public Key and Private Key. Transactional wallets, and their associated payment data, are stored in Mongo.
+    * Start by taking a look at [Solana's admin wallet](packages/backend/src/adminWallets/Solana/index.ts) and note that you only need to implement two functions: `getBalance` and `sendTransaction`. The class that admin wallets inherit from, [GenericAdminWallet](packages/backend/src/adminWallets/GenericAdminWallet.ts), handles class inheritance.
+3. Create the transactional wallet. This class can be thought of a payment, since a new transactional wallet is created for every payment, along with a new Public Key and Private Key. Transactional wallets, and their associated payment data, are stored in Mongo.
     1. Start by taking a look at [Solana's transactional wallet](packages/backend/src/transactionalWallets/Solana/index.ts) and note that you only need to implement three functions: `fromNew`, `getBalance` and `_cashOut`. The class that transactional wallets inherit from, [GenericTransactionalWallet](packages/backend/src/transactionalWallets/GenericTransactionalWallet.ts), handles the rest.  
 4. Add both the transactional and admin wallet classes to [packages/backend/src/currenciesToWallets.ts](packages/backend/src/currenciesToWallets.ts) so it can be referred to by ticker across the project
+
+**And that's it!** Start the dev environment and create a new payment of any amount with your new ticker.
+
+</details>
+
 
 ### Adding an API route
 
