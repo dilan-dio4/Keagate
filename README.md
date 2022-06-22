@@ -1,11 +1,7 @@
-<br />
 
-<h1 align="center">
-🌨️ Snow
-<br />
-<br />
-A High-Performance Cryptocurrency Payment Gateway
-</h1>
+<h2 align="center">
+🌨️ Snow – A High-Performance Cryptocurrency Payment Gateway
+</h2>
 
 <h3 align="center">
 <b>🚧 This project is actively in development 🚧</b>
