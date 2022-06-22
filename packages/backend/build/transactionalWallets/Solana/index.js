@@ -9,7 +9,7 @@ const bs58_1 = __importDefault(require("bs58"));
 class SolanaTransactional extends GenericWallet_1.default {
     constructor(...args) {
         super(...args);
-        this.ticker = "sol";
+        this.currency = "sol";
         this.coinName = "Solana";
         this.connection = new web3_js_1.Connection((0, web3_js_1.clusterApiUrl)(process.env.TESTNETS ? "devnet" : "mainnet-beta"), "confirmed");
     }

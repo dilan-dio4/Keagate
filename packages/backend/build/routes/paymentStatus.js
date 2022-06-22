@@ -7,6 +7,7 @@ const typebox_1 = require("@sinclair/typebox");
 const auth_1 = __importDefault(require("../middlewares/auth"));
 const mongoGenerator_1 = __importDefault(require("../mongoGenerator"));
 const mongodb_1 = require("mongodb");
+const utils_1 = require("../utils");
 const PaymentStatusResponse = typebox_1.Type.Object({
     publicKey: typebox_1.Type.String(),
     // privateKey: Type.String(),
@@ -17,7 +18,8 @@ const PaymentStatusResponse = typebox_1.Type.Object({
     status: typebox_1.Type.String(),
     id: typebox_1.Type.String(),
     callbackUrl: typebox_1.Type.Optional(typebox_1.Type.String()),
-    payoutTransactionHash: typebox_1.Type.Optional(typebox_1.Type.String())
+    payoutTransactionHash: typebox_1.Type.Optional(typebox_1.Type.String()),
+    invoiceUrl: typebox_1.Type.String(),
 });
 const PaymentStatusQueryString = typebox_1.Type.Object({
     id: typebox_1.Type.String()
@@ -43,10 +45,11 @@ function createPaymentStatusRoute(server) {
         }
         delete selectedPayment['privateKey'];
         selectedPayment.id = selectedPayment._id.toString();
-        delete selectedPayment._id;
         selectedPayment.createdAt = selectedPayment.createdAt.toISOString();
         selectedPayment.updatedAt = selectedPayment.updatedAt.toISOString();
         selectedPayment.expiresAt = selectedPayment.expiresAt.toISOString();
+        selectedPayment.invoiceUrl = `/invoice/${selectedPayment.currency}/${(0, utils_1.encrypt)(selectedPayment.id)}`;
+        delete selectedPayment._id;
         reply.status(200).send(selectedPayment);
     });
 }

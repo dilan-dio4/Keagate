@@ -1,5 +1,5 @@
 import GenericWallet from "../GenericWallet";
-import { AvailableCoins, AvailableTickers } from "../../currencies";
+import { AvailableCoins, AvailableTickers } from "@snow/common/src";
 export default class Litecoin extends GenericWallet {
     private mediumGasFee;
     ticker: AvailableTickers;

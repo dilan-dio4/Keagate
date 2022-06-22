@@ -28,3 +28,7 @@ a {
 .status-spinner {
   @apply !text-indigo-600 !fill-white;
 }
+
+.alert-root > div {
+  @apply !py-3 !px-2;
+}

@@ -1,8 +1,7 @@
-import { AvailableTickers } from './currencies';
-export declare const paymentStatuses: readonly ["WAITING", "CONFIRMING", "CONFIRMED", "SENDING", "FINISHED", "PARTIALLY_PAID", "FAILED", "EXPIRED"];
-export declare type PaymentStatusType = typeof paymentStatuses[number];
+import { AvailableTickers, PaymentStatusType } from '@snow/common/src';
 interface PaymentRoot {
     amount: number;
+    amountPaid: number;
     status: PaymentStatusType;
     id: string;
     callbackUrl?: string;

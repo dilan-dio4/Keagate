@@ -1,8 +1,8 @@
 import GenericWallet from '../GenericWallet';
-import { AvailableCoins, AvailableTickers } from "../../currencies";
+import { AvailableCoins, AvailableTickers } from "@snow/common/src";
 export default class SolanaTransactional extends GenericWallet {
     private connection;
-    ticker: AvailableTickers;
+    currency: AvailableTickers;
     coinName: AvailableCoins;
     static TRANSFER_FEE_LAMPORTS: number;
     constructor(...args: ConstructorParameters<typeof GenericWallet>);

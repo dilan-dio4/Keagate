@@ -1,8 +1,7 @@
 import GenericWallet from "../GenericWallet";
-import { fGet, fPost } from "../../fetch";
 import { convertChainsoToNativeUtxo } from '../../utils';
 import { Transaction } from 'bitcore-lib-ltc';
-import { AvailableCoins, AvailableTickers } from "../../currencies";
+import { AvailableCoins, AvailableTickers, fGet, fPost } from "@snow/common/src";
 
 export default class Litecoin extends GenericWallet {
     private mediumGasFee: number;

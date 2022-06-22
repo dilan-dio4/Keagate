@@ -12,6 +12,7 @@
     "clean": "shx rm -rf build package-lock.json node_modules"
   },
   "dependencies": {
+    "@snow/common": "file:packages/common",
     "@blockfrost/blockfrost-js": "^4.1.0",
     "@dashevo/dashcore-lib": "^0.19.38",
     "@fastify/static": "^6.4.0",

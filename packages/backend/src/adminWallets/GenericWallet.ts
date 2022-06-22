@@ -1,4 +1,4 @@
-import { AvailableTickers, AvailableCoins } from "../currencies";
+import { AvailableTickers, AvailableCoins } from "@snow/common/src";
 import WAValidator from 'multicoin-address-validator';
 
 export default abstract class GenericWallet {

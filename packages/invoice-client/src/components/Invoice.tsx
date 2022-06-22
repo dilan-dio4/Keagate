@@ -1,34 +1,64 @@
-import { Spinner } from "flowbite-react";
+import { Spinner, Alert } from "flowbite-react";
 import { ReactComponent as BtcIcon } from 'cryptocurrency-icons/svg/color/btc.svg';
+import { ReactComponent as SolIcon } from 'cryptocurrency-icons/svg/color/sol.svg';
+import { ReactComponent as LtcIcon } from 'cryptocurrency-icons/svg/color/ltc.svg';
+import { ReactComponent as AdaIcon } from 'cryptocurrency-icons/svg/color/ada.svg';
+import { ReactComponent as DashIcon } from 'cryptocurrency-icons/svg/color/dash.svg';
+
 import { BiTimer, BiCopy } from 'react-icons/bi';
 import { FiChevronUp, FiChevronDown } from 'react-icons/fi';
+import { HiInformationCircle } from 'react-icons/hi';
 import dayjs from "dayjs";
 import clsx from 'clsx';
-import { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { copyToClipboard } from '../utils/utils';
 import useAsyncEffect from "use-async-effect";
-import { currencies } from '@snow/common/src/index';
+import { AvailableTickers, currencies, fGet } from '@snow/common/src';
+import ReactPlaceholder from 'react-placeholder';
+import "react-placeholder/lib/reactPlaceholder.css";
 
 export default function Invoice() {
-    const coin = "sol";
     const isTransactionDead = false;
     const payAmount = 0.0001;
     const payAddress = "3DkEkHTRxzsPc4T8mGaGKdhUfJs6vW6JBJ";
+
+    const currencyToIcon: Record<AvailableTickers, React.ReactChild> = {
+        dash: <DashIcon width={50} height={50} />,
+        ltc: <LtcIcon width={50} height={50} />,
+        sol: <SolIcon width={50} height={50} />
+    }
+
     const [isBlockchainInfoOpen, setIsBlockchainInfoOpen] = useState<boolean>(false);
-    const currentUrlRef = useRef<string>();
+    const [currency, setCurrency] = useState<AvailableTickers | "">("");
+    interface IInvoiceObject {
+        amount: number;
+        amountPaid: number;
+        currency: AvailableTickers;
+        expiresAt: string;
+        publicKey: string;
+        status: string;
+    }
+    const [invoiceObject, setInvoiceObject] = useState<IInvoiceObject>();
 
     const blockchainDetails: { key: string, value: string, Component: any }[] = [];
-    currencies[coin]?.networkName && blockchainDetails.push({ key: "Network Name", value: currencies[coin].networkName, Component: (props: any) => <span {...props} /> })
-    blockchainDetails.push({ key: "Full Name", value: currencies[coin].name, Component: (props: any) => <span {...props} /> })
-    blockchainDetails.push({ key: "Ticker", value: coin.toUpperCase(), Component: (props: any) => <span {...props} /> })
-    blockchainDetails.push({ key: "Chain Explorer", value: currencies[coin].explorer, Component: (props: any) => <a {...props} href={currencies[coin].explorer} target="_blank" /> })
+    if (currency) {
+        currencies[currency]?.networkName && blockchainDetails.push({ key: "Network Name", value: currencies[currency].networkName, Component: (props: any) => <span {...props} /> })
+        blockchainDetails.push({ key: "Full Name", value: currencies[currency].name, Component: (props: any) => <span {...props} /> })
+        blockchainDetails.push({ key: "Ticker", value: currency.toUpperCase(), Component: (props: any) => <span {...props} /> })
+        blockchainDetails.push({ key: "Chain Explorer", value: currencies[currency].explorer, Component: (props: any) => <a {...props} href={currencies[currency].explorer} target="_blank" /> })
+    }
 
     useAsyncEffect(async isMounted => {
-        let _currUrl = window.location.href;
-        if (_currUrl.endsWith("/")) {
-            _currUrl = _currUrl.slice(0, -1);
+        const params = window.location.pathname.split('/');
+        const invoiceId = params.pop();
+        const _currency = params.pop().toLowerCase();
+        setCurrency(_currency as AvailableTickers);
+
+        const _invoiceObj = await fGet(`/getInvoiceStatus?invoiceId=${invoiceId}`);
+        if (!isMounted()) {
+            return;
         }
-        currentUrlRef.current = _currUrl;
+        setInvoiceObject(_invoiceObj as any);
     }, [])
 
     return (
@@ -41,7 +71,9 @@ export default function Invoice() {
             </div>
             <div className="border-b flex justify-between items-center py-4 px-5">
                 <div className="flex items-center">
-                    <BtcIcon width={50} />
+                    <ReactPlaceholder type='round' showLoadingAnimation ready={!!currency} style={{ width: 50, height: 50 }}>
+                        {currencyToIcon[currency]}
+                    </ReactPlaceholder>
                     <div className="ml-2">
                         <p className="tracking-tight"><b>Invoice</b></p>
                         <p className="text-slate-600 tracking-tight">#98970</p>
@@ -51,7 +83,7 @@ export default function Invoice() {
                     <p className="tracking-tight"><b>Expires at</b></p>
                     <p className="flex items-center text-slate-600 tracking-tight">
                         <BiTimer size={20} className="mr-1" />
-                        {dayjs().format("h:mm A")}
+                        {invoiceObject ? dayjs(invoiceObject.expiresAt).format("h:mm A") : ""}
                     </p>
                 </div>
             </div>
@@ -76,12 +108,14 @@ export default function Invoice() {
                 <div className="rounded-md bg-white py-5">
                     <div className="text-center px-4">
                         <p className="tracking-tight mb-0.5">Amount:</p>
-                        <p
-                            className={clsx("text-lg font-bold transition-colors", isTransactionDead ? "text-gray-400" : "text-black cursor-pointer hover:text-gray-500")}
-                            onClick={_ => !isTransactionDead && copyToClipboard("" + payAmount, "Copied value to clipboard")}
-                        >
-                            {payAmount} {coin.toUpperCase()} {!isTransactionDead && <BiCopy className="inline-block mb-1" size={16} />}
-                        </p>
+                        <ReactPlaceholder type="text" showLoadingAnimation ready={!!invoiceObject} style={{ width: 50, height: 10 }}>
+                            <p
+                                className={clsx("text-lg font-bold transition-colors", isTransactionDead ? "text-gray-400" : "text-black cursor-pointer hover:text-gray-500")}
+                                onClick={_ => !isTransactionDead && copyToClipboard("" + payAmount, "Copied value to clipboard")}
+                            >
+                                {payAmount} {currency.toUpperCase()} {!isTransactionDead && <BiCopy className="inline-block mb-1" size={16} />}
+                            </p>
+                        </ReactPlaceholder>
                     </div>
                     <div className="h-[1px] bg-slate-200 my-5 mx-5"></div>
                     <div className="text-center px-4">
@@ -94,25 +128,29 @@ export default function Invoice() {
                             {!isTransactionDead && <BiCopy className="ml-0.5 mb-[1px] inline-block" size={12} />}
                         </p>
                     </div>
-                    <div className="text-center px-4 mt-6">
-                        <p className="text-xs font-thin text-red-600 tracking-tight">Please verify the address and amount before sending transaction.</p>
+                    <div className="text-center px-4 mt-6 alert-root">
+                        <Alert color="blue" icon={HiInformationCircle}>
+                            <span className="font-normal tracking-tight text-xs text-center w-full">
+                                Please verify the address and amount before sending the transaction.
+                            </span>
+                        </Alert>
                     </div>
                 </div>
                 <div className="flex mt-10">
                     <div className="basis-5/12 text-center">
                         <p className="text-sm text-slate-600 tracking-tight">Amount collected:</p>
-                        <p className="text-md font-bold">0.00000000 {coin.toUpperCase()}</p>
+                        <p className="text-md font-bold">0.00000000 {currency.toUpperCase()}</p>
                     </div>
                     <div className="basis-2/12 flex justify-center">
-                        <div className="h-full bg-slate-300 w-1 rounded-md"></div>
+                        <div className="h-full bg-slate-300 w-[3px] rounded-md"></div>
                     </div>
                     <div className="basis-5/12 text-center">
                         <p className="text-sm text-slate-600 tracking-tight">Amount due:</p>
-                        <p 
+                        <p
                             className={clsx("text-md font-bold transition-colors", isTransactionDead ? "text-gray-400" : "text-black cursor-pointer hover:text-gray-500")}
                             onClick={_ => !isTransactionDead && copyToClipboard("" + payAmount, "Copied value to clipboard")}
                         >
-                            0.00000000 {coin.toUpperCase()} {!isTransactionDead && <BiCopy className="inline-block mb-1" size={15} />}
+                            0.00000000 {currency.toUpperCase()} {!isTransactionDead && <BiCopy className="inline-block mb-1" size={15} />}
                         </p>
                     </div>
                 </div>

@@ -1,7 +1,7 @@
 import { Connection, clusterApiUrl, PublicKey, Keypair, Transaction, SystemProgram, LAMPORTS_PER_SOL, sendAndConfirmTransaction } from '@solana/web3.js';
 import GenericWallet from "../GenericWallet";
 import base58 from "bs58";
-import { AvailableCoins, AvailableTickers } from "../../currencies";
+import { AvailableTickers, AvailableCoins } from "@snow/common/src";
 
 export default class Solana extends GenericWallet {
     private connection: Connection;

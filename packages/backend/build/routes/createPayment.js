@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const typebox_1 = require("@sinclair/typebox");
 const auth_1 = __importDefault(require("../middlewares/auth"));
 const Solana_1 = __importDefault(require("../transactionalWallets/Solana"));
+const utils_1 = require("../utils");
 const CreatePaymentBody = typebox_1.Type.Object({
     currency: typebox_1.Type.String(),
     amount: typebox_1.Type.Number({ minimum: 0 }),
@@ -13,7 +14,6 @@ const CreatePaymentBody = typebox_1.Type.Object({
 });
 const CreatePaymentResponse = typebox_1.Type.Object({
     publicKey: typebox_1.Type.String(),
-    // privateKey: Type.String(),
     amount: typebox_1.Type.Number(),
     expiresAt: typebox_1.Type.String(),
     createdAt: typebox_1.Type.String(),
@@ -21,7 +21,8 @@ const CreatePaymentResponse = typebox_1.Type.Object({
     status: typebox_1.Type.String(),
     id: typebox_1.Type.String(),
     callbackUrl: typebox_1.Type.Optional(typebox_1.Type.String()),
-    payoutTransactionHash: typebox_1.Type.Optional(typebox_1.Type.String())
+    invoiceUrl: typebox_1.Type.String(),
+    currency: typebox_1.Type.String()
 });
 const opts = {
     schema: {
@@ -40,6 +41,8 @@ function createPaymentRoute(server, activePayments) {
         const newWalletDetails = { ...newWallet.getDetails() };
         activePayments[newWalletDetails.id] = newWallet;
         delete newWalletDetails.privateKey;
+        delete newWalletDetails.payoutTransactionHash;
+        newWalletDetails.invoiceUrl = `/invoice/${newWalletDetails.currency}/${(0, utils_1.encrypt)(newWalletDetails.id)}`;
         reply.status(200).send(newWalletDetails);
     });
 }

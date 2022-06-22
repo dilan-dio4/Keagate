@@ -4,6 +4,7 @@ import { RequestPayment } from '../types';
 import auth from "../middlewares/auth";
 import mongoGenerator from "../mongoGenerator";
 import { ObjectId } from "mongodb";
+import { encrypt } from "../utils";
 
 const PaymentStatusResponse = Type.Object({
     publicKey: Type.String(),
@@ -15,7 +16,8 @@ const PaymentStatusResponse = Type.Object({
     status: Type.String(),
     id: Type.String(),
     callbackUrl: Type.Optional(Type.String()),
-    payoutTransactionHash: Type.Optional(Type.String())
+    payoutTransactionHash: Type.Optional(Type.String()),
+    invoiceUrl: Type.String(),
 });
 
 const PaymentStatusQueryString = Type.Object({
@@ -48,10 +50,11 @@ export default function createPaymentStatusRoute(server: FastifyInstance) {
             }
             delete selectedPayment['privateKey'];
             selectedPayment.id = selectedPayment._id.toString();
-            delete selectedPayment._id;
             selectedPayment.createdAt = selectedPayment.createdAt.toISOString();
             selectedPayment.updatedAt = selectedPayment.updatedAt.toISOString();
             selectedPayment.expiresAt = selectedPayment.expiresAt.toISOString();
+            selectedPayment.invoiceUrl = `/invoice/${selectedPayment.currency}/${encrypt(selectedPayment.id)}`
+            delete selectedPayment._id;
             reply.status(200).send(selectedPayment as RequestPayment);
         }
     )

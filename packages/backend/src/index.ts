@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 dotenv.config({ path: path.join(__dirname, '..', '..', '..', '.env') });
 import fastify from 'fastify';
-import currencies, { AvailableTickers, AvailableWallets } from "./currencies";
+import { AvailableTickers, currencies } from "@snow/common/src";
 import AdminDash from "./adminWallets/Dash";
 import AdminLitecoin from "./adminWallets/Litecoin";
 import AdminSolana from "./adminWallets/Solana";
@@ -12,7 +12,8 @@ import mongoGenerator from "./mongoGenerator";
 import createPaymentRoute from './routes/createPayment';
 import createActivePaymentsRoute from './routes/activePayments';
 import createPaymentStatusRoute from './routes/paymentStatus';
-import fastifyStatic from "@fastify/static";
+import createInvoiceClientRoute from "./routes/invoiceClient";
+import createInvoiceStatusRoute from './routes/invoiceStatus';
 
 const server = fastify({
     trustProxy: true,
@@ -23,15 +24,6 @@ const server = fastify({
         }
     }
 });
-
-server.register(fastifyStatic, {
-    root: path.join(__dirname, '..', '..', 'invoice-client', 'dist'),
-    prefix: '/static-invoice'
-})
-
-server.get('/invoice/:ticker/:paymentId', (request, reply) => {
-    reply.sendFile('index.html')
-})
 
 const activePayments: Record<string, TransactionalSolana> = {};
 
@@ -50,7 +42,7 @@ for (const k of Object.keys(currencies)) {
     }
 
     const params = [publicKey, privateKey] as const;
-    let currentClient: AvailableWallets;
+    let currentClient: AdminDash | AdminLitecoin | AdminSolana;
     if (ticker === "dash") {
         adminDashClient = new AdminDash(...params);
         currentClient = adminDashClient;
@@ -74,6 +66,8 @@ function transactionIntervalRunner() {
     }, +process.env.TRANSACTION_REFRESH_TIME!)
 }
 
+createInvoiceClientRoute(server);
+createInvoiceStatusRoute(server);
 createPaymentRoute(server, activePayments);
 createActivePaymentsRoute(server, activePayments);
 createPaymentStatusRoute(server);

@@ -1,11 +1,11 @@
 import GenericWallet from '../GenericWallet';
 import { Connection, clusterApiUrl, PublicKey, Keypair, Transaction, SystemProgram, LAMPORTS_PER_SOL, sendAndConfirmTransaction } from '@solana/web3.js';
-import { AvailableCoins, AvailableTickers } from "../../currencies";
+import { AvailableCoins, AvailableTickers } from "@snow/common/src";
 import base58 from "bs58";
 
 export default class SolanaTransactional extends GenericWallet {
     private connection: Connection;
-    public ticker: AvailableTickers = "sol";
+    public currency: AvailableTickers = "sol";
     public coinName: AvailableCoins = "Solana";
     static TRANSFER_FEE_LAMPORTS = 5000;
 

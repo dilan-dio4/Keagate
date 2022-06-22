@@ -1,5 +1,5 @@
 import GenericWallet from "../GenericWallet";
-import { AvailableCoins, AvailableTickers } from "../../currencies";
+import { AvailableTickers, AvailableCoins } from "@snow/common/src";
 export default class Solana extends GenericWallet {
     private connection;
     ticker: AvailableTickers;

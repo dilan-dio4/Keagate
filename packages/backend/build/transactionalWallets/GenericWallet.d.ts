@@ -1,13 +1,14 @@
-import { AvailableTickers, AvailableCoins } from "../currencies";
-import { PaymentStatusType, ClassPayment } from "../types";
+import { AvailableTickers, AvailableCoins, PaymentStatusType } from "@snow/common/src";
+import { ClassPayment } from "../types";
 export default abstract class GenericWallet {
     onDie: (id: string) => any;
-    ticker: AvailableTickers;
+    currency: AvailableTickers;
     coinName: AvailableCoins;
     protected _initialized: boolean;
     protected publicKey: string;
     protected privateKey: string;
     protected amount: number;
+    protected amountPaid: number;
     protected expiresAt: Date;
     protected createdAt: Date;
     protected updatedAt: Date;

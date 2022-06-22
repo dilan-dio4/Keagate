@@ -45,6 +45,7 @@ class GenericWallet {
         this.updatedAt = initObj.updatedAt;
         this.expiresAt = initObj.expiresAt;
         this.payoutTransactionHash = initObj.payoutTransactionHash;
+        this.amountPaid = initObj.amountPaid;
         this._initialized = true;
         return this;
     }
@@ -55,12 +56,13 @@ class GenericWallet {
             publicKey: publicKey,
             privateKey: privateKey,
             amount: amount,
+            amountPaid: 0,
             expiresAt: (0, dayjs_1.default)().add(+process.env.TRANSACTION_TIMEOUT, 'seconds').toDate(),
             createdAt: now,
             updatedAt: now,
             status: "WAITING",
             callbackUrl: callbackUrl,
-            currency: this.ticker
+            currency: this.currency
         };
         const { insertedId } = await db.collection('payments').insertOne(insertObj);
         return this.fromManual({
@@ -89,7 +91,8 @@ class GenericWallet {
             updatedAt: this.updatedAt,
             callbackUrl: this.callbackUrl,
             payoutTransactionHash: this.payoutTransactionHash,
-            currency: this.ticker
+            currency: this.currency,
+            amountPaid: this.amountPaid
         };
     }
     async checkTransaction() {
@@ -104,6 +107,7 @@ class GenericWallet {
             this._cashOut(confirmedBalance);
         }
         else if (confirmedBalance > 0) {
+            this.amountPaid = confirmedBalance;
             this._updateStatus("PARTIALLY_PAID");
         }
     }
@@ -112,11 +116,11 @@ class GenericWallet {
         this.status = status;
         this.updatedAt = (0, dayjs_1.default)().toDate();
         if (error) {
-            console.log(`Status updated on ${this.ticker} payment ${this.id} error: `, error);
+            console.log(`Status updated on ${this.currency} payment ${this.id} error: `, error);
             db.collection('payments').updateOne({ _id: new mongodb_1.ObjectId(this.id) }, { $set: { status, updatedAt: this.updatedAt, error } });
         }
         else {
-            console.log(`Status updated on ${this.ticker} payment ${this.id}: `, status);
+            console.log(`Status updated on ${this.currency} payment ${this.id}: `, status);
             db.collection('payments').updateOne({ _id: new mongodb_1.ObjectId(this.id) }, { $set: { status, updatedAt: this.updatedAt } });
         }
         if (this.callbackUrl) {

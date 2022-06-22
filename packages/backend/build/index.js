@@ -7,7 +7,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const path_1 = __importDefault(require("path"));
 dotenv_1.default.config({ path: path_1.default.join(__dirname, '..', '..', '..', '.env') });
 const fastify_1 = __importDefault(require("fastify"));
-const currencies_1 = __importDefault(require("./currencies"));
+const src_1 = require("@snow/common/src");
 const Dash_1 = __importDefault(require("./adminWallets/Dash"));
 const Litecoin_1 = __importDefault(require("./adminWallets/Litecoin"));
 const Solana_1 = __importDefault(require("./adminWallets/Solana"));
@@ -17,7 +17,8 @@ const mongoGenerator_1 = __importDefault(require("./mongoGenerator"));
 const createPayment_1 = __importDefault(require("./routes/createPayment"));
 const activePayments_1 = __importDefault(require("./routes/activePayments"));
 const paymentStatus_1 = __importDefault(require("./routes/paymentStatus"));
-const static_1 = __importDefault(require("@fastify/static"));
+const invoiceClient_1 = __importDefault(require("./routes/invoiceClient"));
+const invoiceStatus_1 = __importDefault(require("./routes/invoiceStatus"));
 const server = (0, fastify_1.default)({
     trustProxy: true,
     ajv: {
@@ -27,20 +28,13 @@ const server = (0, fastify_1.default)({
         }
     }
 });
-server.register(static_1.default, {
-    root: path_1.default.join(__dirname, '..', '..', 'invoice-client', 'dist'),
-    prefix: '/static-invoice'
-});
-server.get('/invoice/:ticker/:paymentId', (request, reply) => {
-    reply.sendFile('index.html');
-});
 const activePayments = {};
 let adminDashClient;
 let adminLtcClient;
 let adminSolClient;
-for (const k of Object.keys(currencies_1.default)) {
+for (const k of Object.keys(src_1.currencies)) {
     const ticker = k;
-    const coinName = currencies_1.default[ticker].name;
+    const coinName = src_1.currencies[ticker].name;
     const publicKey = process.env[`ADMIN_${ticker.toUpperCase()}_PUBLIC_KEY`];
     const privateKey = process.env[`ADMIN_${ticker.toUpperCase()}_PRIVATE_KEY`];
     if (!publicKey || !privateKey) {
@@ -69,6 +63,8 @@ function transactionIntervalRunner() {
         Object.values(activePayments).forEach(ele => ele.checkTransaction());
     }, +process.env.TRANSACTION_REFRESH_TIME);
 }
+(0, invoiceClient_1.default)(server);
+(0, invoiceStatus_1.default)(server);
 (0, createPayment_1.default)(server, activePayments);
 (0, activePayments_1.default)(server, activePayments);
 (0, paymentStatus_1.default)(server);

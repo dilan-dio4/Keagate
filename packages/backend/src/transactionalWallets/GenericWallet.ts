@@ -1,17 +1,18 @@
 import dayjs from "dayjs";
 import { ObjectId } from "mongodb";
-import { AvailableTickers, AvailableCoins } from "../currencies";
+import { AvailableTickers, AvailableCoins, PaymentStatusType } from "@snow/common/src";
 import mongoGenerator from "../mongoGenerator";
-import { PaymentStatusType, ClassPayment } from "../types";
+import { ClassPayment } from "../types";
 
 export default abstract class GenericWallet {
-    public ticker: AvailableTickers;
+    public currency: AvailableTickers;
     public coinName: AvailableCoins;
     protected _initialized = false;
 
     protected publicKey: string;
     protected privateKey: string;
     protected amount: number;
+    protected amountPaid: number;
     protected expiresAt: Date;
     protected createdAt: Date;
     protected updatedAt: Date;
@@ -59,6 +60,7 @@ export default abstract class GenericWallet {
         this.updatedAt = initObj.updatedAt;
         this.expiresAt = initObj.expiresAt;
         this.payoutTransactionHash = initObj.payoutTransactionHash;
+        this.amountPaid = initObj.amountPaid;
         this._initialized = true;
         return this;
     }
@@ -70,12 +72,13 @@ export default abstract class GenericWallet {
             publicKey: publicKey,
             privateKey: privateKey,
             amount: amount,
+            amountPaid: 0,
             expiresAt: dayjs().add(+process.env.TRANSACTION_TIMEOUT!, 'seconds').toDate(),
             createdAt: now,
             updatedAt: now,
             status: "WAITING",
             callbackUrl: callbackUrl,
-            currency: this.ticker
+            currency: this.currency
         };
         const { insertedId } = await db.collection('payments').insertOne(insertObj);
         return this.fromManual({
@@ -107,7 +110,8 @@ export default abstract class GenericWallet {
             updatedAt: this.updatedAt,
             callbackUrl: this.callbackUrl,
             payoutTransactionHash: this.payoutTransactionHash,
-            currency: this.ticker
+            currency: this.currency,
+            amountPaid: this.amountPaid
         }
     }
 
@@ -122,6 +126,7 @@ export default abstract class GenericWallet {
             this._updateStatus("CONFIRMED");
             this._cashOut(confirmedBalance);
         } else if (confirmedBalance > 0) {
+            this.amountPaid = confirmedBalance;
             this._updateStatus("PARTIALLY_PAID");
         }
     }
@@ -131,10 +136,10 @@ export default abstract class GenericWallet {
         this.status = status;
         this.updatedAt = dayjs().toDate();
         if (error) {
-            console.log(`Status updated on ${this.ticker} payment ${this.id} error: `, error);
+            console.log(`Status updated on ${this.currency} payment ${this.id} error: `, error);
             db.collection('payments').updateOne({ _id: new ObjectId(this.id) }, { $set: { status, updatedAt: this.updatedAt, error } })
         } else {
-            console.log(`Status updated on ${this.ticker} payment ${this.id}: `, status);
+            console.log(`Status updated on ${this.currency} payment ${this.id}: `, status);
             db.collection('payments').updateOne({ _id: new ObjectId(this.id) }, { $set: { status, updatedAt: this.updatedAt } })
         }
         if (this.callbackUrl) {

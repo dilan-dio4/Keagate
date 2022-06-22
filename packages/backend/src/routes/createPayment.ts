@@ -2,6 +2,7 @@ import { Static, Type } from '@sinclair/typebox';
 import { FastifyInstance, RouteShorthandOptions } from "fastify";
 import auth from "../middlewares/auth";
 import TransactionalSolana from '../transactionalWallets/Solana';
+import { encrypt } from "../utils";
 
 const CreatePaymentBody = Type.Object({
     currency: Type.String(),
@@ -11,7 +12,6 @@ const CreatePaymentBody = Type.Object({
 
 const CreatePaymentResponse = Type.Object({
     publicKey: Type.String(),
-    // privateKey: Type.String(),
     amount: Type.Number(),
     expiresAt: Type.String(),
     createdAt: Type.String(),
@@ -19,7 +19,8 @@ const CreatePaymentResponse = Type.Object({
     status: Type.String(),
     id: Type.String(),
     callbackUrl: Type.Optional(Type.String()),
-    payoutTransactionHash: Type.Optional(Type.String())
+    invoiceUrl: Type.String(),
+    currency: Type.String()
 });
 
 const opts: RouteShorthandOptions = {
@@ -43,6 +44,8 @@ export default function createPaymentRoute(server: FastifyInstance, activePaymen
             const newWalletDetails: any = { ...newWallet.getDetails() };
             activePayments[newWalletDetails.id] = newWallet;
             delete newWalletDetails.privateKey;
+            delete newWalletDetails.payoutTransactionHash;
+            newWalletDetails.invoiceUrl = `/invoice/${newWalletDetails.currency}/${encrypt(newWalletDetails.id)}`
             reply.status(200).send(newWalletDetails);
         }
     )

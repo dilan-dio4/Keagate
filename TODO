@@ -3,3 +3,4 @@
 * Callback HMAC
 * Docker
 * QR Code for invoice UI
+* Flexible expire timer UI in invoice client

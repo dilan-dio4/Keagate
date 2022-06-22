@@ -1,4 +1,4 @@
-import { AvailableTickers, AvailableCoins } from "../currencies";
+import { AvailableTickers, AvailableCoins } from "@snow/common/src";
 export default abstract class GenericWallet {
     publicKey: string;
     privateKey: string;
