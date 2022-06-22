@@ -3,9 +3,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const dotenv_1 = __importDefault(require("dotenv"));
+const dotenvDefaults_1 = __importDefault(require("./dotenvDefaults"));
 const path_1 = __importDefault(require("path"));
-dotenv_1.default.config({ path: path_1.default.join(__dirname, '..', '..', '..', '.env') });
+(0, dotenvDefaults_1.default)({
+    path: path_1.default.join(__dirname, '..', '..', '..', '.env'),
+    defaults: path_1.default.join(__dirname, '..', '..', '..', '.env.default')
+});
 const fastify_1 = __importDefault(require("fastify"));
 const src_1 = require("@snow/common/src");
 const auth_1 = __importDefault(require("./middlewares/auth"));

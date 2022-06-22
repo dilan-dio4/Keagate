@@ -1,6 +1,9 @@
-import dotenv from 'dotenv';
+import dotenvDefaultConfig from "./dotenvDefaults";
 import path from 'path';
-dotenv.config({ path: path.join(__dirname, '..', '..', '..', '.env') });
+dotenvDefaultConfig({ 
+    path: path.join(__dirname, '..', '..', '..', '.env'),
+    defaults: path.join(__dirname, '..', '..', '..', '.env.default')
+})
 import fastify from 'fastify';
 import { AvailableTickers, currencies } from "@snow/common/src";
 import GenericAdminWallet from "./adminWallets/GenericAdminWallet";
