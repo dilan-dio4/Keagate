@@ -1,6 +1,0 @@
-* Checkout interface via link (key being hash of _id)
-* API usage dashboard
-* Callback HMAC
-* Docker
-* QR Code for invoice UI
-* Flexible expire timer UI in invoice client

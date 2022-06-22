@@ -62,7 +62,7 @@ export default abstract class GenericWallet {
         const insertObj: Omit<ClassPayment, "id"> = {
             ...obj,
             amountPaid: 0,
-            expiresAt: dayjs().add(+process.env.TRANSACTION_TIMEOUT!, 'seconds').toDate(),
+            expiresAt: dayjs().add(+process.env.TRANSACTION_TIMEOUT!, 'milliseconds').toDate(),
             createdAt: now,
             updatedAt: now,
             status: "WAITING",
