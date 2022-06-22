@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc -p ./tsconfig.package.json",
-    "dev": "tsc -p ./tsconfig.package.json && node .",
+    "dev": "ts-node-dev --project ./tsconfig.package.json --respawn src/index.ts",
     "run": "npm run build && pm2 restart build/index.js --name \"Snow\" --time && pm2 save",
     "prepack": "tsc --project tsconfig.build.json",
     "clean": "shx rm -rf build package-lock.json node_modules"
