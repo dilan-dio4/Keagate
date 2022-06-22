@@ -17,6 +17,7 @@ const mongoGenerator_1 = __importDefault(require("./mongoGenerator"));
 const createPayment_1 = __importDefault(require("./routes/createPayment"));
 const activePayments_1 = __importDefault(require("./routes/activePayments"));
 const paymentStatus_1 = __importDefault(require("./routes/paymentStatus"));
+const static_1 = __importDefault(require("@fastify/static"));
 const server = (0, fastify_1.default)({
     trustProxy: true,
     ajv: {
@@ -25,6 +26,13 @@ const server = (0, fastify_1.default)({
             keywords: ['kind', 'modifier'],
         }
     }
+});
+server.register(static_1.default, {
+    root: path_1.default.join(__dirname, '..', '..', 'invoice-client', 'dist'),
+    prefix: '/static-invoice'
+});
+server.get('/invoice/:ticker/:paymentId', (request, reply) => {
+    reply.sendFile('index.html');
 });
 const activePayments = {};
 let adminDashClient;

@@ -14,6 +14,7 @@
   "dependencies": {
     "@blockfrost/blockfrost-js": "^4.1.0",
     "@dashevo/dashcore-lib": "^0.19.38",
+    "@fastify/static": "^6.4.0",
     "@sinclair/typebox": "^0.23.5",
     "@solana/web3.js": "^1.44.0",
     "bitcore-lib-ltc": "^8.25.30",

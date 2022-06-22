@@ -1,11 +1,12 @@
 {
   "name": "@snow/invoice-client",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc --project tsconfig.build.json && vite build",
+    "pureDev": "vite",
+    "dev": "tsc --project tsconfig.package.json && vite build --watch",
     "clean": "shx rm -rf build package-lock.json node_modules"
   },
   "dependencies": {
+    "@fastify/static": "^6.4.0",
     "clsx": "^1.1.1",
     "cross-fetch": "^3.1.5",
     "cryptocurrency-icons": "^0.18.0",

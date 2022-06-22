@@ -42,7 +42,7 @@ export default function Invoice() {
     blockchainDetails.push({ key: "Full Name", value: currencies[coin].name, Component: (props: any) => <span {...props} /> })
     blockchainDetails.push({ key: "Ticker", value: coin.toUpperCase(), Component: (props: any) => <span {...props} /> })
     blockchainDetails.push({ key: "Chain Explorer", value: currencies[coin].explorer, Component: (props: any) => <a {...props} href={currencies[coin].explorer} target="_blank" /> })
-    
+    console.log("HELLO")
     useAsyncEffect(async isMounted => {
         let _currUrl = window.location.href;
         if (_currUrl.endsWith("/")) {
@@ -80,7 +80,7 @@ export default function Invoice() {
                     <p className="font-bold">Blockchain Details</p>
                     {isBlockchainInfoOpen ? <FiChevronUp size={20} /> : <FiChevronDown size={20} />}
                 </div>
-                <div className={clsx(isBlockchainInfoOpen ? "h-[160px] border-x border-b rounded-b-md" : "h-0", "transition-all ease-in-out duration-200 overflow-hidden")}>
+                <div className={clsx(isBlockchainInfoOpen ? "h-[140px] border-x border-b rounded-b-md" : "h-0", "transition-all ease-in-out duration-200 overflow-hidden")}>
                     <div className="px-4 py-3">
                         {blockchainDetails.map(({ Component, ...ele }) => (
                             <span className="text-sm flex pb-2" key={ele.key}>

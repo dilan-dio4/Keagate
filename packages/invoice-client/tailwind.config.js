@@ -2,7 +2,9 @@
 const config = {
   content: [
     "./src/components/**/*.{js,ts,jsx,tsx}",
-    "node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}",
+    "./src/components/index.{js,ts,jsx,tsx}",
+    "./src/utils/**/*.{js,ts,jsx,tsx}",
+    "../../node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}",
     "./index.html"
   ],
   theme: {

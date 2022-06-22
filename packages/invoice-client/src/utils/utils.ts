@@ -1,5 +1,4 @@
-import customToast from "../components/customToast";
-
+import toast from "react-hot-toast";
 const isDev = process.env.NODE_ENV === 'development';
 
 const copyToClipboard = (value: string, successText: string) => {
@@ -13,19 +12,19 @@ const copyToClipboard = (value: string, successText: string) => {
         myInput.select();
         try {
             document.execCommand('copy');
-            customToast({ content: successText, type: "success" });
+            toast.success(successText);
         } catch (error) {
             console.error(error);
-            customToast({ content: 'Error copying', type: "error" })
+            toast.error('Error copying');
         } finally {
             document.body.removeChild(myInput);
         }
     } else {
         navigator.clipboard.writeText(value).then(() => {
-            customToast({ content: successText, type: "success" });
+            toast.success(successText)
         }, (error) => {
             console.error(error);
-            customToast({ content: 'Error copying', type: "error" })
+            toast.error('Error copying')
         });
     }
 }

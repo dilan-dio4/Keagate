@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import path from 'path';
-dotenv.config({ path: path.join(__dirname,'..', '..', '..', '.env') });
+dotenv.config({ path: path.join(__dirname, '..', '..', '..', '.env') });
 import fastify from 'fastify';
 import currencies, { AvailableTickers, AvailableWallets } from "./currencies";
 import AdminDash from "./adminWallets/Dash";
@@ -12,6 +12,7 @@ import mongoGenerator from "./mongoGenerator";
 import createPaymentRoute from './routes/createPayment';
 import createActivePaymentsRoute from './routes/activePayments';
 import createPaymentStatusRoute from './routes/paymentStatus';
+import fastifyStatic from "@fastify/static";
 
 const server = fastify({
     trustProxy: true,
@@ -22,6 +23,15 @@ const server = fastify({
         }
     }
 });
+
+server.register(fastifyStatic, {
+    root: path.join(__dirname, '..', '..', 'invoice-client', 'dist'),
+    prefix: '/static-invoice'
+})
+
+server.get('/invoice/:ticker/:paymentId', (request, reply) => {
+    reply.sendFile('index.html')
+})
 
 const activePayments: Record<string, TransactionalSolana> = {};
 
@@ -70,7 +80,7 @@ createPaymentStatusRoute(server);
 
 async function init() {
     const { db } = await mongoGenerator();
-    const _activeTransactions = await db.collection('payments').find({ status: { $nin : ["FINISHED", "EXPIRED", "FAILED"] } }).toArray();
+    const _activeTransactions = await db.collection('payments').find({ status: { $nin: ["FINISHED", "EXPIRED", "FAILED"] } }).toArray();
     for (const _currActiveTransaction of _activeTransactions) {
         switch (_currActiveTransaction.currency as AvailableTickers) {
             case "sol":
