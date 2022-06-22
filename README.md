@@ -1,11 +1,11 @@
-<br />
-
 <h2 align="center">
 🌨️ Snow – A High-Performance Cryptocurrency Payment Gateway
 </h2>
 
+<br />
+
 <h4 align="center">
-<b>🚧 This project is actively in development 🚧</b>
+  <b>🚧 This project is actively in development 🚧</b>
 </h4>
 
 <br />
