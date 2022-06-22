@@ -26,9 +26,45 @@ a {
 }
 
 .status-spinner {
-  @apply !text-indigo-600 !fill-white;
+  @apply  !text-indigo-600 !fill-white;
 }
 
-.alert-root > div {
-  @apply !py-3 !px-2;
+.alert-root>div {
+  @apply  !py-3 !px-2;
+}
+
+.dots-loader {
+  display: flex;
+  justify-content: center;
+}
+
+.dots-loader>div {
+  width: 16px;
+  height: 16px;
+  margin: 3px 6px;
+  border-radius: 50%;
+  background-color: #a3a1a1;
+  opacity: 1;
+}
+
+.dots-loader.flash-please>div {
+  animation: flash-one 0.6s infinite alternate;
+}
+
+@keyframes flash-one {
+  to {
+    opacity: 0.1;
+  }
+}
+
+.dots-loader>div:nth-child(1) {
+  animation-delay: 0.5s;
+}
+
+.dots-loader>div:nth-child(2) {
+  animation-delay: 0.7s;
+}
+
+.dots-loader>div:nth-child(3) {
+  animation-delay: 0.9s;
 }

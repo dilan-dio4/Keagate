@@ -14,8 +14,7 @@ import React, { useState, useEffect } from "react";
 import { copyToClipboard } from '../utils/utils';
 import useAsyncEffect from "use-async-effect";
 import { AvailableTickers, currencies, fGet, PaymentStatusType } from '@snow/common/src';
-import ReactPlaceholder from 'react-placeholder';
-import "react-placeholder/lib/reactPlaceholder.css";
+import ThreeDotsOverlay from "./ThreeDotsOverlay";
 
 export default function Invoice() {
     const isTransactionDead = false;
@@ -29,7 +28,7 @@ export default function Invoice() {
     }
 
     const [isBlockchainInfoOpen, setIsBlockchainInfoOpen] = useState<boolean>(false);
-    const [currency, setCurrency] = useState<AvailableTickers | "">("");
+    const [currency, setCurrency] = useState<AvailableTickers>();
     const [invoiceId, setInvoiceId] = useState<string>("");
     interface IInvoiceObject {
         amount: number;
@@ -40,14 +39,6 @@ export default function Invoice() {
         status: PaymentStatusType;
     }
     const [invoiceObject, setInvoiceObject] = useState<IInvoiceObject>();
-
-    const blockchainDetails: { key: string, value: string, Component: any }[] = [];
-    if (currency) {
-        currencies[currency]?.networkName && blockchainDetails.push({ key: "Network Name", value: currencies[currency].networkName, Component: (props: any) => <span {...props} /> })
-        blockchainDetails.push({ key: "Full Name", value: currencies[currency].name, Component: (props: any) => <span {...props} /> })
-        blockchainDetails.push({ key: "Ticker", value: currency.toUpperCase(), Component: (props: any) => <span {...props} /> })
-        blockchainDetails.push({ key: "Chain Explorer", value: currencies[currency].explorer, Component: (props: any) => <a {...props} href={currencies[currency].explorer} target="_blank" /> })
-    }
 
     useEffect(() => {
         const params = window.location.pathname.split('/');
@@ -70,6 +61,17 @@ export default function Invoice() {
         return () => clearInterval(interval);
     }, [])
 
+
+    if (!invoiceObject || !currency) {
+        return <ThreeDotsOverlay showDots flashDots />
+    }
+
+    const blockchainDetails: { key: string, value: string, Component: any }[] = [];
+    currencies[currency]?.networkName && blockchainDetails.push({ key: "Network Name", value: currencies[currency].networkName, Component: (props: any) => <span {...props} /> })
+    blockchainDetails.push({ key: "Full Name", value: currencies[currency].name, Component: (props: any) => <span {...props} /> })
+    blockchainDetails.push({ key: "Ticker", value: currency.toUpperCase(), Component: (props: any) => <span {...props} /> })
+    blockchainDetails.push({ key: "Chain Explorer", value: currencies[currency].explorer, Component: (props: any) => <a {...props} href={currencies[currency].explorer} target="_blank" /> })
+
     return (
         <div className="overflow-hidden max-w-full mx-auto sm:my-14 sm:border sm:rounded-lg sm:max-w-[500px]">
             <div className="bg-indigo-500 text-center py-2.5 text-white">
@@ -80,19 +82,15 @@ export default function Invoice() {
             </div>
             <div className="border-b flex justify-between items-center py-4 px-5">
                 <div className="flex items-center">
-                    <ReactPlaceholder type='round' showLoadingAnimation ready={!!currency} style={{ width: 50, height: 50 }}>
-                        {currencyToIcon[currency]}
-                    </ReactPlaceholder>
+                    {currencyToIcon[currency]}
                     <div className="ml-2">
                         <p className="tracking-tight"><b>Invoice</b></p>
-                        <ReactPlaceholder type="text" ready={!!invoiceObject} showLoadingAnimation style={{ width: 50 }}>
-                            <p 
-                                className="text-slate-600 cursor-pointer hover:text-slate-800 tracking-tight"
-                                onClick={_ => copyToClipboard(invoiceId, "Copied invoice ID to clipboard")}
-                            >
-                                {invoiceId.slice(0, 3)}{String.fromCharCode(8230)}{invoiceId.slice(-3)}
-                            </p>
-                        </ReactPlaceholder>
+                        <p
+                            className="text-slate-600 cursor-pointer hover:text-slate-800 tracking-tight"
+                            onClick={_ => copyToClipboard(invoiceId, "Copied invoice ID to clipboard")}
+                        >
+                            {invoiceId.slice(0, 3)}{String.fromCharCode(8230)}{invoiceId.slice(-3)}
+                        </p>
                     </div>
                 </div>
                 <div>
@@ -124,14 +122,12 @@ export default function Invoice() {
                 <div className="rounded-md bg-white py-5">
                     <div className="text-center px-4">
                         <p className="tracking-tight mb-0.5">Amount:</p>
-                        <ReactPlaceholder type="text" showLoadingAnimation ready={!!invoiceObject} style={{ width: 50, height: 10 }}>
-                            <p
-                                className={clsx("text-lg font-bold transition-colors", isTransactionDead ? "text-gray-400" : "text-black cursor-pointer hover:text-gray-500")}
-                                onClick={_ => !isTransactionDead && copyToClipboard("" + payAmount, "Copied value to clipboard")}
-                            >
-                                {payAmount} {currency.toUpperCase()} {!isTransactionDead && <BiCopy className="inline-block mb-1" size={16} />}
-                            </p>
-                        </ReactPlaceholder>
+                        <p
+                            className={clsx("text-lg font-bold transition-colors", isTransactionDead ? "text-gray-400" : "text-black cursor-pointer hover:text-gray-500")}
+                            onClick={_ => !isTransactionDead && copyToClipboard("" + payAmount, "Copied value to clipboard")}
+                        >
+                            {payAmount} {currency.toUpperCase()} {!isTransactionDead && <BiCopy className="inline-block mb-1" size={16} />}
+                        </p>
                     </div>
                     <div className="h-[1px] bg-slate-200 my-5 mx-5"></div>
                     <div className="text-center px-4">
