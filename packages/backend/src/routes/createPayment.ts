@@ -2,7 +2,6 @@ import { Static, Type } from '@sinclair/typebox';
 import { FastifyInstance, RouteShorthandOptions } from "fastify";
 import auth from "../middlewares/auth";
 import GenericTransactionalWallet from "../transactionalWallets/GenericTransactionalWallet";
-import TransactionalSolana from '../transactionalWallets/Solana';
 import { encrypt } from "../utils";
 import currenciesToWallets from "../currenciesToWallets";
 import { AvailableTickers } from "@snow/common";

@@ -2,8 +2,6 @@
 🌨️ Snow – A High-Performance Cryptocurrency Payment Gateway
 </h2>
 
-<br />
-
 <h4 align="center">
   <b>🚧 This project is actively in development 🚧</b>
 </h4>
@@ -84,3 +82,35 @@ Snow requires some configuration, all done through the `.env` file in the root o
 | `MONGO_CONNECTION_STRING` | Connection string for mongodb instance, which is installed automatically with docker | No | mongodb://localhost:27017 |
 | `MONGO_SNOW_DB` | Mongo database to use for storing/managing payments | No | snow |
 | `TESTNETS` | **For development only**. Turn on testnets for given currencies | No | false |
+
+# Development
+
+Development experience and extensibility are a high priority for this package.
+
+1. Git clone this package.
+2. `cd Snow && npm i`
+3. Add a mongoDB connection to the `MONGO_CONNECTION_STRING` .env parameters. For development, the [Mongo Atlas free tier](https://www.mongodb.com/cloud/atlas/signup) works great.
+4. `npm run dev` to start the invoice client and backend.
+    * Any changes in `packages/invoice-client/src` will be automatically reflected on refresh.
+    * Any changes to the source of `packages/backend/src` will be reflected automatically via `ts-node-dev`.
+
+### Adding a currency
+
+There's four steps in adding a currency to this package.
+
+1. Add the ticker, along with some metadata, to the currencies type in [packages/common/src/currencies.ts](packages/common/src/currencies.ts).
+2. Create the admin wallet. This is where payments are finally sent to and presumably the real wallet of the client. Note that the admin wallet can also be used to programmatically send transactions as well.
+    * Start by taking a look at [Solana's admin wallet](packages/backend/src/adminWallets/Solana/index.ts) and note that you only need to implement two functions: `getBalance` and `sendTransaction`. The class that admin wallets inherit from, [GenericAdminWallet](packages/backend/src/adminWallets/GenericAdminWallet.ts), handles the rest.
+3. Create the transactional wallet. This class can be thought of a payment, since a new one is created for every payment, along with a new Public Key and Private Key. Transactional wallets, and their associated payment data, are stored in Mongo.
+    1. Start by taking a look at [Solana's transactional wallet](packages/backend/src/transactionalWallets/Solana/index.ts) and note that you only need to implement three functions: `fromNew`, `getBalance` and `_cashOut`. The class that transactional wallets inherit from, [GenericTransactionalWallet](packages/backend/src/transactionalWallets/GenericTransactionalWallet.ts), handles the rest.  
+4. Add both the transactional and admin wallet classes to [packages/backend/src/currenciesToWallets.ts](packages/backend/src/currenciesToWallets.ts) so it can be referred to by ticker across the project
+
+### Adding an API route
+
+### Customizing the invoice interface
+
+The invoice client is a statically built React package (via Vite). This static build is served in `backend`. This functionality can be seen [here](packages/backend/src/routes/invoiceClient.ts).
+
+Editing the react package will automatically build to `dist`, so just refresh the page to see the changes.
+
+The source code in invoice client is pretty straight-forward, so anyone familiar with React (& TailwindCSS) should have an easy time making their desired alterations.
