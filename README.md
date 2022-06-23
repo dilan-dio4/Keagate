@@ -61,7 +61,7 @@ TODO Create Dockerfile (Nginx, Mongo no external, Node, Npm)
 
 ## Usage
 
-Snow requires some configuration. Create a file called `.env` in the project root to edit of the parameters below. Use the provided `.env.default` file as a reference (your `.env` will override these).
+Snow requires some configuration. Create a file called `local.json` in `/config`, next to `default.json`, to edit of the parameters below. Use the provided `default.json` file as a reference (your `local.json` will override these).
 
 | Key                              | Description                    | Required | Default |
 |----------------------------------|----------------------------|----------------------------------|--|
