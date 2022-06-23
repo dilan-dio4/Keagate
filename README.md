@@ -80,20 +80,19 @@ Make sure that one of the available API providers cover each currency you plan o
 
 Snow requires some configuration. Create a file called `local.json` in `/config`, next to `default.json`, to edit of the parameters below. Use the provided `default.json` file as a reference (your `local.json` will override these).
 
+To configure a single currency, add an object with the key of the currencies ticker with the following attributes:
+
 | Key                              | Description                    | Required | Default |
 |----------------------------------|----------------------------|----------------------------------|--|
-| `ADMIN_DASH_PUBLIC_KEY`             | Public key (address) of Dash admin wallet    | **Yes** | *null* {string) |
-| `ADMIN_DASH_PRIVATE_KEY`         | Private key of Dash admin wallet. Used for programmatically sending transactions from admin   | No |  *null* (string) |
-| `DASH_RPC_URL`           | URL of Dash RPC, such as ([getblock.io](getblock.io)). | **Yes** | *null* (string) |
-| `DASH_RPC_API_KEY`         | Optional API key to the Dash RPC  | No | *null* (string) |
-| `ADMIN_LTC_PUBLIC_KEY`             | Public key (address) of Litecoin admin wallet    | **Yes** | *null* (string) |
-| `ADMIN_LTC_PRIVATE_KEY`         | Private key of Litecoin admin wallet. Used for programmatically sending transactions from admin   | No | *null* (string) |
-| `LTC_RPC_URL`           | URL of Litecoin RPC, such as ([getblock.io](getblock.io)). | **Yes** | *null* (string) |
-| `LTC_RPC_API_KEY`         | Optional API key to the Litecoin RPC  | No | *null* (string) |
-| `ADMIN_SOL_PUBLIC_KEY`             | Public key (address) of Solana admin wallet    | **Yes** | *null* (string) |
-| `ADMIN_SOL_PRIVATE_KEY`         | Private key of Solana admin wallet. Used for programmatically sending transactions from admin   | No | *null* (string) |
-| `SOL_RPC_URL`           | URL of Solana RPC. | No | https://api.mainnet-beta.solana.com (string) |
-| `SOL_RPC_API_KEY`         | Optional API key to the Solana RPC  | No | *null* (string) |
+| `ADMIN_PUBLIC_KEY`             | Public key (address) of Litecoin admin wallet    | **Yes** | *null* (string) |
+| `ADMIN_PRIVATE_KEY`         | Private key of Litecoin admin wallet. Used for programmatically sending transactions from admin   | No | *null* (string) |
+| `PROVIDER`           | The `id` of a provider in packages/api-providers. | **Yes except SOL** | *null* ([AvailableProvider](packages/api-providers/src/index.ts)) |
+| `PROVIDER_PARAMS`         | Parameters for a particular provider's constructor. Could be [API_KEY, REGION] like [Tatum](packages/api-providers/src/TatumProvider.ts) | No | *null* (string[]) |
+
+Other root configuration options:
+
+| Key                              | Description                    | Required | Default |
+|----------------------------------|----------------------------|----------------------------------|--|
 | `SNOW_API_KEY`         | Custom key that will be required in the administrative requests `snow-api-key` requests to Snow | No | *null* (string) |
 | `IP_WHITELIST`         | List of IP address ["1.1.1.1" , "2.2.2.2",...] to be whitelisted for administrative requests | No | [] (string[]) |
 | `TRANSACTION_TIMEOUT` | Milliseconds for which a transaction will be valid for  | No | 1200000 [20 Minutes] (number) |
@@ -103,6 +102,22 @@ Snow requires some configuration. Create a file called `local.json` in `/config`
 | `MONGO_SNOW_DB` | Mongo database to use for storing/managing payments | No | snow (string) |
 | `USE_SO_CHAIN` | [SoChain](https://sochain.com/api/#introduction) is a free blockchain infrastructure API for that allows for 300 requests/minute free-of-charge.<br /><br />Setting this to `true` will utilize SoChain for part of the btc, dash, and ltc payment process. **Recommended** | No | true (boolean) |
 | `TESTNETS` | **For development only**. Turn on testnets for given currencies | No | false (boolean) |
+
+Your `config/local.json` could look something like:
+
+```json
+    "dash": {
+        "ADMIN_PUBLIC_KEY": "MY_WALLET_ADDRESS",
+        "ADMIN_PRIVATE_KEY": "MY_PRIVATE_KEY",
+        "PROVIDER": "NowNodes",
+        "PROVIDER_PARAMS": ["MY_API_KEY"]
+    },
+
+    "SNOW_API_KEY": "abcd123",
+    "IP_WHITELIST": ["1.1.1.1","2.2.2.2"]
+    // ...
+
+```
 
 # Development
 

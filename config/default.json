@@ -1,12 +1,22 @@
 {
-    "ADMIN_DASH_PUBLIC_KEY": "",
-    "ADMIN_DASH_PRIVATE_KEY": "",
+    "ltc": {
+        "ADMIN_PUBLIC_KEY": "",
+        "ADMIN_PRIVATE_KEY": "",
+        "PROVIDER": "",
+        "PROVIDER_PARAMS": []
+    },
+    
+    "dash": {
+        "ADMIN_PUBLIC_KEY": "",
+        "ADMIN_PRIVATE_KEY": "",
+        "PROVIDER": "",
+        "PROVIDER_PARAMS": []
+    },
 
-    "ADMIN_LTC_PUBLIC_KEY": "",
-    "ADMIN_LTC_PRIVATE_KEY": "",
-
-    "ADMIN_SOL_PUBLIC_KEY": "",
-    "ADMIN_SOL_PRIVATE_KEY": "",
+    "sol": {
+        "ADMIN_PUBLIC_KEY": "",
+        "ADMIN_PRIVATE_KEY": ""
+    },
 
     "SNOW_API_KEY": "",
     "IP_WHITELIST": [],

@@ -2,17 +2,17 @@
 import path from 'path';
 process.env["NODE_CONFIG_DIR"] = path.join(__dirname, '..', '..', '..', 'config/'); // Must be in this order
 import config from 'config';
+import { AvailableProviders } from '@snow/api-providers/src';
+import { AvailableTickers } from '@snow/common/src';
 
-interface MyConfig {
-    ADMIN_DASH_PUBLIC_KEY?: string;
-    ADMIN_DASH_PRIVATE_KEY?: string;
+type MyCurrencyConfig = Partial<Record<AvailableTickers, {
+  "ADMIN_PUBLIC_KEY": string;
+  "ADMIN_PRIVATE_KEY": string;
+  "PROVIDER": AvailableProviders;
+  "PROVIDER_PARAMS": any[];
+}>>
 
-    ADMIN_LTC_PUBLIC_KEY?: string;
-    ADMIN_LTC_PRIVATE_KEY?: string;
-
-    ADMIN_SOL_PUBLIC_KEY?: string;
-    ADMIN_SOL_PRIVATE_KEY?: string;
-
+interface MyConfig extends MyCurrencyConfig{
     SNOW_API_KEY?: string;
     IP_WHITELIST: string[];
 

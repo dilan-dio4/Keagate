@@ -27,8 +27,8 @@ const activePayments: Record<string, GenericTransactionalWallet> = {};
 for (const k of Object.keys(currencies)) {
     const _currency = k as AvailableTickers;
     const coinName = currencies[_currency].name;
-    const publicKey: string = config.get(`ADMIN_${_currency.toUpperCase()}_PUBLIC_KEY`);
-    const privateKey: string = config.get(`ADMIN_${_currency.toUpperCase()}_PRIVATE_KEY`);
+    const publicKey: string = config.getTyped(_currency).ADMIN_PUBLIC_KEY;
+    const privateKey: string = config.getTyped(_currency).ADMIN_PRIVATE_KEY;
 
     if (!publicKey || !privateKey) {
         console.error(`No admin public key and private key found for currency ${_currency}`);

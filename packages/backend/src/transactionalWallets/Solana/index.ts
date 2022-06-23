@@ -47,7 +47,7 @@ export default class TransactionalSolana extends GenericTransactionalWallet {
         const transaction = new Transaction().add(
             SystemProgram.transfer({
                 fromPubkey: adminKeypair.publicKey,
-                toPubkey: new PublicKey(config.getTyped('ADMIN_SOL_PUBLIC_KEY')),
+                toPubkey: new PublicKey(config.getTyped('sol').ADMIN_PUBLIC_KEY),
                 lamports: Math.round(balance * LAMPORTS_PER_SOL) - TransactionalSolana.TRANSFER_FEE_LAMPORTS,
             })
         );
