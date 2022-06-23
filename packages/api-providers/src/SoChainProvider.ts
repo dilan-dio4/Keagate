@@ -1,6 +1,5 @@
 import GenericProvider from "./GenericProvider";
 import { AvailableTickers, fGet } from "@snow/common/src";
-import Big from 'big.js';
 
 // https://documenter.getpostman.com/view/13630829/TVmFkLwy#cebd6a63-13bc-4ba1-81f7-360c88871b90
 

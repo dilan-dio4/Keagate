@@ -1,4 +1,4 @@
-import { AvailableTickers } from "@snow/common";
+import { AvailableTickers } from "@snow/common/src";
 
 export default abstract class GenericProvider {
     public supportedCurrencies: AvailableTickers[];

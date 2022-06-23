@@ -25,8 +25,9 @@ const server = fastify({
 
 const activePayments: Record<string, GenericTransactionalWallet> = {};
 
-for (const k of Object.keys(currencies)) {
-    const _currency = k as AvailableTickers;
+const enabledCurrencies = Object.keys(currencies).filter(ele => !!config.has(ele) && !!config.getTyped(ele as AvailableTickers).ADMIN_PUBLIC_KEY) as AvailableTickers[];
+
+for (const _currency of enabledCurrencies) {
     const coinName = currencies[_currency].name;
     const publicKey: string = config.getTyped(_currency).ADMIN_PUBLIC_KEY;
     const privateKey: string = config.getTyped(_currency).ADMIN_PRIVATE_KEY;
@@ -39,7 +40,7 @@ for (const k of Object.keys(currencies)) {
     const adminWalletParams = [
         publicKey,
         privateKey,
-        new idsToProviders[config.getTyped(_currency).PROVIDER](config.getTyped(_currency).PROVIDER_PARAMS)
+        config.getTyped(_currency).PROVIDER ? new idsToProviders[config.getTyped(_currency).PROVIDER](config.getTyped(_currency).PROVIDER_PARAMS) : undefined
     ] as const;
 
     let currentClient: GenericAdminWallet;
