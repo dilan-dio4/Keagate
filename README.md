@@ -105,7 +105,7 @@ Other root configuration options:
 
 Your `config/local.json` could look something like:
 
-```json
+```js
     "dash": {
         "ADMIN_PUBLIC_KEY": "MY_WALLET_ADDRESS",
         "ADMIN_PRIVATE_KEY": "MY_PRIVATE_KEY",
