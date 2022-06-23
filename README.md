@@ -106,17 +106,18 @@ Other root configuration options:
 Your `config/local.json` could look something like:
 
 ```js
-    "dash": {
-        "ADMIN_PUBLIC_KEY": "MY_WALLET_ADDRESS",
-        "ADMIN_PRIVATE_KEY": "MY_PRIVATE_KEY",
-        "PROVIDER": "NowNodes",
-        "PROVIDER_PARAMS": ["MY_API_KEY"]
-    },
+{
+  "dash": {
+    "ADMIN_PUBLIC_KEY": "MY_WALLET_ADDRESS",
+    "ADMIN_PRIVATE_KEY": "MY_PRIVATE_KEY",
+    "PROVIDER": "NowNodes",
+    "PROVIDER_PARAMS": ["MY_API_KEY"]
+  },
 
-    "SNOW_API_KEY": "abcd123",
-    "IP_WHITELIST": ["1.1.1.1","2.2.2.2"]
-    // ...
-
+  "SNOW_API_KEY": "abcd123",
+  "IP_WHITELIST": ["1.1.1.1","2.2.2.2"]
+  // ...
+}
 ```
 
 # Development
