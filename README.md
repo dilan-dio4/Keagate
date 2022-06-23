@@ -95,7 +95,7 @@ Snow requires some configuration. Create a file called `local.json` in `/config`
 | `SOL_RPC_URL`           | URL of Solana RPC. | No | https://api.mainnet-beta.solana.com (string) |
 | `SOL_RPC_API_KEY`         | Optional API key to the Solana RPC  | No | *null* (string) |
 | `SNOW_API_KEY`         | Custom key that will be required in the administrative requests `snow-api-key` requests to Snow | No | *null* (string) |
-| `IP_WHITELIST`         | List of IP address (1.1.1.1,2.2.2.2,...) to be whitelisted for administrative requests | No | *null* (string[]) |
+| `IP_WHITELIST`         | List of IP address ["1.1.1.1" , "2.2.2.2",...] to be whitelisted for administrative requests | No | [] (string[]) |
 | `TRANSACTION_TIMEOUT` | Milliseconds for which a transaction will be valid for  | No | 1200000 [20 Minutes] (number) |
 | `TRANSACTION_REFRESH_TIME` | Milliseconds for which each active transaction will be re-scanned | No | 10000 [10 Seconds] (number) |
 | `TRANSACTION_SLIPPAGE_TOLERANCE` | Percentage of a payment that discounted as from a total payment.<br /><br />Example: a TRANSACTION_SLIPPAGE_TOLERANCE of 0.02 for a 100 SOL payment will be fulfilled at 98 SOL. | No | 0.02 (number) |

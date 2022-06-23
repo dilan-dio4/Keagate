@@ -4,6 +4,7 @@ import { ReactComponent as SolIcon } from 'cryptocurrency-icons/svg/color/sol.sv
 import { ReactComponent as LtcIcon } from 'cryptocurrency-icons/svg/color/ltc.svg';
 import { ReactComponent as AdaIcon } from 'cryptocurrency-icons/svg/color/ada.svg';
 import { ReactComponent as DashIcon } from 'cryptocurrency-icons/svg/color/dash.svg';
+import { ReactComponent as XrpIcon } from 'cryptocurrency-icons/svg/color/xrp.svg';
 
 import { BiTimer, BiCopy } from 'react-icons/bi';
 import { FiChevronUp, FiChevronDown } from 'react-icons/fi';
@@ -12,7 +13,7 @@ import dayjs from "dayjs";
 import clsx from 'clsx';
 import React, { useState, useEffect } from "react";
 import { copyToClipboard } from '../utils/utils';
-import useAsyncEffect from "use-async-effect";
+// import useAsyncEffect from "use-async-effect";
 import { AvailableTickers, currencies, fGet, PaymentStatusType } from '@snow/common/src';
 import ThreeDotsOverlay from "./ThreeDotsOverlay";
 
@@ -20,7 +21,10 @@ export default function Invoice() {
     const currencyToIcon: Record<AvailableTickers, React.ReactChild> = {
         dash: <DashIcon width={50} height={50} />,
         ltc: <LtcIcon width={50} height={50} />,
-        sol: <SolIcon width={50} height={50} />
+        sol: <SolIcon width={50} height={50} />,
+        ada: <AdaIcon width={50} height={50} />,
+        btc: <BtcIcon width={50} height={50} />,
+        xrp: <XrpIcon width={50} height={50} />
     }
 
     const [isBlockchainInfoOpen, setIsBlockchainInfoOpen] = useState<boolean>(false);
@@ -50,6 +54,7 @@ export default function Invoice() {
         async function runner() {
             const _invoiceObj = await fGet(`/getInvoiceStatus?invoiceId=${_invoiceId}`) as IInvoiceObject;
             setInvoiceObject(_invoiceObj);
+            document.title = `Payment ${_invoiceObj.status.toLowerCase().replace('_', ' ')}`;
             if (_invoiceObj.status === "CONFIRMED" || _invoiceObj.status === "FAILED" || _invoiceObj.status === "FINISHED") {
                 clearInterval(interval);
                 setIsTransactionDead(true);
@@ -68,11 +73,13 @@ export default function Invoice() {
         return <ThreeDotsOverlay showDots flashDots />
     }
 
-    const blockchainDetails: { key: string, value: string, Component: any }[] = [];
-    currencies[currency]?.networkName && blockchainDetails.push({ key: "Network Name", value: currencies[currency].networkName, Component: (props: any) => <span {...props} /> })
-    blockchainDetails.push({ key: "Full Name", value: currencies[currency].name, Component: (props: any) => <span {...props} /> })
-    blockchainDetails.push({ key: "Ticker", value: currency.toUpperCase(), Component: (props: any) => <span {...props} /> })
-    blockchainDetails.push({ key: "Chain Explorer", value: currencies[currency].explorer, Component: (props: any) => <a {...props} href={currencies[currency].explorer} target="_blank" /> })
+    const blockchainDetails: { key: string, value: string, Component: React.FC }[] = [];
+    type SpanProps = React.DetailedHTMLProps<React.HTMLAttributes<HTMLSpanElement>, HTMLSpanElement>;
+    type AProps = React.DetailedHTMLProps<React.AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement>;
+    currencies[currency]?.networkName && blockchainDetails.push({ key: "Network Name", value: currencies[currency].networkName, Component: (props: SpanProps) => <span {...props} /> })
+    blockchainDetails.push({ key: "Full Name", value: currencies[currency].name, Component: (props: SpanProps) => <span {...props} /> })
+    blockchainDetails.push({ key: "Ticker", value: currency.toUpperCase(), Component: (props: SpanProps) => <span {...props} /> })
+    blockchainDetails.push({ key: "Chain Explorer", value: currencies[currency].explorer, Component: (props: AProps) => <a {...props} href={currencies[currency].explorer} target="_blank" /> })
 
     function getSpinnerText(): string {
         switch (invoiceObject.status) {
