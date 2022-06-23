@@ -24,6 +24,18 @@ const currenciesToWallets: Record<AvailableTickers, { Admin: ConcreteConstructor
     "dash": {
         Admin: AdminDash,
         Transactional: null
+    },
+    "ada": {
+        Admin: undefined,
+        Transactional: undefined
+    },
+    "btc": {
+        Admin: undefined,
+        Transactional: undefined
+    },
+    "xrp": {
+        Admin: undefined,
+        Transactional: undefined
     }
 }
 

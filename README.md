@@ -142,3 +142,15 @@ Editing the react package will automatically build to `dist`, so just refresh th
 The source code in invoice client is pretty straight-forward, so anyone familiar with React (& TailwindCSS) should have an easy time making their desired alterations.
 
 </details>
+
+### Adding a blockchain API provider
+
+</summary>
+
+The invoice client is a statically built React package (via Vite). This static build is served in `backend`. This functionality can be seen [here](packages/backend/src/routes/invoiceClient.ts).
+
+Editing the react package will automatically build to `dist`, so just refresh the page to see the changes.
+
+The source code in invoice client is pretty straight-forward, so anyone familiar with React (& TailwindCSS) should have an easy time making their desired alterations.
+
+</details>

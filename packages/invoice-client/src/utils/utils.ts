@@ -1,7 +1,6 @@
 import toast from "react-hot-toast";
-const isDev = process.env.NODE_ENV === 'development';
 
-const copyToClipboard = (value: string, successText: string) => {
+export const copyToClipboard = (value: string, successText: string) => {
     if (!navigator.clipboard) {
         const myInput = document.createElement('input');
         myInput.setAttribute('value', value);
@@ -28,8 +27,3 @@ const copyToClipboard = (value: string, successText: string) => {
         });
     }
 }
-
-export {
-    isDev,
-    copyToClipboard
-};

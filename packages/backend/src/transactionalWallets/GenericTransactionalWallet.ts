@@ -3,6 +3,7 @@ import { ObjectId } from "mongodb";
 import { AvailableTickers, AvailableCoins, PaymentStatusType } from "@snow/common/src";
 import mongoGenerator from "../mongoGenerator";
 import { ClassPayment, IFromNew } from "../types";
+import config from "../config";
 
 export default abstract class GenericTransactionalWallet {
     public currency: AvailableTickers;
@@ -62,7 +63,7 @@ export default abstract class GenericTransactionalWallet {
         const insertObj: Omit<ClassPayment, "id"> = {
             ...obj,
             amountPaid: 0,
-            expiresAt: dayjs().add(+process.env.TRANSACTION_TIMEOUT!, 'milliseconds').toDate(),
+            expiresAt: dayjs().add(config.getTyped('TRANSACTION_TIMEOUT'), 'milliseconds').toDate(),
             createdAt: now,
             updatedAt: now,
             status: "WAITING",
@@ -117,7 +118,7 @@ export default abstract class GenericTransactionalWallet {
             return;
         }
         const { result: { confirmedBalance } } = await this.getBalance();
-        if (confirmedBalance >= (this.amount * (1 - +process.env.TRANSACTION_SLIPPAGE_TOLERANCE!)) && this.status !== "CONFIRMED") {
+        if (confirmedBalance >= (this.amount * (1 - config.getTyped('TRANSACTION_SLIPPAGE_TOLERANCE'))) && this.status !== "CONFIRMED") {
             this._updateStatus({ status: "CONFIRMED" });
             this._cashOut(confirmedBalance);
         } else if (confirmedBalance > 0 && this.amountPaid !== confirmedBalance) {

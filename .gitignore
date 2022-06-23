@@ -47,3 +47,4 @@ yarn-error.log*
 **/tsconfig.package.tsbuildinfo
 **/build/
 **/dist/
+config/local.json

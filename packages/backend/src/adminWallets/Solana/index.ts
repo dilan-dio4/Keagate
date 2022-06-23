@@ -2,6 +2,7 @@ import { Connection, clusterApiUrl, PublicKey, Keypair, Transaction, SystemProgr
 import GenericAdminWallet from "../GenericAdminWallet";
 import base58 from "bs58";
 import { AvailableTickers, AvailableCoins } from "@snow/common/src";
+import config from "../../config";
 
 export default class AdminSolana extends GenericAdminWallet {
     private connection: Connection;
@@ -10,7 +11,7 @@ export default class AdminSolana extends GenericAdminWallet {
 
     constructor(...args: ConstructorParameters<typeof GenericAdminWallet>) {
         super(...args);
-        this.connection = new Connection(clusterApiUrl("mainnet-beta"), "confirmed");
+        this.connection = new Connection(clusterApiUrl(config.getTyped('TESTNETS') ? "devnet" : "mainnet-beta"), "confirmed");
     }
 
     async getBalance() {

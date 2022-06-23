@@ -9,6 +9,9 @@
         },
         {
             "path": "./packages/invoice-client/tsconfig.package.json",
+        },
+        {
+            "path": "./packages/api-providers/tsconfig.package.json",
         }
     ]
 }

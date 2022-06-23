@@ -1,7 +1,6 @@
 import GenericAdminWallet from "../GenericAdminWallet";
-import { convertChainsoToNativeUtxo } from '../../utils';
 import { Transaction } from 'bitcore-lib-ltc';
-import { AvailableCoins, AvailableTickers, fGet, fPost } from "@snow/common/src";
+import { AvailableCoins, AvailableTickers, fGet, fPost, convertChainsoToNativeUtxo } from "@snow/common/src";
 
 export default class AdminLitecoin extends GenericAdminWallet {
     private mediumGasFee: number;
@@ -33,7 +32,7 @@ export default class AdminLitecoin extends GenericAdminWallet {
             throw new Error("Gathering gas fees");
         }
 
-        const { data: { txs } } = await fGet(`https://chain.so/api/v2/get_tx_unspent/LTC/${this.publicKey}`);
+        const { data: { txs } } = await fGet(`https://chain.so/api/v2/get_tx_unspent/LTC/${this.publicKey}`); // TODO API-providers
 
         let totalBalance = 0;
         for (const currUtxo of txs) {

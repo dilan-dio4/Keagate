@@ -3,6 +3,7 @@ import { Connection, clusterApiUrl, PublicKey, Keypair, Transaction, SystemProgr
 import { AvailableCoins, AvailableTickers } from "@snow/common/src";
 import base58 from "bs58";
 import { IFromNew } from "../../types";
+import config from "../../config";
 
 export default class TransactionalSolana extends GenericTransactionalWallet {
     private connection: Connection;
@@ -12,7 +13,7 @@ export default class TransactionalSolana extends GenericTransactionalWallet {
 
     constructor(...args: ConstructorParameters<typeof GenericTransactionalWallet>) {
         super(...args);
-        this.connection = new Connection(clusterApiUrl(process.env.TESTNETS ? "devnet" : "mainnet-beta"), "confirmed");
+        this.connection = new Connection(clusterApiUrl(config.getTyped('TESTNETS') ? "devnet" : "mainnet-beta"), "confirmed");
     }
 
     async fromNew(obj: IFromNew) {
@@ -46,7 +47,7 @@ export default class TransactionalSolana extends GenericTransactionalWallet {
         const transaction = new Transaction().add(
             SystemProgram.transfer({
                 fromPubkey: adminKeypair.publicKey,
-                toPubkey: new PublicKey(process.env.ADMIN_SOL_PUBLIC_KEY!),
+                toPubkey: new PublicKey(config.getTyped('ADMIN_SOL_PUBLIC_KEY')),
                 lamports: Math.round(balance * LAMPORTS_PER_SOL) - TransactionalSolana.TRANSFER_FEE_LAMPORTS,
             })
         );

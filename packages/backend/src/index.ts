@@ -1,9 +1,4 @@
-import dotenvDefaultConfig from "./dotenvDefaults";
-import path from 'path';
-dotenvDefaultConfig({ 
-    path: path.join(__dirname, '..', '..', '..', '.env'),
-    defaults: path.join(__dirname, '..', '..', '..', '.env.default')
-})
+import config from './config';
 import fastify from 'fastify';
 import { AvailableTickers, currencies } from "@snow/common/src";
 import GenericAdminWallet from "./adminWallets/GenericAdminWallet";
@@ -32,8 +27,8 @@ const activePayments: Record<string, GenericTransactionalWallet> = {};
 for (const k of Object.keys(currencies)) {
     const _currency = k as AvailableTickers;
     const coinName = currencies[_currency].name;
-    const publicKey = process.env[`ADMIN_${_currency.toUpperCase()}_PUBLIC_KEY`];
-    const privateKey = process.env[`ADMIN_${_currency.toUpperCase()}_PRIVATE_KEY`];
+    const publicKey: string = config.get(`ADMIN_${_currency.toUpperCase()}_PUBLIC_KEY`);
+    const privateKey: string = config.get(`ADMIN_${_currency.toUpperCase()}_PRIVATE_KEY`);
 
     if (!publicKey || !privateKey) {
         console.error(`No admin public key and private key found for currency ${_currency}`);
@@ -57,7 +52,7 @@ function transactionIntervalRunner() {
     setInterval(() => {
         console.log("Checking payments...");
         Object.values(activePayments).forEach(ele => ele.checkTransaction());
-    }, +process.env.TRANSACTION_REFRESH_TIME!)
+    }, config.getTyped('TRANSACTION_REFRESH_TIME'))
 }
 
 createInvoiceClientRoute(server);

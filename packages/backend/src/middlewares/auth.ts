@@ -1,17 +1,17 @@
 import { FastifyReply, FastifyRequest, HookHandlerDoneFunction } from "fastify";
+import config from '../config';
 
-let IP_WHISTLIST: Set<string> = undefined;
+let IP_WHITELIST: Set<string> = undefined;
 
-if (process.env['IP_WHITELIST']) {
-    const ips = process.env['IP_WHITELIST'].split(",");
-    IP_WHISTLIST = new Set(ips);
-    IP_WHISTLIST.add("127.0.0.1")
+if (config.getTyped('IP_WHITELIST').length > 0) {
+    IP_WHITELIST = new Set(config.getTyped('IP_WHITELIST'));
+    IP_WHITELIST.add("127.0.0.1")
 }
 
 const auth = (request: FastifyRequest, reply: FastifyReply, done: HookHandlerDoneFunction) => {
-    if (request.headers['snow-api-key'] === process.env['SNOW_API_KEY']) {
-        if (IP_WHISTLIST !== undefined) {
-            if (IP_WHISTLIST.has(request.ip)) {
+    if (request.headers['snow-api-key'] === config.getTyped('SNOW_API_KEY')) {
+        if (IP_WHITELIST !== undefined) {
+            if (IP_WHITELIST.has(request.ip)) {
                 done();
             }
         } else {
