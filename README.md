@@ -61,7 +61,9 @@ TODO Create Dockerfile (Nginx, Mongo no external, Node, Npm)
 
 ### API Providers
 
-In order to check wallet balances and broadcast transactions, snow needs to interact with particular blockchain APIs. There's a variety of providers out there that support different sets of blockchains. This packages bundles up connectors to popular providers with a simple, unified API. These connectors can be seen in the [packages/api-providers](packages/api-providers/src/) folder. All of the one available in this package provide generous free tiers. Simply pass your API keys with the configuration below.
+In order to check wallet balances and broadcast transactions, snow needs to interact with particular blockchain APIs. There's a variety of providers out there that support different sets of blockchains. This packages bundles up connectors to popular providers with a simple, unified API.
+
+Existing connectors can be seen in the [packages/api-providers](packages/api-providers/src/) folder. All of the one available in this package provide generous free tiers. Simply pass your API keys with the configuration below.
 
 Currently available API providers:
 
@@ -107,7 +109,7 @@ Development experience and extensibility are a high priority for this package.
 
 1. Git clone this package.
 2. `cd Snow && npm i`
-3. Add a mongoDB connection to the `MONGO_CONNECTION_STRING` .env parameters. For development, the [Mongo Atlas free tier](https://www.mongodb.com/cloud/atlas/signup) works great.
+3. Add a mongoDB connection to the `MONGO_CONNECTION_STRING` attribute in `config/local.json` along with some admin wallet credentials. For development, the [Mongo Atlas free tier](https://www.mongodb.com/cloud/atlas/signup) works great.
 4. `npm run dev` to start the invoice client and backend.
     * Any changes in `packages/invoice-client/src` will be automatically reflected on refresh.
     * Any changes to the source of `packages/backend/src` will be reflected automatically via `ts-node-dev`.
