@@ -1,6 +1,7 @@
 import config from './config';
 import fastify from 'fastify';
 import { AvailableTickers, currencies } from "@snow/common/src";
+import idsToProviders from "@snow/api-providers/src";
 import GenericAdminWallet from "./adminWallets/GenericAdminWallet";
 import auth from './middlewares/auth';
 import mongoGenerator from "./mongoGenerator";
@@ -35,10 +36,15 @@ for (const k of Object.keys(currencies)) {
         continue;
     }
 
-    const params = [publicKey, privateKey] as const;
+    const adminWalletParams = [
+        publicKey,
+        privateKey,
+        new idsToProviders[config.getTyped(_currency).PROVIDER](config.getTyped(_currency).PROVIDER_PARAMS)
+    ] as const;
+
     let currentClient: GenericAdminWallet;
     if (currenciesToWallets[_currency]) {
-        currentClient = new currenciesToWallets[_currency].Admin(...params);
+        currentClient = new currenciesToWallets[_currency].Admin(...adminWalletParams);
     } else {
         console.error(`No admin wallet found for currency ${_currency}`);
         continue;

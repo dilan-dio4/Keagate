@@ -20,5 +20,6 @@ export default idsToProviders;
 export { 
     NowNodesProvider,
     SoChainProvider,
-    TatumProvider
+    TatumProvider,
+    GenericProvider
 };

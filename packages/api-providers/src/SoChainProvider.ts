@@ -7,7 +7,7 @@ import Big from 'big.js';
 export default class SoChainProvider extends GenericProvider {
     public supportedCurrencies: AvailableTickers[] = ["dash", "ltc", "btc"];
 
-    async getBalance(ticker: AvailableTickers, address: string): Promise<{ result: { confirmedBalance: Big; unconfirmedBalance?: Big; }; }> {
+    async getBalance(ticker: AvailableTickers, address: string): Promise<{ result: { confirmedBalance: number; unconfirmedBalance?: number; }; }> {
         if (!this.supportedCurrencies.includes(ticker)) {
             throw new Error("Ticker not supported")
         }
@@ -15,8 +15,8 @@ export default class SoChainProvider extends GenericProvider {
         const { data: { confirmed_balance, unconfirmed_balance } } = await fGet(`https://chain.so/api/v2/get_address_balance/${ticker.toUpperCase()}/${address}`);
         return { 
             result: {
-                confirmedBalance: Big(confirmed_balance),
-                unconfirmedBalance: Big(unconfirmed_balance)
+                confirmedBalance: +confirmed_balance,
+                unconfirmedBalance: +unconfirmed_balance
             } 
         };
     }

@@ -1,6 +1,7 @@
 import GenericAdminWallet from "../GenericAdminWallet";
 import { Transaction } from 'bitcore-lib-ltc';
 import { AvailableCoins, AvailableTickers, fGet, fPost, convertChainsoToNativeUtxo } from "@snow/common/src";
+import config from "../../config";
 
 export default class AdminLitecoin extends GenericAdminWallet {
     private mediumGasFee: number;
@@ -14,13 +15,17 @@ export default class AdminLitecoin extends GenericAdminWallet {
     }
 
     async getBalance() {
-        const { data: { confirmed_balance, unconfirmed_balance } } = await fGet(`https://chain.so/api/v2/get_address_balance/LTC/${this.publicKey}`);
-        return {
-            result: {
-                confirmedBalance: +confirmed_balance,
-                unconfirmedBalance: +unconfirmed_balance
-            }
-        };
+        if (config.getTyped('USE_SO_CHAIN')) {
+            const { data: { confirmed_balance, unconfirmed_balance } } = await fGet(`https://chain.so/api/v2/get_address_balance/LTC/${this.publicKey}`);
+            return {
+                result: {
+                    confirmedBalance: +confirmed_balance,
+                    unconfirmedBalance: +unconfirmed_balance
+                }
+            };
+        } else {
+            return await this.apiProvider.getBalance(this.ticker, this.publicKey);
+        }
     }
 
     async sendTransaction(destination: string, amount: number) {
@@ -54,22 +59,24 @@ export default class AdminLitecoin extends GenericAdminWallet {
             .sign(this.privateKey);
 
 
+        return await this.apiProvider.sendTransaction(this.ticker, ltcTransaction.uncheckedSerialize());
+
         // https://bitcoincore.org/en/doc/0.19.0/rpc/rawtransactions/sendrawtransaction/
-        try {
-            const { result } = await fPost('https://ltc.nownodes.io', {
-                "jsonrpc": "2.0",
-                "method": "sendrawtransaction",
-                "params": [
-                    ltcTransaction.uncheckedSerialize()
-                ],
-                "id": "test",
-                "API_key": "f994ff7a-12b4-405a-b214-941ab2df13ce"
-            }, {
-                'Content-Type': 'application/json'
-            })
-            return { result };
-        } catch (error) {
-            console.error(error);
-        }
+        // try {
+        //     const { result } = await fPost('https://ltc.nownodes.io', {
+        //         "jsonrpc": "2.0",
+        //         "method": "sendrawtransaction",
+        //         "params": [
+        //             ltcTransaction.uncheckedSerialize()
+        //         ],
+        //         "id": "test",
+        //         "API_key": "f994ff7a-12b4-405a-b214-941ab2df13ce"
+        //     }, {
+        //         'Content-Type': 'application/json'
+        //     })
+        //     return { result };
+        // } catch (error) {
+        //     console.error(error);
+        // }
     }
 }

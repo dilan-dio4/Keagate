@@ -1,22 +1,11 @@
 {
-    "ltc": {
+    "some_ticker (e.g. 'dash')": {
         "ADMIN_PUBLIC_KEY": "",
         "ADMIN_PRIVATE_KEY": "",
         "PROVIDER": "",
         "PROVIDER_PARAMS": []
     },
     
-    "dash": {
-        "ADMIN_PUBLIC_KEY": "",
-        "ADMIN_PRIVATE_KEY": "",
-        "PROVIDER": "",
-        "PROVIDER_PARAMS": []
-    },
-
-    "sol": {
-        "ADMIN_PUBLIC_KEY": "",
-        "ADMIN_PRIVATE_KEY": ""
-    },
 
     "SNOW_API_KEY": "",
     "IP_WHITELIST": [],

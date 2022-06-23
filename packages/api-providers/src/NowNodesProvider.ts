@@ -12,7 +12,7 @@ export default class NowNodesProvider extends GenericProvider {
         super();
     }
 
-    async getBalance(ticker: AvailableTickers, address: string): Promise<{ result: { confirmedBalance: Big; unconfirmedBalance?: Big; }; }> {
+    async getBalance(ticker: AvailableTickers, address: string): Promise<{ result: { confirmedBalance: number; unconfirmedBalance?: number; }; }> {
         if (!this.supportedCurrencies.includes(ticker)) {
             throw new Error("Ticker not supported")
         }
@@ -31,7 +31,7 @@ export default class NowNodesProvider extends GenericProvider {
         }
         return {
             result: {
-                confirmedBalance,
+                confirmedBalance: confirmedBalance.toNumber(),
                 unconfirmedBalance: undefined
             }
         }
