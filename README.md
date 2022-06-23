@@ -142,6 +142,9 @@ Editing the react package will automatically build to `dist`, so just refresh th
 The source code in invoice client is pretty straight-forward, so anyone familiar with React (& TailwindCSS) should have an easy time making their desired alterations.
 
 </details>
+<details>
+
+<summary>
 
 ### Adding a blockchain API provider
 
