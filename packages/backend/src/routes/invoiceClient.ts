@@ -8,7 +8,7 @@ export default function createInvoiceClientRoute(server: FastifyInstance) {
         prefix: '/static-invoice'
     })
     
-    server.get('/invoice/:ticker/:invoiceId', (request, reply) => {
+    server.get('/invoice/:currency/:invoiceId', (request, reply) => {
         reply.sendFile('index.html')
     })
 }

@@ -1,11 +1,11 @@
 // import GenericWallet from "../GenericWallet";
 // import { ethers } from 'ethers';
-// import { AvailableCoins, AvailableTickers } from "../../currencies";
+// import { AvailableCoins, AvailableCurrencies } from "../../currencies";
 
 // export default class Polygon extends GenericWallet {
 //     private provider: ethers.providers.JsonRpcProvider;
 //     private wallet: ethers.Wallet;
-//     public ticker: AvailableTickers = "asdf";
+//     public ticker: AvailableCurrencies = "asdf";
 //     public coinName: AvailableCoins = "Solana";
     
 //     constructor(...args: ConstructorParameters<typeof GenericWallet>) {

@@ -1,39 +1,43 @@
 import GenericTransactionalWallet from '../GenericTransactionalWallet';
-import { Connection, clusterApiUrl, PublicKey, Keypair, Transaction, SystemProgram, LAMPORTS_PER_SOL, sendAndConfirmTransaction } from '@solana/web3.js';
-import { AvailableCoins, AvailableCurrencies } from "@snow/common/src";
+import { AvailableCoins, AvailableCurrencies, fGet } from "@snow/common/src";
 import base58 from "bs58";
 import { IFromNew } from "../../types";
 import config from "../../config";
+import { Transaction, PrivateKey } from '@dashevo/dashcore-lib';
 
-export default class TransactionalSolana extends GenericTransactionalWallet {
-    private connection: Connection;
-    public currency: AvailableCurrencies = "sol";
-    public coinName: AvailableCoins = "Solana";
-    static TRANSFER_FEE_LAMPORTS = 5000;
+export default class TransactionalDash extends GenericTransactionalWallet {
+    public currency: AvailableCurrencies = "dash";
+    public coinName: AvailableCoins = "Dash";
+    // static TRANSFER_FEE_LAMPORTS = 5000;
 
-    constructor(...args: ConstructorParameters<typeof GenericTransactionalWallet>) {
-        super(...args);
-        this.connection = new Connection(clusterApiUrl(config.getTyped('TESTNETS') ? "devnet" : "mainnet-beta"), "confirmed");
-    }
 
     async fromNew(obj: IFromNew) {
-        const newKeypair = Keypair.generate();
+        // https://github.com/dashevo/dashcore-lib/blob/master/docs/usage/privatekey.md
+        const newKeypair = PrivateKey.fromRandom();
+        const privateKey = newKeypair.toString();
+
+        // https://github.com/dashevo/dashcore-lib/blob/master/docs/usage/publickey.md
+        const publicKey = newKeypair.toPublicKey().toString();
+
         return await this._initInDatabase({
             ...obj,
-            publicKey: newKeypair.publicKey.toString(),
-            privateKey: base58.encode(newKeypair.secretKey)
+            publicKey,
+            privateKey
         });
     }
 
     async getBalance() {
-        const balance = await this.connection.getBalance(new PublicKey(this.publicKey), "confirmed")
-
-        return {
-            result: {
-                confirmedBalance: balance / LAMPORTS_PER_SOL,
-                unconfirmedBalance: undefined
-            }
-        };
+        if (config.getTyped('USE_SO_CHAIN')) {
+            const { data: { confirmed_balance, unconfirmed_balance } } = await fGet(`https://chain.so/api/v2/get_address_balance/DASH/${this.publicKey}`);
+            return {
+                result: {
+                    confirmedBalance: +confirmed_balance,
+                    unconfirmedBalance: +unconfirmed_balance
+                }
+            };
+        } else {
+            return await this.apiProvider.getBalance(this.currency, this.publicKey);
+        }
     }
 
     protected async _cashOut(balance: number) {

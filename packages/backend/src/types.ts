@@ -1,4 +1,4 @@
-import { AvailableTickers, PaymentStatusType } from '@snow/common/src';
+import { AvailableCurrencies, PaymentStatusType } from '@snow/common/src';
 
 interface PaymentRoot {
     amount: number;
@@ -8,7 +8,7 @@ interface PaymentRoot {
     ipnCallbackUrl?: string;
     invoiceCallbackUrl?: string;
     payoutTransactionHash?: string;
-    currency: AvailableTickers;
+    currency: AvailableCurrencies;
     publicKey: string;
     privateKey: string;
 }

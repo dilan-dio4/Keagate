@@ -1,11 +1,11 @@
 import GenericAdminWallet from "../GenericAdminWallet";
 import { Transaction } from 'bitcore-lib-ltc';
-import { AvailableCoins, AvailableTickers, fGet, fPost, convertChainsoToNativeUtxo } from "@snow/common/src";
+import { AvailableCoins, AvailableCurrencies, fGet, fPost, convertChainsoToNativeUtxo } from "@snow/common/src";
 import config from "../../config";
 
 export default class AdminLitecoin extends GenericAdminWallet {
     private mediumGasFee: number;
-    public ticker: AvailableTickers = "ltc";
+    public currency: AvailableCurrencies = "ltc";
     public coinName: AvailableCoins = "Litecoin";
     
     constructor(...args: ConstructorParameters<typeof GenericAdminWallet>) {
@@ -24,7 +24,7 @@ export default class AdminLitecoin extends GenericAdminWallet {
                 }
             };
         } else {
-            return await this.apiProvider.getBalance(this.ticker, this.publicKey);
+            return await this.apiProvider.getBalance(this.currency, this.publicKey);
         }
     }
 
@@ -59,24 +59,6 @@ export default class AdminLitecoin extends GenericAdminWallet {
             .sign(this.privateKey);
 
 
-        return await this.apiProvider.sendTransaction(this.ticker, ltcTransaction.uncheckedSerialize());
-
-        // https://bitcoincore.org/en/doc/0.19.0/rpc/rawtransactions/sendrawtransaction/
-        // try {
-        //     const { result } = await fPost('https://ltc.nownodes.io', {
-        //         "jsonrpc": "2.0",
-        //         "method": "sendrawtransaction",
-        //         "params": [
-        //             ltcTransaction.uncheckedSerialize()
-        //         ],
-        //         "id": "test",
-        //         "API_key": "f994ff7a-12b4-405a-b214-941ab2df13ce"
-        //     }, {
-        //         'Content-Type': 'application/json'
-        //     })
-        //     return { result };
-        // } catch (error) {
-        //     console.error(error);
-        // }
+        return await this.apiProvider.sendTransaction(this.currency, ltcTransaction.uncheckedSerialize());
     }
 }

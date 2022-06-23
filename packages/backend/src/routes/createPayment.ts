@@ -4,7 +4,7 @@ import auth from "../middlewares/auth";
 import GenericTransactionalWallet from "../transactionalWallets/GenericTransactionalWallet";
 import { encrypt } from "../utils";
 import currenciesToWallets from "../currenciesToWallets";
-import { AvailableTickers } from "@snow/common";
+import { AvailableCurrencies } from "@snow/common";
 
 const CreatePaymentBody = Type.Object({
     currency: Type.String(),
@@ -46,7 +46,7 @@ export default function createPaymentRoute(server: FastifyInstance, activePaymen
             body.currency = body.currency.toLowerCase();
             let transactionalWallet: GenericTransactionalWallet;
             if (currenciesToWallets[body.currency]) {
-                transactionalWallet = await new currenciesToWallets[body.currency as AvailableTickers].Transactional((id) => delete activePayments[id]).fromNew({
+                transactionalWallet = await new currenciesToWallets[body.currency as AvailableCurrencies].Transactional((id) => delete activePayments[id]).fromNew({
                     amount: body.amount,
                     invoiceCallbackUrl: body.invoiceCallbackUrl,
                     ipnCallbackUrl: body.ipnCallbackUrl

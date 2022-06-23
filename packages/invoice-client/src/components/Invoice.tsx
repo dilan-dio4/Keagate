@@ -14,11 +14,11 @@ import clsx from 'clsx';
 import React, { useState, useEffect } from "react";
 import { copyToClipboard } from '../utils/utils';
 // import useAsyncEffect from "use-async-effect";
-import { AvailableTickers, currencies, fGet, PaymentStatusType } from '@snow/common/src';
+import { AvailableCurrencies, currencies, fGet, PaymentStatusType } from '@snow/common/src';
 import ThreeDotsOverlay from "./ThreeDotsOverlay";
 
 export default function Invoice() {
-    const currencyToIcon: Record<AvailableTickers, React.ReactChild> = {
+    const currencyToIcon: Record<AvailableCurrencies, React.ReactChild> = {
         dash: <DashIcon width={50} height={50} />,
         ltc: <LtcIcon width={50} height={50} />,
         sol: <SolIcon width={50} height={50} />,
@@ -29,12 +29,12 @@ export default function Invoice() {
 
     const [isBlockchainInfoOpen, setIsBlockchainInfoOpen] = useState<boolean>(false);
     const [isTransactionDead, setIsTransactionDead] = useState<boolean>(false);
-    const [currency, setCurrency] = useState<AvailableTickers>();
+    const [currency, setCurrency] = useState<AvailableCurrencies>();
     const [invoiceId, setInvoiceId] = useState<string>("");
     interface IInvoiceObject {
         amount: number;
         amountPaid: number;
-        currency: AvailableTickers;
+        currency: AvailableCurrencies;
         expiresAt: string;
         publicKey: string;
         status: PaymentStatusType;
@@ -47,7 +47,7 @@ export default function Invoice() {
         const _invoiceId = params.pop();
         setInvoiceId(_invoiceId);
         const _currency = params.pop().toLowerCase();
-        setCurrency(_currency as AvailableTickers);
+        setCurrency(_currency as AvailableCurrencies);
 
         // eslint-disable-next-line prefer-const
         let interval: NodeJS.Timer;

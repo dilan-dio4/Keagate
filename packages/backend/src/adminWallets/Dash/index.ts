@@ -1,11 +1,12 @@
 import GenericAdminWallet from "../GenericAdminWallet";
 import { Transaction } from '@dashevo/dashcore-lib';
-import { AvailableCoins, AvailableTickers, fGet, fPost, convertChainsoToNativeUtxo } from "@snow/common/src";
+import { AvailableCoins, AvailableCurrencies, fGet, convertChainsoToNativeUtxo } from "@snow/common/src";
 import config from "../../config";
 
 // https://jestersimpps.github.io/my-first-experience-with-bitpay-bitcore/
+// TODO custom fee like LTC
 export default class AdminDash extends GenericAdminWallet {
-    public ticker: AvailableTickers = "dash";
+    public currency: AvailableCurrencies = "dash";
     public coinName: AvailableCoins = "Dash";
 
     async getBalance() {
@@ -18,7 +19,7 @@ export default class AdminDash extends GenericAdminWallet {
                 }
             };
         } else {
-            return await this.apiProvider.getBalance(this.ticker, this.publicKey);
+            return await this.apiProvider.getBalance(this.currency, this.publicKey);
         }
     }
 
@@ -48,7 +49,7 @@ export default class AdminDash extends GenericAdminWallet {
             throw error;
         }
 
-        return await this.apiProvider.sendTransaction(this.ticker, dashTransaction.serialize(false));
+        return await this.apiProvider.sendTransaction(this.currency, dashTransaction.serialize(false));
         // const { result } = await fPost(process.env.DASH_RPC_URL, {
         //     "jsonrpc": "2.0",
         //     "method": "sendrawtransaction",

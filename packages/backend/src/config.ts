@@ -3,9 +3,9 @@ import path from 'path';
 process.env["NODE_CONFIG_DIR"] = path.join(__dirname, '..', '..', '..', 'config/'); // Must be in this order
 import config from 'config';
 import { AvailableProviders } from '@snow/api-providers/src';
-import { AvailableTickers } from '@snow/common/src';
+import { AvailableCurrencies } from '@snow/common/src';
 
-type MyCurrencyConfig = Partial<Record<AvailableTickers, {
+type MyCurrencyConfig = Partial<Record<AvailableCurrencies, {
   "ADMIN_PUBLIC_KEY": string;
   "ADMIN_PRIVATE_KEY": string;
   "PROVIDER": AvailableProviders;

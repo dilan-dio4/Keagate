@@ -1,7 +1,7 @@
 export type AvailableCoins = "Solana" | "Dash" | "Litecoin" | "Ripple" | "Bitcoin" | "Cardano";
-export type AvailableTickers = "sol" | "dash" | "ltc" | "xrp" | "btc" | "ada";
+export type AvailableCurrencies = "sol" | "dash" | "ltc" | "xrp" | "btc" | "ada";
 
-export const currencies: Record<AvailableTickers, { name: AvailableCoins; explorer: string; networkName?: string; }> = {
+export const currencies: Record<AvailableCurrencies, { name: AvailableCoins; explorer: string; networkName?: string; }> = {
     "ltc": {
         name: "Litecoin",
         explorer: "https://live.blockcypher.com/ltc/",

@@ -1,12 +1,13 @@
 import dayjs from "dayjs";
 import { ObjectId } from "mongodb";
-import { AvailableTickers, AvailableCoins, PaymentStatusType } from "@snow/common/src";
+import { AvailableCurrencies, AvailableCoins, PaymentStatusType } from "@snow/common/src";
 import mongoGenerator from "../mongoGenerator";
 import { ClassPayment, IFromNew } from "../types";
 import config from "../config";
+import { GenericProvider } from "@snow/api-providers/src";
 
 export default abstract class GenericTransactionalWallet {
-    public currency: AvailableTickers;
+    public currency: AvailableCurrencies;
     public coinName: AvailableCoins;
     protected _initialized = false;
 
@@ -23,7 +24,7 @@ export default abstract class GenericTransactionalWallet {
     protected invoiceCallbackUrl?: string;
     protected payoutTransactionHash?: string;
 
-    constructor(public onDie: (id: string) => any) { }
+    constructor(public onDie: (id: string) => any, public apiProvider: GenericProvider) { }
 
     protected abstract _cashOut(balance: number): Promise<void>;
     abstract getBalance(): Promise<{ result: { confirmedBalance: number; unconfirmedBalance?: number; } }>;

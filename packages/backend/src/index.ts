@@ -1,6 +1,6 @@
 import config from './config';
 import fastify from 'fastify';
-import { AvailableTickers, currencies } from "@snow/common/src";
+import { AvailableCurrencies, currencies } from "@snow/common/src";
 import idsToProviders from "@snow/api-providers/src";
 import GenericAdminWallet from "./adminWallets/GenericAdminWallet";
 import auth from './middlewares/auth';
@@ -25,7 +25,7 @@ const server = fastify({
 
 const activePayments: Record<string, GenericTransactionalWallet> = {};
 
-const enabledCurrencies = Object.keys(currencies).filter(ele => !!config.has(ele) && !!config.getTyped(ele as AvailableTickers).ADMIN_PUBLIC_KEY) as AvailableTickers[];
+const enabledCurrencies = Object.keys(currencies).filter(ele => !!config.has(ele) && !!config.getTyped(ele as AvailableCurrencies).ADMIN_PUBLIC_KEY) as AvailableCurrencies[];
 
 for (const _currency of enabledCurrencies) {
     const coinName = currencies[_currency].name;
@@ -72,11 +72,17 @@ async function init() {
     const { db } = await mongoGenerator();
     const _activeTransactions = await db.collection('payments').find({ status: { $nin: ["FINISHED", "EXPIRED", "FAILED"] } }).toArray();
     for (const _currActiveTransaction of _activeTransactions) {
-        if (currenciesToWallets[_currActiveTransaction.currency]) {
-            activePayments[_currActiveTransaction._id.toString()] = new currenciesToWallets[_currActiveTransaction.currency as AvailableTickers].Transactional(id => delete activePayments[id]).fromManual({
+        const currTxCurrency = _currActiveTransaction.currency as AvailableCurrencies;
+        if (currenciesToWallets[currTxCurrency]) {
+            const params = [
+                id => delete activePayments[id],
+                config.getTyped(currTxCurrency).PROVIDER ? new idsToProviders[config.getTyped(currTxCurrency).PROVIDER](config.getTyped(currTxCurrency).PROVIDER_PARAMS) : undefined
+            ] as const;
+
+            activePayments[_currActiveTransaction._id.toString()] = new currenciesToWallets[currTxCurrency].Transactional(...params).fromManual({
                 ..._currActiveTransaction as any,
                 id: _currActiveTransaction._id.toString()
-            })
+            });
         } else {
             console.error(`No transactional wallet found for currency ${_currActiveTransaction.currency}`);
             continue;
