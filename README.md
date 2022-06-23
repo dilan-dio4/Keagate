@@ -59,32 +59,47 @@ Funds go directly to your wallet via the one-time addresses that are created for
 
 TODO Create Dockerfile (Nginx, Mongo no external, Node, Npm)
 
+### API Providers
+
+In order to check wallet balances and broadcast transactions, snow needs to interact with particular blockchain APIs. There's a variety of providers out there that support different sets of blockchains. This packages bundles up connectors to popular providers with a simple, unified API. These connectors can be seen in the [packages/api-providers](packages/api-providers/src/) folder. All of the one available in this package provide generous free tiers. Simply pass your API keys with the configuration below.
+
+Currently available API providers:
+
+| Name  | Available chains |
+|-----------------|--------------|
+| NowNodes | dash, ltc, btc |
+| Tatum | ltc, btc, ada, and xrp |
+
+It's very easy to add a provider, see [TatumProvider.ts](packages/api-providers/src/TatumProvider.ts) as an example.
+
+Make sure that one of the available API providers cover each currency you plan on using.
+
 ## Usage
 
 Snow requires some configuration. Create a file called `local.json` in `/config`, next to `default.json`, to edit of the parameters below. Use the provided `default.json` file as a reference (your `local.json` will override these).
 
 | Key                              | Description                    | Required | Default |
 |----------------------------------|----------------------------|----------------------------------|--|
-| `ADMIN_DASH_PUBLIC_KEY`             | Public key (address) of Dash admin wallet    | **Yes** | *null* |
-| `ADMIN_DASH_PRIVATE_KEY`         | Private key of Dash admin wallet. Used for programmatically sending transactions from admin   | No |  *null* |
-| `DASH_RPC_URL`           | URL of Dash RPC, such as ([getblock.io](getblock.io)). | **Yes** | *null* |
-| `DASH_RPC_API_KEY`         | Optional API key to the Dash RPC  | No | *null* |
-| `ADMIN_LTC_PUBLIC_KEY`             | Public key (address) of Litecoin admin wallet    | **Yes** | *null* |
-| `ADMIN_LTC_PRIVATE_KEY`         | Private key of Litecoin admin wallet. Used for programmatically sending transactions from admin   | No | *null* |
-| `LTC_RPC_URL`           | URL of Litecoin RPC, such as ([getblock.io](getblock.io)). | **Yes** | *null* |
-| `LTC_RPC_API_KEY`         | Optional API key to the Litecoin RPC  | No | *null* |
-| `ADMIN_SOL_PUBLIC_KEY`             | Public key (address) of Solana admin wallet    | **Yes** | *null* |
-| `ADMIN_SOL_PRIVATE_KEY`         | Private key of Solana admin wallet. Used for programmatically sending transactions from admin   | No | *null* |
-| `SOL_RPC_URL`           | URL of Solana RPC. | No | https://api.mainnet-beta.solana.com |
-| `SOL_RPC_API_KEY`         | Optional API key to the Solana RPC  | No | *null* |
-| `SNOW_API_KEY`         | Custom key that will be required in the administrative requests `snow-api-key` requests to Snow | No | *null* |
-| `IP_WHITELIST`         | List of IP address (1.1.1.1,2.2.2.2,...) to be whitelisted for administrative requests | No | *null* |
-| `TRANSACTION_TIMEOUT` | Milliseconds for which a transaction will be valid for  | No | 1200000 (20 Minutes) |
-| `TRANSACTION_REFRESH_TIME` | Milliseconds for which each active transaction will be re-scanned | No | 10000 (10 Seconds) |
-| `TRANSACTION_SLIPPAGE_TOLERANCE` | Percentage of a payment that discounted as transactional slippage (e.g. a TRANSACTION_SLIPPAGE_TOLERANCE of 0.02 for a 100 SOL transaction will mean that at 98 SOL the transaction will be considered fulfilled). This is recommended for a smoother experience given transaction fees. | No | 0.02 |
-| `MONGO_CONNECTION_STRING` | Connection string for mongodb instance, which is installed automatically with docker | No | mongodb://localhost:27017 |
-| `MONGO_SNOW_DB` | Mongo database to use for storing/managing payments | No | snow |
-| `TESTNETS` | **For development only**. Turn on testnets for given currencies | No | false |
+| `ADMIN_DASH_PUBLIC_KEY`             | Public key (address) of Dash admin wallet    | **Yes** | *null* {string) |
+| `ADMIN_DASH_PRIVATE_KEY`         | Private key of Dash admin wallet. Used for programmatically sending transactions from admin   | No |  *null* (string) |
+| `DASH_RPC_URL`           | URL of Dash RPC, such as ([getblock.io](getblock.io)). | **Yes** | *null* (string) |
+| `DASH_RPC_API_KEY`         | Optional API key to the Dash RPC  | No | *null* (string) |
+| `ADMIN_LTC_PUBLIC_KEY`             | Public key (address) of Litecoin admin wallet    | **Yes** | *null* (string) |
+| `ADMIN_LTC_PRIVATE_KEY`         | Private key of Litecoin admin wallet. Used for programmatically sending transactions from admin   | No | *null* (string) |
+| `LTC_RPC_URL`           | URL of Litecoin RPC, such as ([getblock.io](getblock.io)). | **Yes** | *null* (string) |
+| `LTC_RPC_API_KEY`         | Optional API key to the Litecoin RPC  | No | *null* (string) |
+| `ADMIN_SOL_PUBLIC_KEY`             | Public key (address) of Solana admin wallet    | **Yes** | *null* (string) |
+| `ADMIN_SOL_PRIVATE_KEY`         | Private key of Solana admin wallet. Used for programmatically sending transactions from admin   | No | *null* (string) |
+| `SOL_RPC_URL`           | URL of Solana RPC. | No | https://api.mainnet-beta.solana.com (string) |
+| `SOL_RPC_API_KEY`         | Optional API key to the Solana RPC  | No | *null* (string) |
+| `SNOW_API_KEY`         | Custom key that will be required in the administrative requests `snow-api-key` requests to Snow | No | *null* (string) |
+| `IP_WHITELIST`         | List of IP address (1.1.1.1,2.2.2.2,...) to be whitelisted for administrative requests | No | *null* (string[]) |
+| `TRANSACTION_TIMEOUT` | Milliseconds for which a transaction will be valid for  | No | 1200000 [20 Minutes] (number) |
+| `TRANSACTION_REFRESH_TIME` | Milliseconds for which each active transaction will be re-scanned | No | 10000 [10 Seconds] (number) |
+| `TRANSACTION_SLIPPAGE_TOLERANCE` | Percentage of a payment that discounted as from a total payment.<br /><br />Example: a TRANSACTION_SLIPPAGE_TOLERANCE of 0.02 for a 100 SOL payment will be fulfilled at 98 SOL. | No | 0.02 (number) |
+| `MONGO_CONNECTION_STRING` | Connection string for mongodb instance, which is installed automatically with docker | No | mongodb://localhost:27017 (string) |
+| `MONGO_SNOW_DB` | Mongo database to use for storing/managing payments | No | snow (string) |
+| `TESTNETS` | **For development only**. Turn on testnets for given currencies | No | false (boolean) |
 
 # Development
 
