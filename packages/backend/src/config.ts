@@ -24,6 +24,7 @@ interface MyConfig {
     MONGO_SNOW_DB: string;
 
     TESTNETS: boolean;
+    USE_SO_CHAIN: boolean;
 }
 
 // Augment type definition for node-config.

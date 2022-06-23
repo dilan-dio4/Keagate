@@ -18,5 +18,6 @@
     "MONGO_CONNECTION_STRING": "mongodb://localhost:27017",
     "MONGO_SNOW_DB": "snow",
 
-    "TESTNETS": false
+    "TESTNETS": false,
+    "USE_SO_CHAIN": true
 }

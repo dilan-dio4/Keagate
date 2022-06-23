@@ -101,6 +101,7 @@ Snow requires some configuration. Create a file called `local.json` in `/config`
 | `TRANSACTION_SLIPPAGE_TOLERANCE` | Percentage of a payment that discounted as from a total payment.<br /><br />Example: a TRANSACTION_SLIPPAGE_TOLERANCE of 0.02 for a 100 SOL payment will be fulfilled at 98 SOL. | No | 0.02 (number) |
 | `MONGO_CONNECTION_STRING` | Connection string for mongodb instance, which is installed automatically with docker | No | mongodb://localhost:27017 (string) |
 | `MONGO_SNOW_DB` | Mongo database to use for storing/managing payments | No | snow (string) |
+| `USE_SO_CHAIN` | [SoChain](https://sochain.com/api/#introduction) is a free blockchain infrastructure API for that allows for 300 requests/minute free-of-charge.<br /><br />Setting this to `true` will utilize SoChain for part of the btc, dash, and ltc payment process. **Recommended** | No | true (boolean) |
 | `TESTNETS` | **For development only**. Turn on testnets for given currencies | No | false (boolean) |
 
 # Development
