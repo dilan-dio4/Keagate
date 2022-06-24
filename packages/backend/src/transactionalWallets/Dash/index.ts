@@ -13,7 +13,7 @@ export default class TransactionalDash extends GenericTransactionalWallet {
         const privateKey = newKeypair.toString();
 
         // https://github.com/dashevo/dashcore-lib/blob/master/docs/usage/publickey.md
-        const publicKey = newKeypair.toPublicKey().toString();
+        const publicKey = newKeypair.toPublicKey().toAddress('livenet').toString();
         return await this._initInDatabase({
             ...obj,
             publicKey,

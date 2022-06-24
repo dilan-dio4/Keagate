@@ -30,9 +30,3 @@ export interface IFromNew {
     ipnCallbackUrl?: string;
     invoiceCallbackUrl: string;
 }
-
-// https://stackoverflow.com/a/66702014
-export type ConcreteConstructor<T extends abstract new (...args: any) => any> =
-    (T extends abstract new (...args: infer A) => infer R ?
-        new (...args: A) => R : never) & T;
-

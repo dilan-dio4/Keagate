@@ -1,16 +1,11 @@
-import { AvailableCurrencies } from "@snow/common/src/currencies";
+import { AvailableCurrencies, ConcreteConstructor } from "@snow/common/src";
 import GenericAdminWallet from "./adminWallets/GenericAdminWallet";
 import GenericTransactionalWallet from "./transactionalWallets/GenericTransactionalWallet";
 import AdminDash from "./adminWallets/Dash";
 import AdminLitecoin from "./adminWallets/Litecoin";
 import AdminSolana from "./adminWallets/Solana";
 import TransactionalSolana from "./transactionalWallets/Solana";
-
-// https://stackoverflow.com/a/66702014
-type ConcreteConstructor<T extends abstract new (...args: any) => any> =
-  (T extends abstract new (...args: infer A) => infer R ? 
-    new (...args: A) => R : never) & T;
-
+import TransactionalDash from './transactionalWallets/Dash';
 
 const currenciesToWallets: Record<AvailableCurrencies, { Admin: ConcreteConstructor<typeof GenericAdminWallet>, Transactional: ConcreteConstructor<typeof GenericTransactionalWallet> }> = {
     "ltc": {
@@ -23,7 +18,7 @@ const currenciesToWallets: Record<AvailableCurrencies, { Admin: ConcreteConstruc
     },
     "dash": {
         Admin: AdminDash,
-        Transactional: null
+        Transactional: TransactionalDash
     },
     "ada": {
         Admin: undefined,

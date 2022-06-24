@@ -8,6 +8,7 @@ import config from "../../config";
 export default class AdminDash extends GenericAdminWallet {
     public currency: AvailableCurrencies = "dash";
     public coinName: AvailableCoins = "Dash";
+    static TRANSACTION_FEE = 1000;
 
     async getBalance() {
         if (config.getTyped('USE_SO_CHAIN')) {
@@ -40,7 +41,7 @@ export default class AdminDash extends GenericAdminWallet {
 
         const dashTransaction: Transaction = new (Transaction as any)()
             .from(convertChainsoToNativeUtxo(txs, this.publicKey, true))
-            .to(destination, Math.round(amount * 1E8))
+            .to(destination, Math.round(amount * 1E8) - AdminDash.TRANSACTION_FEE)
             .change(this.publicKey)
             .sign(this.privateKey);
 
@@ -50,17 +51,5 @@ export default class AdminDash extends GenericAdminWallet {
         }
 
         return await this.apiProvider.sendTransaction(this.currency, dashTransaction.serialize(false));
-        // const { result } = await fPost(process.env.DASH_RPC_URL, {
-        //     "jsonrpc": "2.0",
-        //     "method": "sendrawtransaction",
-        //     "params": [
-        //         dashTransaction.serialize(false)
-        //     ],
-        //     "id": "getblock.io"
-        // }, {
-        //     'Content-Type': 'application/json',
-        //     'x-api-key': process.env.DASH_RPC_API_KEY
-        // })
-        // return { result };
     }
 }

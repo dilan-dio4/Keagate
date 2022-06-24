@@ -1,11 +1,10 @@
 import dayjs from "dayjs";
 import { ObjectId } from "mongodb";
-import { AvailableCurrencies, AvailableCoins, PaymentStatusType } from "@snow/common/src";
+import { AvailableCurrencies, AvailableCoins, PaymentStatusType, ConcreteConstructor } from "@snow/common/src";
 import mongoGenerator from "../mongoGenerator";
-import { ClassPayment, ConcreteConstructor, IFromNew } from "../types";
+import { ClassPayment, IFromNew } from "../types";
 import config from "../config";
 import { GenericProvider } from "@snow/api-providers/src";
-import currenciesToWallets from "../currenciesToWallets";
 import GenericAdminWallet from "../adminWallets/GenericAdminWallet";
 
 export default abstract class GenericTransactionalWallet {
