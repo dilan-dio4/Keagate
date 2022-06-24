@@ -112,7 +112,7 @@ export default function Invoice() {
         <div className="overflow-hidden max-w-full mx-auto sm:my-14 sm:border sm:rounded-lg sm:max-w-[500px]">
             <div className={clsx("text-center py-2.5 text-white", isSpinnerBackgroundRed() ? "bg-red-600" : "bg-indigo-500")}>
                 <span className="flex justify-center items-center">
-                    <Spinner className="status-spinner" />
+                    {!isTransactionDead && <Spinner className="status-spinner" />}
                     <p className="ml-3 text-sm font-medium sm:text-lg sm:font-semibold">{getSpinnerText()}</p>
                 </span>
             </div>
