@@ -55,7 +55,7 @@ export default function Invoice() {
             const _invoiceObj = await fGet(`/getInvoiceStatus?invoiceId=${_invoiceId}`) as IInvoiceObject;
             setInvoiceObject(_invoiceObj);
             document.title = `Payment ${_invoiceObj.status.toLowerCase().replace('_', ' ')}`;
-            if (_invoiceObj.status === "CONFIRMED" || _invoiceObj.status === "FAILED" || _invoiceObj.status === "FINISHED") {
+            if (_invoiceObj.status === "CONFIRMED" || _invoiceObj.status === "FAILED" || _invoiceObj.status === "FINISHED" || _invoiceObj.status === "SENDING" || _invoiceObj.status === "EXPIRED") {
                 clearInterval(interval);
                 setIsTransactionDead(true);
                 if (invoiceObject.invoiceCallbackUrl) {
@@ -92,6 +92,8 @@ export default function Invoice() {
             case "CONFIRMING":
                 return "Confirming transaction";
             case "CONFIRMED":
+            case "SENDING":
+            case "FINISHED":
                 return "Successfully confirmed transaction";
             case "FAILED":
                 return "Payment failed";

@@ -10,6 +10,7 @@ const PaymentStatusResponse = Type.Object({
     publicKey: Type.String(),
     // privateKey: Type.String(),
     amount: Type.Number(),
+    amountPaid: Type.Number(),
     expiresAt: Type.String(),
     createdAt: Type.String(),
     updatedAt: Type.String(),

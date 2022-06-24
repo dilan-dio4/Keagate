@@ -26,14 +26,14 @@ export default abstract class GenericTransactionalWallet {
     protected invoiceCallbackUrl?: string;
     protected payoutTransactionHash?: string;
 
+    private adminWalletMask: GenericAdminWallet;
+
     constructor(public onDie: (id: string) => any, public apiProvider: GenericProvider, public adminWalletClass: ConcreteConstructor<typeof GenericAdminWallet>) { }
 
-    public getBalance?(): Promise<{ result: { confirmedBalance: number; unconfirmedBalance?: number; } }>;
-    private sendTransaction?(destination: string, amount: number): Promise<{ result: string }>;
     protected async _cashOut(balance: number) {
         try {
             const [{ result: signature }] = await Promise.all([
-                this.sendTransaction(config.getTyped(this.currency).ADMIN_PUBLIC_KEY, balance),
+                this.adminWalletMask.sendTransaction(config.getTyped(this.currency).ADMIN_PUBLIC_KEY, balance),
                 this._updateStatus({ status: "SENDING" })
             ])
             this._updateStatus({ status: "FINISHED", payoutTransactionHash: signature });
@@ -70,11 +70,10 @@ export default abstract class GenericTransactionalWallet {
 
     // This always gets called from the three `from` constructors
     fromManual(initObj: ClassPayment): this {
-        this.getBalance = async () => ({ result: { confirmedBalance: 1 } }) // TODO: DROP
         this._setFromObject(initObj);
-        const adminWalletMask = new this.adminWalletClass(this.publicKey, this.privateKey, this.apiProvider)
-        this.getBalance = adminWalletMask.getBalance;
-        this.sendTransaction = adminWalletMask.sendTransaction;
+        this.adminWalletMask = new this.adminWalletClass(this.publicKey, this.privateKey, this.apiProvider);
+        // this.getBalance = adminWalletMask.getBalance;
+        // this.sendTransaction = adminWalletMask.sendTransaction;
         this._initialized = true;
         return this;
     }
@@ -134,14 +133,16 @@ export default abstract class GenericTransactionalWallet {
     }
 
     async checkTransaction() {
-        if (dayjs().isAfter(dayjs(this.expiresAt))) {
+        if (!this._initialized) {
+            return;
+        } else if (dayjs().isAfter(dayjs(this.expiresAt))) {
             this._updateStatus({ status: "EXPIRED" });
             this.onDie(this.id);
             return;
         }
-        const { result: { confirmedBalance } } = await this.getBalance();
+        const { result: { confirmedBalance } } = await this.adminWalletMask.getBalance();
         if (confirmedBalance >= (this.amount * (1 - config.getTyped('TRANSACTION_SLIPPAGE_TOLERANCE'))) && this.status !== "CONFIRMED") {
-            this._updateStatus({ status: "CONFIRMED" });
+            this._updateStatus({ status: "CONFIRMED", amountPaid: confirmedBalance });
             this._cashOut(confirmedBalance);
         } else if (confirmedBalance > 0 && this.amountPaid !== confirmedBalance) {
             this._updateStatus({ status: "PARTIALLY_PAID", amountPaid: confirmedBalance });
