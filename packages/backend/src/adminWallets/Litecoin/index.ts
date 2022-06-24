@@ -1,17 +1,16 @@
 import GenericAdminWallet from "../GenericAdminWallet";
 import { Transaction } from 'bitcore-lib-ltc';
-import { AvailableCoins, AvailableCurrencies, fGet, fPost, convertChainsoToNativeUtxo } from "@snow/common/src";
+import { AvailableCoins, AvailableCurrencies, fGet, convertChainsoToNativeUtxo } from "@snow/common/src";
 import config from "../../config";
 
 export default class AdminLitecoin extends GenericAdminWallet {
-    private mediumGasFee: number;
+    private mediumGasFee: number; // TODO: Maybe do lowest gas fee?
     public currency: AvailableCurrencies = "ltc";
     public coinName: AvailableCoins = "Litecoin";
     
-    constructor(...args: ConstructorParameters<typeof GenericAdminWallet>) {
-        super(...args);
-        fGet('https://api.blockcypher.com/v1/ltc/main')
-            .then(({ medium_fee_per_kb }) => this.mediumGasFee = medium_fee_per_kb)
+    private async _setGas() {
+        const { medium_fee_per_kb } = await fGet('https://api.blockcypher.com/v1/ltc/main');
+        this.mediumGasFee = medium_fee_per_kb;
     }
 
     async getBalance() {
@@ -34,7 +33,7 @@ export default class AdminLitecoin extends GenericAdminWallet {
         }
 
         if (!this.mediumGasFee) {
-            throw new Error("Gathering gas fees");
+            await this._setGas();
         }
 
         const { data: { txs } } = await fGet(`https://chain.so/api/v2/get_tx_unspent/LTC/${this.publicKey}`); // TODO API-providers

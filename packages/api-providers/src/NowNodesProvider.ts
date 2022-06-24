@@ -42,21 +42,26 @@ export default class NowNodesProvider extends GenericProvider {
             throw new Error("Currency not supported")
         }
 
+        // TODO: revert to getblocks
         try {
-            const { result } = await fPost(`https://${currency}.nownodes.io`, {
+            const { result, error } = await fPost(`https://${currency}.nownodes.io`, {
                 "jsonrpc": "2.0",
                 "method": "sendrawtransaction",
                 "params": [
-                    hexTransaction
+                    hexTransaction,
+                    0
                 ],
-                "id": "test",
                 "API_key": this.apiKey
             }, {
                 'Content-Type': 'application/json'
-            })
+            });
+
+            if (result === null) {
+                throw new Error(error)
+            }
             return { result };
         } catch (error) {
-            console.error(error);
+            console.error(JSON.stringify(error));
         }
     }
 }

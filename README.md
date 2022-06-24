@@ -30,7 +30,7 @@
 
 Snow is a self-hosted, high-performance cryptocurrency payment gateway. Payments can administer via the API or with the built-in invoicing client (image below).
 
-**Currently support currencies: Solana, Cardano, Litecoin, and Dash.**
+**Currently support currencies: Solana, Cardano, Litecoin, and Dash.** (Bitcoin, Ripple coming next)
 
 <p align="left">
   <img src="assets/invoice-frame.png" width="650" alt="Invoice Preview">

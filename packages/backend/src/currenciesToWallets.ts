@@ -6,11 +6,12 @@ import AdminLitecoin from "./adminWallets/Litecoin";
 import AdminSolana from "./adminWallets/Solana";
 import TransactionalSolana from "./transactionalWallets/Solana";
 import TransactionalDash from './transactionalWallets/Dash';
+import TransactionalLitecoin from "./transactionalWallets/Litecoin";
 
 const currenciesToWallets: Record<AvailableCurrencies, { Admin: ConcreteConstructor<typeof GenericAdminWallet>, Transactional: ConcreteConstructor<typeof GenericTransactionalWallet> }> = {
     "ltc": {
         Admin: AdminLitecoin,
-        Transactional: null
+        Transactional: TransactionalLitecoin
     },
     "sol": {
         Admin: AdminSolana,
