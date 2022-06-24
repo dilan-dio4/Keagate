@@ -48,13 +48,15 @@ export default class NowNodesProvider extends GenericProvider {
                 "jsonrpc": "2.0",
                 "method": "sendrawtransaction",
                 "params": [
-                    hexTransaction,
-                    0
+                    hexTransaction
                 ],
-                "API_key": this.apiKey
+                "API_key": this.apiKey,
+                "id": "test",
             }, {
                 'Content-Type': 'application/json'
             });
+
+            console.log(hexTransaction, result, error)
 
             if (result === null) {
                 throw new Error(error)
