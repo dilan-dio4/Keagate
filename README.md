@@ -32,6 +32,8 @@ Snow is a self-hosted, high-performance cryptocurrency payment gateway. Payments
 
 **Currently support currencies: Solana, Cardano, Litecoin, and Dash.** (Bitcoin, Ripple coming next)
 
+Todo: all trezor compatible chains falls to coinlib, others are built custom here.
+
 <p align="left">
   <img src="assets/invoice-frame.png" width="650" alt="Invoice Preview">
 </p>
