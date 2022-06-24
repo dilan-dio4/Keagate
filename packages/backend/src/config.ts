@@ -12,7 +12,7 @@ type MyCurrencyConfig = Partial<Record<AvailableCurrencies, {
   "PROVIDER_PARAMS": any[];
 }>>
 
-interface MyConfig extends MyCurrencyConfig{
+interface MyConfig extends MyCurrencyConfig {
     SNOW_API_KEY?: string;
     IP_WHITELIST: string[];
 

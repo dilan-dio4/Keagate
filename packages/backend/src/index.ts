@@ -76,7 +76,8 @@ async function init() {
         if (currenciesToWallets[currTxCurrency]) {
             const params = [
                 id => delete activePayments[id],
-                config.getTyped(currTxCurrency).PROVIDER ? new idsToProviders[config.getTyped(currTxCurrency).PROVIDER](config.getTyped(currTxCurrency).PROVIDER_PARAMS) : undefined
+                config.getTyped(currTxCurrency).PROVIDER ? new idsToProviders[config.getTyped(currTxCurrency).PROVIDER](config.getTyped(currTxCurrency).PROVIDER_PARAMS) : undefined,
+                currenciesToWallets[currTxCurrency].Admin
             ] as const;
 
             activePayments[_currActiveTransaction._id.toString()] = new currenciesToWallets[currTxCurrency].Transactional(...params).fromManual({

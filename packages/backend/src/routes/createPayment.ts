@@ -4,7 +4,9 @@ import auth from "../middlewares/auth";
 import GenericTransactionalWallet from "../transactionalWallets/GenericTransactionalWallet";
 import { encrypt } from "../utils";
 import currenciesToWallets from "../currenciesToWallets";
-import { AvailableCurrencies } from "@snow/common";
+import { AvailableCurrencies } from "@snow/common/src";
+import config from "config";
+import idsToProviders from "@snow/api-providers/src";
 
 const CreatePaymentBody = Type.Object({
     currency: Type.String(),
@@ -43,10 +45,17 @@ export default function createPaymentRoute(server: FastifyInstance, activePaymen
         opts,
         async (request, reply) => {
             const { body } = request;
-            body.currency = body.currency.toLowerCase();
+
+            const currency = body.currency.toLowerCase() as AvailableCurrencies;
             let transactionalWallet: GenericTransactionalWallet;
-            if (currenciesToWallets[body.currency]) {
-                transactionalWallet = await new currenciesToWallets[body.currency as AvailableCurrencies].Transactional((id) => delete activePayments[id]).fromNew({
+            if (currenciesToWallets[currency]) {
+                const params = [
+                    id => delete activePayments[id],
+                    config.getTyped(currency).PROVIDER ? new idsToProviders[config.getTyped(currency).PROVIDER](config.getTyped(currency).PROVIDER_PARAMS) : undefined,
+                    currenciesToWallets[currency].Admin
+                ] as const;
+    
+                transactionalWallet = await new currenciesToWallets[currency].Transactional(...params).fromNew({
                     amount: body.amount,
                     invoiceCallbackUrl: body.invoiceCallbackUrl,
                     ipnCallbackUrl: body.ipnCallbackUrl

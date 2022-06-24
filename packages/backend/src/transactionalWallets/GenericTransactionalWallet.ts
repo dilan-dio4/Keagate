@@ -2,9 +2,11 @@ import dayjs from "dayjs";
 import { ObjectId } from "mongodb";
 import { AvailableCurrencies, AvailableCoins, PaymentStatusType } from "@snow/common/src";
 import mongoGenerator from "../mongoGenerator";
-import { ClassPayment, IFromNew } from "../types";
+import { ClassPayment, ConcreteConstructor, IFromNew } from "../types";
 import config from "../config";
 import { GenericProvider } from "@snow/api-providers/src";
+import currenciesToWallets from "../currenciesToWallets";
+import GenericAdminWallet from "../adminWallets/GenericAdminWallet";
 
 export default abstract class GenericTransactionalWallet {
     public currency: AvailableCurrencies;
@@ -24,10 +26,23 @@ export default abstract class GenericTransactionalWallet {
     protected invoiceCallbackUrl?: string;
     protected payoutTransactionHash?: string;
 
-    constructor(public onDie: (id: string) => any, public apiProvider: GenericProvider) { }
+    constructor(public onDie: (id: string) => any, public apiProvider: GenericProvider, public adminWalletClass: ConcreteConstructor<typeof GenericAdminWallet>) { }
 
-    protected abstract _cashOut(balance: number): Promise<void>;
-    abstract getBalance(): Promise<{ result: { confirmedBalance: number; unconfirmedBalance?: number; } }>;
+    public getBalance?(): Promise<{ result: { confirmedBalance: number; unconfirmedBalance?: number; } }>;
+    private sendTransaction?(destination: string, amount: number): Promise<{ result: string }>;
+    protected async _cashOut(balance: number) {
+        try {
+            const [{ result: signature }] = await Promise.all([
+                this.sendTransaction(config.getTyped(this.currency).ADMIN_PUBLIC_KEY, balance),
+                this._updateStatus({ status: "SENDING" })
+            ])
+            this._updateStatus({ status: "FINISHED", payoutTransactionHash: signature });
+            this.onDie(this.id);
+        } catch (error) {
+            this._updateStatus({ status: "FAILED" }, JSON.stringify(error));
+            this.onDie(this.id);
+        }
+    }
 
     abstract fromNew(obj: IFromNew): Promise<this>;
     async fromPublicKey(publicKey: string | Uint8Array): Promise<this> {
@@ -52,8 +67,14 @@ export default abstract class GenericTransactionalWallet {
         })
         return this;
     }
+
+    // This always gets called from the three `from` constructors
     fromManual(initObj: ClassPayment): this {
+        this.getBalance = async () => ({ result: { confirmedBalance: 1 } }) // TODO: DROP
         this._setFromObject(initObj);
+        const adminWalletMask = new this.adminWalletClass(this.publicKey, this.privateKey, this.apiProvider)
+        this.getBalance = adminWalletMask.getBalance;
+        this.sendTransaction = adminWalletMask.sendTransaction;
         this._initialized = true;
         return this;
     }

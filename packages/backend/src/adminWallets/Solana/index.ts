@@ -8,6 +8,7 @@ export default class AdminSolana extends GenericAdminWallet {
     private connection: Connection;
     public currency: AvailableCurrencies = "sol";
     public coinName: AvailableCoins = "Solana";
+    static TRANSFER_FEE_LAMPORTS = 5000;
 
     constructor(...args: ConstructorParameters<typeof GenericAdminWallet>) {
         super(...args);
@@ -38,7 +39,7 @@ export default class AdminSolana extends GenericAdminWallet {
             SystemProgram.transfer({
                 fromPubkey: adminKeypair.publicKey,
                 toPubkey: new PublicKey(destination),
-                lamports: Math.round(amount * LAMPORTS_PER_SOL),
+                lamports: Math.round(amount * LAMPORTS_PER_SOL) - AdminSolana.TRANSFER_FEE_LAMPORTS,
             })
         );
 
