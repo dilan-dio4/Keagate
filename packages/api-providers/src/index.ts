@@ -1,20 +1,15 @@
-import NowNodesProvider from './NowNodesProvider';
-import SoChainProvider from './SoChainProvider';
-import TatumProvider from './TatumProvider';
-import GenericProvider from './GenericProvider';
-import { ConcreteConstructor } from '@snow/common/src';
+import NowNodesProvider from './NowNodesProvider'
+import SoChainProvider from './SoChainProvider'
+import TatumProvider from './TatumProvider'
+import GenericProvider from './GenericProvider'
+import { ConcreteConstructor } from '@snow/common/src'
 
-export type AvailableProviders = "NowNodes" | "Tatum";
+export type AvailableProviders = 'NowNodes' | 'Tatum'
 
 const idsToProviders: Record<AvailableProviders, ConcreteConstructor<typeof GenericProvider>> = {
     Tatum: TatumProvider,
-    NowNodes: NowNodesProvider
+    NowNodes: NowNodesProvider,
 }
 
-export default idsToProviders;
-export { 
-    NowNodesProvider,
-    SoChainProvider,
-    TatumProvider,
-    GenericProvider
-};
+export default idsToProviders
+export { NowNodesProvider, SoChainProvider, TatumProvider, GenericProvider }

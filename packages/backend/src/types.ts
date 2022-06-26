@@ -1,32 +1,32 @@
-import { AvailableCurrencies, PaymentStatusType } from '@snow/common/src';
+import { AvailableCurrencies, PaymentStatusType } from '@snow/common/src'
 
 interface PaymentRoot {
-    amount: number;
-    amountPaid: number;
-    status: PaymentStatusType;
-    id: string;
-    ipnCallbackUrl?: string;
-    invoiceCallbackUrl?: string;
-    payoutTransactionHash?: string;
-    currency: AvailableCurrencies;
-    publicKey: string;
-    privateKey: string;
+    amount: number
+    amountPaid: number
+    status: PaymentStatusType
+    id: string
+    ipnCallbackUrl?: string
+    invoiceCallbackUrl?: string
+    payoutTransactionHash?: string
+    currency: AvailableCurrencies
+    publicKey: string
+    privateKey: string
 }
 
 export interface ClassPayment extends PaymentRoot {
-    expiresAt: Date;
-    createdAt: Date;
-    updatedAt: Date;
+    expiresAt: Date
+    createdAt: Date
+    updatedAt: Date
 }
 
 export interface RequestPayment extends PaymentRoot {
-    expiresAt: string;
-    createdAt: string;
-    updatedAt: string;
+    expiresAt: string
+    createdAt: string
+    updatedAt: string
 }
 
 export interface IFromNew {
-    amount: number;
-    ipnCallbackUrl?: string;
-    invoiceCallbackUrl: string;
+    amount: number
+    ipnCallbackUrl?: string
+    invoiceCallbackUrl: string
 }
