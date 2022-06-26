@@ -9,7 +9,7 @@
     "build": "tsc --build ./tsconfig.project.json",
     "run": "npm run build && pm2 restart build/index.js --name \"Snow\" --time && pm2 save",
     "clean": "npm run clean -ws",
-    "dev": "npm-run-all build --parallel dev:backend dev:invoice-client",
+    "dev": "npm-run-all build --parallel dev:*",
     "dev:backend": "cd packages/backend && npm run dev",
     "dev:invoice-client": "cd packages/invoice-client && npm run dev"
   },
