@@ -2,13 +2,14 @@ import GenericTransactionalWallet from '../GenericNativeTransactionalWallet';
 import { Keypair } from '@solana/web3.js';
 import { AvailableCoins, AvailableCurrencies } from '@snow/common/src';
 import base58 from 'bs58';
-import { IFromNew } from '../../../types';
+import { IFromNew, NativePaymentConstructor } from '../../../types';
 
 export default class TransactionalSolana extends GenericTransactionalWallet {
     public currency: AvailableCurrencies = 'SOL';
     public coinName: AvailableCoins = 'Solana';
 
-    async fromNew(obj: IFromNew) {
+    async fromNew(obj: IFromNew, constructor: NativePaymentConstructor) {
+        this.construct(constructor);
         const newKeypair = Keypair.generate();
         return await this.initInDatabase({
             ...obj,

@@ -3,7 +3,7 @@ import { FastifyInstance, RouteShorthandOptions } from 'fastify';
 import auth from '../middlewares/auth';
 import GenericTransactionalWallet from '../transactionalWallets/GenericTransactionalWallet';
 import { encrypt, randU32Sync } from '../utils';
-import { availableCoinlibCurrencies, AvailableCurrencies, availableNativeCurrencies } from '@snow/common/src';
+import { AvailableCurrencies } from '@snow/common/src';
 import config from '../config';
 import idsToProviders from '@snow/api-providers/src';
 import GenericCoinlibWrapper from '../transactionalWallets/coinlib/GenericCoinlibWrapper';
@@ -53,19 +53,19 @@ export default function createPaymentRoute(server: FastifyInstance) {
             ipnCallbackUrl: body.ipnCallbackUrl,
         };
         if (context.enabledNativeCurrencies.includes(createCurrency as any)) {
-            const params = [
-                (id) => delete context.activePayments[id],
-                config.getTyped(createCurrency).PROVIDER
+            transactionalWallet = await new context.nativeCurrencyToClient[createCurrency].Transactional().fromNew(transactionalWalletNewObj, {
+                onDie: (id) => delete context.activePayments[id],
+                adminWalletClass: context.nativeCurrencyToClient[createCurrency].Admin,
+                apiProvider: config.getTyped(createCurrency).PROVIDER
                     ? new idsToProviders[config.getTyped(createCurrency).PROVIDER](config.getTyped(createCurrency).PROVIDER_PARAMS)
                     : undefined,
-                context.nativeCurrencyToClient[createCurrency].Admin,
-            ] as const;
-
-            transactionalWallet = await new context.nativeCurrencyToClient[createCurrency].Transactional(...params).fromNew(transactionalWalletNewObj);
+            });
         } else if (context.enabledCoinlibCurrencies.includes(createCurrency as any)) {
-            const params = [(id) => delete context.activePayments[id], context.coinlibCurrencyToClient[createCurrency], randU32Sync()] as const;
-
-            transactionalWallet = await new GenericCoinlibWrapper(...params).fromNew(transactionalWalletNewObj);
+            transactionalWallet = await new GenericCoinlibWrapper().fromNew(transactionalWalletNewObj, {
+                onDie: (id) => delete context.activePayments[id],
+                currency: createCurrency,
+                walletIndex: randU32Sync()
+            });
         } else {
             console.error(`No transactional wallet found/enabled for currency ${body.currency}`);
             return;

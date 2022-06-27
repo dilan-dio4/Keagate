@@ -1,40 +1,26 @@
-import { ObjectId } from 'mongodb';
-import mongoGenerator from '../../mongo/generator';
-import { CoinlibPayment, IFromNew } from '../../types';
+import { CoinlibPayment, IFromNew, CoinlibPaymentConstructor } from '../../types';
 import config from '../../config';
 import { AnyPayments } from 'coinlib-port';
 import GenericTransactionalWallet from '../GenericTransactionalWallet';
+import context from "../../context";
 
 export default class GenericCoinlibWrapper extends GenericTransactionalWallet {
     protected type = 'coinlib' as const;
+    private coinlibPayment: AnyPayments<any>;
+    private walletIndex: number;
 
-    constructor(public onDie: (id: string) => any, private coinlibPayment: AnyPayments<any>, private walletIndex: number) {
-        super();
+    protected construct(constructor: CoinlibPaymentConstructor): void {
+        this.coinlibPayment = context.coinlibCurrencyToClient[constructor.currency]
+        this.setFromObject(constructor)
     }
 
-    public async fromNew(obj: IFromNew): Promise<this> {
+    public async fromNew(obj: IFromNew, constructor: CoinlibPaymentConstructor) {
+        this.construct(constructor);
         const { address } = await this.coinlibPayment.getPayport(this.walletIndex);
         await this.initInDatabase({
             ...obj,
             publicKey: address,
         });
-        return this;
-    }
-
-    public async fromPaymentId(paymentId: string): Promise<this> {
-        const { db } = await mongoGenerator();
-        const existingTransaction = await db.collection('payments').findOne({ _id: new ObjectId(paymentId) });
-        this.fromManual({
-            ...(existingTransaction as any),
-            id: paymentId,
-        });
-        return this;
-    }
-
-    // This always gets called from the three `from` constructors
-    public fromManual(initObj: CoinlibPayment): this {
-        this.setFromObject(initObj);
-        this._initialized = true;
         return this;
     }
 

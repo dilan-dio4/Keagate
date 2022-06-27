@@ -2,12 +2,12 @@ import dayjs from 'dayjs';
 import { ObjectId } from 'mongodb';
 import { AvailableCurrencies, AvailableCoins, PaymentStatusType } from '@snow/common/src';
 import mongoGenerator from '../mongo/generator';
-import { MongoPayment, IFromNew } from '../types';
+import { MongoPayment, IFromNew, NativePaymentConstructor, CoinlibPaymentConstructor } from '../types';
 import config from '../config';
 
 export default abstract class GenericTransactionalWallet {
     public currency: AvailableCurrencies;
-    public coinName: AvailableCoins;
+    public coinName: AvailableCoins; // TODO: drop
     protected type: 'coinlib' | 'native';
     protected _initialized = false;
 
@@ -23,16 +23,29 @@ export default abstract class GenericTransactionalWallet {
     protected invoiceCallbackUrl?: string;
     protected payoutTransactionHash?: string;
 
-    protected abstract onDie: (id: string) => any;
+    protected onDie: (id: string) => any;
 
     // You implement these
+    // --
     protected abstract _cashOut(balance?: number): Promise<string>;
     protected abstract _getBalance(): Promise<number>;
+    // --
+
+    protected abstract construct(constructor: NativePaymentConstructor | CoinlibPaymentConstructor): void;
 
     // fromManual always gets called from other `from` constructors
-    public abstract fromManual(initObj: MongoPayment): this;
-    public abstract fromNew(obj: IFromNew): Promise<this>;
+    public abstract fromNew(obj: IFromNew, constructor: NativePaymentConstructor | CoinlibPaymentConstructor): Promise<this>;
     public abstract getDetails(): MongoPayment;
+    
+    // This always gets called from the three `from` constructors
+    public fromManual(initObj: MongoPayment, constructor?: NativePaymentConstructor | CoinlibPaymentConstructor) {
+        if (constructor) {
+            this.construct(constructor)
+        }
+        this.setFromObject(initObj);
+        this._initialized = true;
+        return this;
+    }
 
     public async checkTransaction() {
         if (!this._initialized) {
@@ -62,8 +75,6 @@ export default abstract class GenericTransactionalWallet {
         }
     }
 
-    public abstract fromPaymentId(paymentId: string): Promise<this>;
-
     protected async initInDatabase(obj: IFromNew & { publicKey: string; privateKey?: string }): Promise<this> {
         const now = dayjs().toDate();
         const { db } = await mongoGenerator();
@@ -84,7 +95,7 @@ export default abstract class GenericTransactionalWallet {
         } as MongoPayment);
     }
 
-    protected setFromObject(update: Partial<MongoPayment>) {
+    protected setFromObject(update: Partial<MongoPayment> | NativePaymentConstructor | CoinlibPaymentConstructor) {
         for (const [key, val] of Object.entries(update)) {
             this[key] = val;
         }
