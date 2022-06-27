@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb'
-import mongoGenerator from '../../mongoGenerator'
+import mongoGenerator from '../../mongo/generator'
 import { CoinlibPayment, IFromNew } from '../../types'
 import config from '../../config'
 import { AnyPayments } from 'coinlib-port';

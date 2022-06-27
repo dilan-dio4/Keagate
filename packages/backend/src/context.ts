@@ -5,7 +5,7 @@ import { WithId } from "mongodb";
 import GenericAdminWallet from "./adminWallets/GenericAdminWallet";
 import AdminSolana from "./adminWallets/Solana";
 import config from './config';
-import { getExistingPayments } from "./mongoUtils";
+import { getExistingPayments } from "./mongo";
 import GenericCoinlibWrapper from "./transactionalWallets/coinlib/GenericCoinlibWrapper";
 import GenericTransactionalWallet from "./transactionalWallets/GenericTransactionalWallet";
 import GenericNativeTransactionalWallet from "./transactionalWallets/native/GenericNativeTransactionalWallet";

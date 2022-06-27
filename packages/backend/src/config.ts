@@ -34,10 +34,12 @@ interface MyConfig extends MyCurrencyConfig {
     USE_SO_CHAIN: boolean
 }
 
-const getTyped: <T extends keyof MyConfig>(key: T) => MyConfig[T] =  <T extends keyof MyConfig>(key: T) => config.get(key);
+const getTyped: <T extends keyof MyConfig>(key: T) => MyConfig[T] = <T extends keyof MyConfig>(key: T) => config.get(key);
+const has: (setting: string) => boolean = (setting: string) => config.has(setting);
+
 const obj = {
     getTyped,
-    has: config.has
+    has
 }
 
 export default obj

@@ -1,5 +1,5 @@
 import { Db } from "mongodb";
-import mongoGenerator from "../mongoGenerator";
+import mongoGenerator from "./generator";
 
 const _load = (db: Db, collection: "payments") => db
     .collection(collection)

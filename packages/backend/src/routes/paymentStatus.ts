@@ -1,7 +1,7 @@
 import { Static, Type } from '@sinclair/typebox'
 import { FastifyInstance, RouteShorthandOptions } from 'fastify'
 import auth from '../middlewares/auth'
-import mongoGenerator from '../mongoGenerator'
+import mongoGenerator from '../mongo/generator'
 import { ObjectId } from 'mongodb'
 import { encrypt } from '../utils'
 

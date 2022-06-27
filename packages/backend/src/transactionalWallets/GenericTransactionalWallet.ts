@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
 import { ObjectId } from 'mongodb'
 import { AvailableCurrencies, AvailableCoins, PaymentStatusType } from '@snow/common/src'
-import mongoGenerator from '../mongoGenerator'
+import mongoGenerator from '../mongo/generator'
 import { MongoPayment, IFromNew } from '../types'
 import config from '../config'
 

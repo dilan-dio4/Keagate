@@ -1,5 +1,5 @@
 import { ConcreteConstructor } from '@snow/common/src'
-import mongoGenerator from '../../mongoGenerator'
+import mongoGenerator from '../../mongo/generator'
 import { NativePayment } from '../../types'
 import config from '../../config'
 import { GenericProvider } from '@snow/api-providers/src'

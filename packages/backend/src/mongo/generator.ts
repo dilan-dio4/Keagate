@@ -1,9 +1,9 @@
 import { MongoClient } from 'mongodb'
-import config from './config'
+import config from '../config'
 
 let clientInstance: MongoClient
 
-export default async function mongoGenerator() {
+export default async function generator() {
     if (!clientInstance) {
         // Default options: https://github.com/mongodb/node-mongodb-native/blob/ee414476aa839e364bce6b26ab47859be1b99307/src/connection_string.ts#L825
         // https://stackoverflow.com/a/56438581
