@@ -76,7 +76,7 @@ async function main() {
 
     function paymentsIntervalRunner() {
         setInterval(() => {
-            console.log('Checking native payments...')
+            console.log('Checking payments...')
             Object.values(context.activePayments).forEach((ele) => ele.checkTransaction())
         }, config.getTyped('TRANSACTION_REFRESH_TIME'))
     }
