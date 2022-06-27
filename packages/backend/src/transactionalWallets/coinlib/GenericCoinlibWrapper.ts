@@ -2,7 +2,7 @@ import { CoinlibPayment, IFromNew, CoinlibPaymentConstructor } from '../../types
 import config from '../../config';
 import { AnyPayments } from 'coinlib-port';
 import GenericTransactionalWallet from '../GenericTransactionalWallet';
-import context from "../../context";
+import context from '../../context';
 
 export default class GenericCoinlibWrapper extends GenericTransactionalWallet {
     protected type = 'coinlib' as const;
@@ -10,18 +10,17 @@ export default class GenericCoinlibWrapper extends GenericTransactionalWallet {
     private walletIndex: number;
 
     protected construct(constructor: CoinlibPaymentConstructor): void {
-        this.coinlibPayment = context.coinlibCurrencyToClient[constructor.currency]
-        this.setFromObject(constructor)
+        this.setFromObject(constructor);
     }
 
     public async fromNew(obj: IFromNew, constructor: CoinlibPaymentConstructor) {
-        this.construct(constructor);
-        const { address } = await this.coinlibPayment.getPayport(this.walletIndex);
-        await this.initInDatabase({
+        this.coinlibPayment = context.coinlibCurrencyToClient[constructor.currency];
+        const { address } = await this.coinlibPayment.getPayport(constructor.walletIndex);
+        const mongoPayment = await this.initInDatabase({
             ...obj,
             publicKey: address,
         });
-        return this;
+        return this.fromManual(mongoPayment, constructor);
     }
 
     public getDetails(): CoinlibPayment {

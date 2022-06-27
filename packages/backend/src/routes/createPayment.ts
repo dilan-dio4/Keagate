@@ -64,7 +64,7 @@ export default function createPaymentRoute(server: FastifyInstance) {
             transactionalWallet = await new GenericCoinlibWrapper().fromNew(transactionalWalletNewObj, {
                 onDie: (id) => delete context.activePayments[id],
                 currency: createCurrency,
-                walletIndex: randU32Sync()
+                walletIndex: randU32Sync(),
             });
         } else {
             console.error(`No transactional wallet found/enabled for currency ${body.currency}`);

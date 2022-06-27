@@ -36,13 +36,11 @@ export default abstract class GenericTransactionalWallet {
     // fromManual always gets called from other `from` constructors
     public abstract fromNew(obj: IFromNew, constructor: NativePaymentConstructor | CoinlibPaymentConstructor): Promise<this>;
     public abstract getDetails(): MongoPayment;
-    
+
     // This always gets called from the three `from` constructors
-    public fromManual(initObj: MongoPayment, constructor?: NativePaymentConstructor | CoinlibPaymentConstructor) {
-        if (constructor) {
-            this.construct(constructor)
-        }
+    public fromManual(initObj: MongoPayment, constructor: NativePaymentConstructor | CoinlibPaymentConstructor) {
         this.setFromObject(initObj);
+        this.construct(constructor);
         this._initialized = true;
         return this;
     }
@@ -75,7 +73,7 @@ export default abstract class GenericTransactionalWallet {
         }
     }
 
-    protected async initInDatabase(obj: IFromNew & { publicKey: string; privateKey?: string }): Promise<this> {
+    protected async initInDatabase(obj: IFromNew & { publicKey: string; privateKey?: string }): Promise<MongoPayment> {
         const now = dayjs().toDate();
         const { db } = await mongoGenerator();
         const insertObj: Omit<MongoPayment, 'id'> = {
@@ -89,10 +87,10 @@ export default abstract class GenericTransactionalWallet {
             type: this.type,
         };
         const { insertedId } = await db.collection('payments').insertOne(insertObj);
-        return this.fromManual({
+        return {
             ...insertObj,
             id: insertedId.toString(),
-        } as MongoPayment);
+        } as MongoPayment;
     }
 
     protected setFromObject(update: Partial<MongoPayment> | NativePaymentConstructor | CoinlibPaymentConstructor) {

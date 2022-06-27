@@ -23,11 +23,11 @@ class SnowContext {
             Transactional: ConcreteConstructor<typeof GenericNativeTransactionalWallet>;
         }
     > = {
-            SOL: {
-                Admin: AdminSolana,
-                Transactional: TransactionalSolana,
-            },
-        };
+        SOL: {
+            Admin: AdminSolana,
+            Transactional: TransactionalSolana,
+        },
+    };
     public activePayments: Record<string, GenericCoinlibWrapper | GenericTransactionalWallet> = {};
 
     public async init() {
@@ -73,30 +73,36 @@ class SnowContext {
 
             if (_currActivePayment.type === 'native') {
                 if (this.enabledNativeCurrencies.includes(currTxCurrency as any)) {
-                    this.activePayments[_currActivePayment._id.toString()] = new this.nativeCurrencyToClient[currTxCurrency].Transactional().fromManual({
-                        ...(_currActivePayment as any),
-                        id: _currActivePayment._id.toString(),
-                    }, {
-                        onDie: (id) => delete this.activePayments[id],
-                        adminWalletClass: this.nativeCurrencyToClient[currTxCurrency].Admin,
-                        apiProvider: config.getTyped(currTxCurrency).PROVIDER
-                            ? new idsToProviders[config.getTyped(currTxCurrency).PROVIDER](config.getTyped(currTxCurrency).PROVIDER_PARAMS)
-                            : undefined
-                    });
+                    this.activePayments[_currActivePayment._id.toString()] = new this.nativeCurrencyToClient[currTxCurrency].Transactional().fromManual(
+                        {
+                            ...(_currActivePayment as any),
+                            id: _currActivePayment._id.toString(),
+                        },
+                        {
+                            onDie: (id) => delete this.activePayments[id],
+                            adminWalletClass: this.nativeCurrencyToClient[currTxCurrency].Admin,
+                            apiProvider: config.getTyped(currTxCurrency).PROVIDER
+                                ? new idsToProviders[config.getTyped(currTxCurrency).PROVIDER](config.getTyped(currTxCurrency).PROVIDER_PARAMS)
+                                : undefined,
+                        },
+                    );
                 } else {
                     console.error(`No transactional wallet found/enabled for currency ${_currActivePayment.currency}: ${_currActivePayment._id}`);
                     continue;
                 }
             } else if (_currActivePayment.type === 'coinlib') {
                 if (this.enabledCoinlibCurrencies.includes(currTxCurrency as any)) {
-                    this.activePayments[_currActivePayment._id.toString()] = new GenericCoinlibWrapper().fromManual({
-                        ...(_currActivePayment as any),
-                        id: _currActivePayment._id.toString(),
-                    }, {
-                        onDie: (id) => delete this.activePayments[id],
-                        walletIndex: _currActivePayment.walletIndex,
-                        currency: currTxCurrency
-                    });
+                    this.activePayments[_currActivePayment._id.toString()] = new GenericCoinlibWrapper().fromManual(
+                        {
+                            ...(_currActivePayment as any),
+                            id: _currActivePayment._id.toString(),
+                        },
+                        {
+                            onDie: (id) => delete this.activePayments[id],
+                            walletIndex: _currActivePayment.walletIndex,
+                            currency: currTxCurrency,
+                        },
+                    );
                 } else {
                     console.error(`No transactional wallet found/enabled for currency ${_currActivePayment.currency}: ${_currActivePayment._id}`);
                     continue;

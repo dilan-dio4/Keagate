@@ -8,17 +8,17 @@ export default class TransactionalLitecoin extends GenericTransactionalWallet {
     public coinName: AvailableCoins = 'Litecoin';
 
     async fromNew(obj: IFromNew, constructor: NativePaymentConstructor) {
-        this.construct(constructor);
         // LIKE: https://github.com/dashevo/dashcore-lib/blob/master/docs/usage/privatekey.md
         const newKeypair = new PrivateKey();
         const privateKey = newKeypair.toString();
 
         // LIKE: https://github.com/dashevo/dashcore-lib/blob/master/docs/usage/publickey.md
         const publicKey = newKeypair.toPublicKey().toAddress().toString();
-        return await this.initInDatabase({
+        const mongoPayment = await this.initInDatabase({
             ...obj,
             publicKey,
             privateKey,
         });
+        return this.fromManual(mongoPayment, constructor);
     }
 }

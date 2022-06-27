@@ -14,7 +14,7 @@ export default abstract class GenericNativeTransactionalWallet extends GenericTr
         // this.getBalance = adminWalletMask.getBalance;
         // this.sendTransaction = adminWalletMask.sendTransaction;
     }
-    
+
     public getDetails(): NativePayment {
         return {
             amount: this.amount,

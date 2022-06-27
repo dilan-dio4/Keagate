@@ -1,6 +1,6 @@
 import { AvailableCurrencies, ConcreteConstructor, PaymentStatusType } from '@snow/common/src';
-import { GenericProvider } from "@snow/api-providers/src";
-import GenericAdminWallet from "./adminWallets/GenericAdminWallet";
+import { GenericProvider } from '@snow/api-providers/src';
+import GenericAdminWallet from './adminWallets/GenericAdminWallet';
 
 // Inherited from all payment types
 interface PaymentRoot {
@@ -21,7 +21,6 @@ interface PaymentRoot {
 interface PaymentConstructorRoot {
     onDie: (id: string) => any;
 }
-
 
 // Native specific
 export interface NativePayment extends PaymentRoot {
