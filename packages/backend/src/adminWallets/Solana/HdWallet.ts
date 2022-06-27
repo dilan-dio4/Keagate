@@ -1,10 +1,10 @@
 // https://github.com/p2p-org/p2p-wallet-web/blob/2d894ae5893b8566760c8a52050fde7e918d3139/packages/core/src/contexts/seed/utils/hd_wallet.ts
-import * as ed25519 from 'ed25519-hd-key'
-import nacl from 'tweetnacl'
-import { bip32 } from "../../utils";
+import * as ed25519 from 'ed25519-hd-key';
+import nacl from 'tweetnacl';
+import { bip32 } from '../../utils';
 import * as bip39 from 'bip39';
 import { PublicKey } from '@solana/web3.js';
-import config from "../../config";
+import config from '../../config';
 
 const DERIVATION_PATH = {
     Deprecated: 'deprecated',
@@ -14,31 +14,27 @@ const DERIVATION_PATH = {
 
 type ValueOf<T> = T[keyof T];
 
-const deriveSeed = (
-    seed: string,
-    walletIndex: number,
-    derivationPath: ValueOf<typeof DERIVATION_PATH>,
-): Buffer | undefined => {
+const deriveSeed = (seed: string, walletIndex: number, derivationPath: ValueOf<typeof DERIVATION_PATH>): Buffer | undefined => {
     switch (derivationPath) {
         case DERIVATION_PATH.Deprecated: {
-            const path = `m/501'/${walletIndex}'/0/0`
-            return bip32.fromSeed(Buffer.from(seed, 'hex')).derivePath(path).privateKey
+            const path = `m/501'/${walletIndex}'/0/0`;
+            return bip32.fromSeed(Buffer.from(seed, 'hex')).derivePath(path).privateKey;
         }
         case DERIVATION_PATH.Bip44: {
-            const path = `m/44'/501'/${walletIndex}'`
-            return ed25519.derivePath(path, seed).key
+            const path = `m/44'/501'/${walletIndex}'`;
+            return ed25519.derivePath(path, seed).key;
         }
         case DERIVATION_PATH.Bip44Change: {
-            const path = `m/44'/501'/${walletIndex}'/0'`
-            return ed25519.derivePath(path, seed).key
+            const path = `m/44'/501'/${walletIndex}'/0'`;
+            return ed25519.derivePath(path, seed).key;
         }
     }
-}
+};
 
 export function getKeyPairFromSeed(seed: string, walletIndex: number, derivationPath: ValueOf<typeof DERIVATION_PATH>) {
-    const derivedPrivateKey = deriveSeed(seed, walletIndex, derivationPath)
-    if (!derivedPrivateKey) throw new Error('Could not derive secretKey')
-    return nacl.sign.keyPair.fromSeed(derivedPrivateKey)
+    const derivedPrivateKey = deriveSeed(seed, walletIndex, derivationPath);
+    if (!derivedPrivateKey) throw new Error('Could not derive secretKey');
+    return nacl.sign.keyPair.fromSeed(derivedPrivateKey);
 }
 
 // const derivePublicKeyFromSeed = (
@@ -58,12 +54,12 @@ export function getKeyPairFromSeed(seed: string, walletIndex: number, derivation
 // }
 
 export const generateMnemonicAndSeedAsync = async () => {
-  const mnemonic = bip39.generateMnemonic(256);
-  const seed = await bip39.mnemonicToSeed(mnemonic);
-  return {
-    mnemonic,
-    seed: Buffer.from(seed).toString('hex'),
-  };
+    const mnemonic = bip39.generateMnemonic(256);
+    const seed = await bip39.mnemonicToSeed(mnemonic);
+    return {
+        mnemonic,
+        seed: Buffer.from(seed).toString('hex'),
+    };
 };
 
 // const mnemonicToSeed = async (mnemonic: string) => {
@@ -76,10 +72,9 @@ export const generateMnemonicAndSeedAsync = async () => {
 
 export default function generateKeypair(walletIndex: number) {
     const seed = config.getTyped('SEED');
-    const keypair = getKeyPairFromSeed(seed, walletIndex, "bip44");
+    const keypair = getKeyPairFromSeed(seed, walletIndex, 'bip44');
     return {
         publicKey: new PublicKey(keypair.publicKey).toString(),
-        secretKey: keypair.secretKey
-    }
+        secretKey: keypair.secretKey,
+    };
 }
-

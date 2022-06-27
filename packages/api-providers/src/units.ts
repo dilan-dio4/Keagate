@@ -51,6 +51,6 @@ const units = {
         lovelace: '0.000001',
         ada: '1',
     },
-}
+};
 
-export default units
+export default units;

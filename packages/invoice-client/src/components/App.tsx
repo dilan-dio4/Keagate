@@ -1,7 +1,7 @@
-import { Flowbite } from 'flowbite-react'
-import { Toaster } from 'react-hot-toast'
-import Invoice from './Invoice'
-import '../styles/globals.css'
+import { Flowbite } from 'flowbite-react';
+import { Toaster } from 'react-hot-toast';
+import Invoice from './Invoice';
+import '../styles/globals.css';
 
 function App() {
     return (
@@ -18,7 +18,7 @@ function App() {
                 }}
             />
         </Flowbite>
-    )
+    );
 }
 
-export default App
+export default App;

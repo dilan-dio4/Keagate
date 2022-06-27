@@ -1,8 +1,8 @@
-import { Static, Type } from '@sinclair/typebox'
-import { FastifyInstance, RouteShorthandOptions } from 'fastify'
-import { MongoPayment, ForRequest } from '../types'
-import auth from '../middlewares/auth'
-import context from "../context"
+import { Static, Type } from '@sinclair/typebox';
+import { FastifyInstance, RouteShorthandOptions } from 'fastify';
+import { MongoPayment, ForRequest } from '../types';
+import auth from '../middlewares/auth';
+import context from '../context';
 
 const ActivePaymentsResponse = Type.Array(
     Type.Object({
@@ -19,7 +19,7 @@ const ActivePaymentsResponse = Type.Array(
         payoutTransactionHash: Type.Optional(Type.String()),
         type: Type.String(),
     }),
-)
+);
 
 const opts: RouteShorthandOptions = {
     schema: {
@@ -28,22 +28,20 @@ const opts: RouteShorthandOptions = {
         },
     },
     preHandler: auth,
-}
+};
 
-export default function createActivePaymentsRoute(
-    server: FastifyInstance
-) {
+export default function createActivePaymentsRoute(server: FastifyInstance) {
     server.get<{ Reply: Static<typeof ActivePaymentsResponse> }>('/activePayments', opts, async (request, reply) => {
-        const cleanedTransactions: ForRequest<MongoPayment>[] = []
+        const cleanedTransactions: ForRequest<MongoPayment>[] = [];
         Object.values(context.activePayments).forEach((ele) => {
-            const details: Record<string, any> = { ...ele.getDetails() }
+            const details: Record<string, any> = { ...ele.getDetails() };
             cleanedTransactions.push({
                 ...(details as any),
                 createdAt: details.createdAt.toISOString(),
                 updatedAt: details.updatedAt.toISOString(),
                 expiresAt: details.expiresAt.toISOString(),
-            })
-        })
-        reply.status(200).send(cleanedTransactions)
-    })
+            });
+        });
+        reply.status(200).send(cleanedTransactions);
+    });
 }

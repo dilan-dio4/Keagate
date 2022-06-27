@@ -1,7 +1,7 @@
-import { MongoClient } from 'mongodb'
-import config from '../config'
+import { MongoClient } from 'mongodb';
+import config from '../config';
 
-let clientInstance: MongoClient
+let clientInstance: MongoClient;
 
 export default async function generator() {
     if (!clientInstance) {
@@ -10,14 +10,14 @@ export default async function generator() {
         const _client = new MongoClient(config.getTyped('MONGO_CONNECTION_STRING'), {
             keepAlive: true,
             socketTimeoutMS: 2000000,
-        })
-        await _client.connect()
-        _client.on('topologyClosed', () => (clientInstance = undefined))
-        clientInstance = _client
+        });
+        await _client.connect();
+        _client.on('topologyClosed', () => (clientInstance = undefined));
+        clientInstance = _client;
     }
 
     return {
         db: clientInstance.db(config.getTyped('MONGO_SNOW_DB')),
         client: clientInstance,
-    }
+    };
 }

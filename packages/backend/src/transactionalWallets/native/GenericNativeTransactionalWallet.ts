@@ -1,16 +1,16 @@
-import { ConcreteConstructor } from '@snow/common/src'
-import mongoGenerator from '../../mongo/generator'
-import { NativePayment } from '../../types'
-import config from '../../config'
-import { GenericProvider } from '@snow/api-providers/src'
-import GenericAdminWallet from '../../adminWallets/GenericAdminWallet'
-import GenericTransactionalWallet from "../GenericTransactionalWallet"
-import { ObjectId } from "mongodb"
+import { ConcreteConstructor } from '@snow/common/src';
+import mongoGenerator from '../../mongo/generator';
+import { NativePayment } from '../../types';
+import config from '../../config';
+import { GenericProvider } from '@snow/api-providers/src';
+import GenericAdminWallet from '../../adminWallets/GenericAdminWallet';
+import GenericTransactionalWallet from '../GenericTransactionalWallet';
+import { ObjectId } from 'mongodb';
 
 export default abstract class GenericNativeTransactionalWallet extends GenericTransactionalWallet {
-    protected privateKey: string
-    protected adminWalletMask: GenericAdminWallet
-    protected type = "native" as const
+    protected privateKey: string;
+    protected adminWalletMask: GenericAdminWallet;
+    protected type = 'native' as const;
 
     constructor(
         protected onDie: (id: string) => any,
@@ -35,23 +35,23 @@ export default abstract class GenericNativeTransactionalWallet extends GenericTr
     // }
 
     public async fromPaymentId(paymentId: string): Promise<this> {
-        const { db } = await mongoGenerator()
-        const existingTransaction = await db.collection('transactions').findOne({ _id: new ObjectId(paymentId) })
+        const { db } = await mongoGenerator();
+        const existingTransaction = await db.collection('transactions').findOne({ _id: new ObjectId(paymentId) });
         this.fromManual({
             ...(existingTransaction as any),
             id: paymentId,
-        })
-        return this
+        });
+        return this;
     }
 
     // This always gets called from the three `from` constructors
     public fromManual(initObj: NativePayment): this {
-        this.setFromObject(initObj)
-        this.adminWalletMask = new this.adminWalletClass(this.publicKey, this.privateKey, this.apiProvider)
+        this.setFromObject(initObj);
+        this.adminWalletMask = new this.adminWalletClass(this.publicKey, this.privateKey, this.apiProvider);
         // this.getBalance = adminWalletMask.getBalance;
         // this.sendTransaction = adminWalletMask.sendTransaction;
-        this._initialized = true
-        return this
+        this._initialized = true;
+        return this;
     }
 
     public getDetails(): NativePayment {
@@ -69,12 +69,14 @@ export default abstract class GenericNativeTransactionalWallet extends GenericTr
             currency: this.currency,
             amountPaid: this.amountPaid,
             type: this.type,
-            privateKey: this.privateKey
-        }
+            privateKey: this.privateKey,
+        };
     }
 
     protected async _getBalance(): Promise<number> {
-        const { result: { confirmedBalance } } = await this.adminWalletMask.getBalance();
+        const {
+            result: { confirmedBalance },
+        } = await this.adminWalletMask.getBalance();
         return confirmedBalance;
     }
 
@@ -83,7 +85,7 @@ export default abstract class GenericNativeTransactionalWallet extends GenericTr
             const { result } = await this.adminWalletMask.sendTransaction(config.getTyped(this.currency).ADMIN_PUBLIC_KEY, balance);
             return result;
         } catch (error) {
-            throw new Error(error)
+            throw new Error(error);
         }
     }
 }
