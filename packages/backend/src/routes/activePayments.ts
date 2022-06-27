@@ -18,6 +18,7 @@ const ActivePaymentsResponse = Type.Array(
         invoiceCallbackUrl: Type.Optional(Type.String()),
         payoutTransactionHash: Type.Optional(Type.String()),
         type: Type.String(),
+        currency: Type.String()
     }),
 );
 

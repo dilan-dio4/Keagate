@@ -19,6 +19,7 @@ export default class GenericCoinlibWrapper extends GenericTransactionalWallet {
         const mongoPayment = await this.initInDatabase({
             ...obj,
             publicKey: address,
+            currency: constructor.currency
         });
         return this.fromManual(mongoPayment, constructor);
     }

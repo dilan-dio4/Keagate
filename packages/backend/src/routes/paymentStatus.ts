@@ -20,6 +20,7 @@ const PaymentStatusResponse = Type.Object({
     payoutTransactionHash: Type.Optional(Type.String()),
     invoiceUrl: Type.String(),
     type: Type.String(),
+    currency: Type.String()
 });
 
 const PaymentStatusQueryString = Type.Object({
@@ -52,11 +53,11 @@ export default function createPaymentStatusRoute(server: FastifyInstance) {
         }
         delete selectedPayment['privateKey'];
         selectedPayment.id = selectedPayment._id.toString();
+        delete selectedPayment._id;
         selectedPayment.createdAt = selectedPayment.createdAt.toISOString();
         selectedPayment.updatedAt = selectedPayment.updatedAt.toISOString();
         selectedPayment.expiresAt = selectedPayment.expiresAt.toISOString();
         selectedPayment.invoiceUrl = `/invoice/${selectedPayment.currency}/${encrypt(selectedPayment.id)}`;
-        delete selectedPayment._id;
         reply.status(200).send(selectedPayment);
     });
 }

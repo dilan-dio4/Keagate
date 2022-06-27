@@ -72,18 +72,18 @@ export default abstract class GenericTransactionalWallet {
         }
     }
 
-    protected async initInDatabase(obj: IFromNew & { publicKey: string; privateKey?: string }): Promise<MongoPayment> {
+    protected async initInDatabase(obj: IFromNew & { publicKey: string; privateKey?: string; currency?: AvailableCurrencies }): Promise<MongoPayment> {
         const now = dayjs().toDate();
         const { db } = await mongoGenerator();
         const insertObj: Omit<MongoPayment, 'id'> = {
-            ...obj,
             amountPaid: 0,
             expiresAt: dayjs().add(config.getTyped('TRANSACTION_TIMEOUT'), 'milliseconds').toDate(),
             createdAt: now,
             updatedAt: now,
             status: 'WAITING',
-            currency: this.currency,
             type: this.type,
+            currency: this.currency,
+            ...obj
         };
         const { insertedId } = await db.collection('payments').insertOne(insertObj);
         return {
