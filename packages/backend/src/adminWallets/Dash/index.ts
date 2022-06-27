@@ -1,13 +1,12 @@
 import GenericAdminWallet from '../GenericAdminWallet';
 import { Transaction } from '@dashevo/dashcore-lib';
-import { AvailableCoins, AvailableCurrencies, fGet, convertChainsoToNativeUtxo } from '@snow/common/src';
+import { AvailableCurrencies, fGet, convertChainsoToNativeUtxo } from '@snow/common/src';
 import config from '../../config';
 
 // https://jestersimpps.github.io/my-first-experience-with-bitpay-bitcore/
 // TODO custom fee like LTC
 export default class AdminDash extends GenericAdminWallet {
     public currency: AvailableCurrencies = 'DASH';
-    public coinName: AvailableCoins = 'Dash';
     static TRANSACTION_FEE = 1000;
 
     async getBalance() {

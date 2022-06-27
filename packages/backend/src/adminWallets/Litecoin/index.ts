@@ -1,12 +1,11 @@
 import GenericAdminWallet from '../GenericAdminWallet';
 import { Transaction } from 'bitcore-lib-ltc';
-import { AvailableCoins, AvailableCurrencies, fGet, convertChainsoToNativeUtxo } from '@snow/common/src';
+import { AvailableCurrencies, fGet, convertChainsoToNativeUtxo } from '@snow/common/src';
 import config from '../../config';
 
 export default class AdminLitecoin extends GenericAdminWallet {
     private mediumGasFee: number; // TODO: Maybe do lowest gas fee?
     public currency: AvailableCurrencies = 'LTC';
-    public coinName: AvailableCoins = 'Litecoin';
 
     private async _setGas() {
         const { medium_fee_per_kb } = await fGet('https://api.blockcypher.com/v1/ltc/main');

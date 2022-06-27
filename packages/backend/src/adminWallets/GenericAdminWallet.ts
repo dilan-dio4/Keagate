@@ -1,10 +1,9 @@
-import { AvailableCurrencies, AvailableCoins } from '@snow/common/src';
+import { AvailableCurrencies } from '@snow/common/src';
 import WAValidator from 'multicoin-address-validator';
 import { GenericProvider } from '@snow/api-providers/src';
 
 export default abstract class GenericAdminWallet {
     protected currency: AvailableCurrencies;
-    protected coinName: AvailableCoins;
 
     constructor(public publicKey: string, public privateKey: string, public apiProvider: GenericProvider) {}
     abstract getBalance(): Promise<{ result: { confirmedBalance: number; unconfirmedBalance?: number } }>;

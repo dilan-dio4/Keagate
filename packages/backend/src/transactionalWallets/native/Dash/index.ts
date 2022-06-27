@@ -5,7 +5,6 @@ import { PrivateKey } from '@dashevo/dashcore-lib';
 
 export default class TransactionalDash extends GenericTransactionalWallet {
     public currency: AvailableCurrencies = 'DASH';
-    public coinName: AvailableCoins = 'Dash';
 
     async fromNew(obj: IFromNew, constructor: NativePaymentConstructor) {
         // https://github.com/dashevo/dashcore-lib/blob/master/docs/usage/privatekey.md

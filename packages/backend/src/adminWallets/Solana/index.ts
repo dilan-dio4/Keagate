@@ -1,13 +1,12 @@
 import { Connection, clusterApiUrl, PublicKey, Keypair, Transaction, SystemProgram, LAMPORTS_PER_SOL, sendAndConfirmTransaction } from '@solana/web3.js';
 import GenericAdminWallet from '../GenericAdminWallet';
 import base58 from 'bs58';
-import { AvailableCurrencies, AvailableCoins } from '@snow/common/src';
+import { AvailableCurrencies } from '@snow/common/src';
 import config from '../../config';
 
 export default class AdminSolana extends GenericAdminWallet {
     private connection: Connection;
     public currency: AvailableCurrencies = 'SOL';
-    public coinName: AvailableCoins = 'Solana';
     static TRANSFER_FEE_LAMPORTS = 5000;
 
     constructor(...args: ConstructorParameters<typeof GenericAdminWallet>) {

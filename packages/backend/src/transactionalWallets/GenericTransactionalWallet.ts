@@ -1,13 +1,12 @@
 import dayjs from 'dayjs';
 import { ObjectId } from 'mongodb';
-import { AvailableCurrencies, AvailableCoins, PaymentStatusType } from '@snow/common/src';
+import { AvailableCurrencies, PaymentStatusType } from '@snow/common/src';
 import mongoGenerator from '../mongo/generator';
 import { MongoPayment, IFromNew, NativePaymentConstructor, CoinlibPaymentConstructor } from '../types';
 import config from '../config';
 
 export default abstract class GenericTransactionalWallet {
     public currency: AvailableCurrencies;
-    public coinName: AvailableCoins; // TODO: drop
     protected type: 'coinlib' | 'native';
     protected _initialized = false;
 
