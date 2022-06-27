@@ -5,7 +5,7 @@ import config from '../../config'
 
 export default class AdminLitecoin extends GenericAdminWallet {
     private mediumGasFee: number // TODO: Maybe do lowest gas fee?
-    public currency: AvailableCurrencies = 'ltc'
+    public currency: AvailableCurrencies = 'LTC'
     public coinName: AvailableCoins = 'Litecoin'
 
     private async _setGas() {

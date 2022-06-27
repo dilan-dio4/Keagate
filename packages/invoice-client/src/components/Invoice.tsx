@@ -19,12 +19,12 @@ import ThreeDotsOverlay from './ThreeDotsOverlay'
 
 export default function Invoice() {
     const currencyToIcon: Record<AvailableCurrencies, React.ReactChild> = {
-        dash: <DashIcon width={50} height={50} />,
-        ltc: <LtcIcon width={50} height={50} />,
-        sol: <SolIcon width={50} height={50} />,
-        ada: <AdaIcon width={50} height={50} />,
-        btc: <BtcIcon width={50} height={50} />,
-        xrp: <XrpIcon width={50} height={50} />,
+        DASH: <DashIcon width={50} height={50} />,
+        LTC: <LtcIcon width={50} height={50} />,
+        SOL: <SolIcon width={50} height={50} />,
+        ADA: <AdaIcon width={50} height={50} />,
+        BTC: <BtcIcon width={50} height={50} />,
+        XRP: <XrpIcon width={50} height={50} />,
     }
 
     const [isBlockchainInfoOpen, setIsBlockchainInfoOpen] = useState<boolean>(false)
@@ -46,7 +46,7 @@ export default function Invoice() {
         const params = window.location.pathname.split('/')
         const _invoiceId = params.pop()
         setInvoiceId(_invoiceId)
-        const _currency = params.pop().toLowerCase()
+        const _currency = params.pop().toUpperCase()
         setCurrency(_currency as AvailableCurrencies)
 
         // eslint-disable-next-line prefer-const
@@ -94,7 +94,7 @@ export default function Invoice() {
     })
     blockchainDetails.push({
         key: 'Ticker',
-        value: currency.toUpperCase(),
+        value: currency,
         Component: (props: SpanProps) => <span {...props} />,
     })
     blockchainDetails.push({
@@ -212,7 +212,7 @@ export default function Invoice() {
                                 copyToClipboard('' + invoiceObject.amount, 'Copied value to clipboard')
                             }
                         >
-                            {invoiceObject.amount} {currency.toUpperCase()}{' '}
+                            {invoiceObject.amount} {currency}{' '}
                             {!isTransactionDead && <BiCopy className='inline-block mb-1' size={16} />}
                         </p>
                     </div>
@@ -247,7 +247,7 @@ export default function Invoice() {
                     <div className='basis-5/12 text-center'>
                         <p className='text-sm text-slate-600 tracking-tight'>Amount collected:</p>
                         <p className='text-md font-bold'>
-                            {invoiceObject.amountPaid.toFixed(7)} {currency.toUpperCase()}
+                            {invoiceObject.amountPaid.toFixed(7)} {currency}
                         </p>
                     </div>
                     <div className='basis-2/12 flex justify-center'>
@@ -268,7 +268,7 @@ export default function Invoice() {
                                 )
                             }
                         >
-                            {(invoiceObject.amount - invoiceObject.amountPaid).toFixed(7)} {currency.toUpperCase()}{' '}
+                            {(invoiceObject.amount - invoiceObject.amountPaid).toFixed(7)} {currency}{' '}
                             {!isTransactionDead && <BiCopy className='inline-block mb-1' size={15} />}
                         </p>
                     </div>

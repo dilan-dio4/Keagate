@@ -6,7 +6,7 @@ import Big from 'big.js'
 // https://documenter.getpostman.com/view/13630829/TVmFkLwy#cebd6a63-13bc-4ba1-81f7-360c88871b90
 
 export default class TatumProvider extends GenericProvider {
-    public supportedCurrencies: AvailableCurrencies[] = ['ltc', 'btc', 'ada', 'xrp']
+    public supportedCurrencies: AvailableCurrencies[] = ['LTC', 'BTC', 'ADA', 'XRP']
 
     constructor(public apiKey: string, public location: 'eu1' | 'us-west1') {
         super()
@@ -22,7 +22,7 @@ export default class TatumProvider extends GenericProvider {
 
         let confirmedBalance: Big
 
-        if (currency === 'btc' || currency === 'ltc') {
+        if (currency === 'BTC' || currency === 'LTC') {
             const { outgoing, incoming } = await fGet(
                 `https://api-${this.location}.tatum.io/v3/${currencies[
                     currency
@@ -32,12 +32,12 @@ export default class TatumProvider extends GenericProvider {
                 },
             )
             const bigBalanceSatoshiLike = Big(incoming).minus(Big(outgoing))
-            if (currency === 'btc') {
+            if (currency === 'BTC') {
                 confirmedBalance = bigBalanceSatoshiLike.times(Big(units.btc.satoshi))
-            } else if (currency === 'ltc') {
+            } else if (currency === 'LTC') {
                 confirmedBalance = bigBalanceSatoshiLike.times(Big(units.ltc.litoshi))
             }
-        } else if (currency === 'ada') {
+        } else if (currency === 'ADA') {
             const {
                 summary: { assetBalances },
             } = await fGet(`https://api-${this.location}.tatum.io/v3/${currency}/account/${address}`, {
@@ -50,7 +50,7 @@ export default class TatumProvider extends GenericProvider {
                     break
                 }
             }
-        } else if (currency === 'xrp') {
+        } else if (currency === 'XRP') {
             const { balance } = await fGet(
                 `https://api-${this.location}.tatum.io/v3/${currency}/account/${address}/balance`,
                 {
@@ -73,7 +73,7 @@ export default class TatumProvider extends GenericProvider {
             throw new Error('Currency not supported')
         }
 
-        const route = currency === 'ada' || currency === 'xrp' ? currency : currencies[currency].name.toLowerCase()
+        const route = currency === 'ADA' || currency === 'XRP' ? currency : currencies[currency].name.toLowerCase()
 
         const { txId } = await fPost(
             `https://api-${this.location}.tatum.io/v3/${route}/broadcast`,

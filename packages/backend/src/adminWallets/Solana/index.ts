@@ -15,7 +15,7 @@ import config from '../../config'
 
 export default class AdminSolana extends GenericAdminWallet {
     private connection: Connection
-    public currency: AvailableCurrencies = 'sol'
+    public currency: AvailableCurrencies = 'SOL'
     public coinName: AvailableCoins = 'Solana'
     static TRANSFER_FEE_LAMPORTS = 5000
 

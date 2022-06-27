@@ -1,6 +1,6 @@
 import { Static, Type } from '@sinclair/typebox'
 import { FastifyInstance, RouteShorthandOptions } from 'fastify'
-import { ClassPayment } from '../types'
+import { MongoPayment } from '../types'
 import mongoGenerator from '../mongoGenerator'
 import { ObjectId } from 'mongodb'
 import { decrypt } from '../utils'
@@ -39,7 +39,7 @@ export default function createInvoiceStatusRoute(server: FastifyInstance) {
             const { db } = await mongoGenerator()
             const selectedPayment = (await db
                 .collection('payments')
-                .findOne({ _id: new ObjectId(mongoId) })) as ClassPayment & { _id: any }
+                .findOne({ _id: new ObjectId(mongoId) })) as MongoPayment & { _id: ObjectId }
             if (!selectedPayment) {
                 return
             }

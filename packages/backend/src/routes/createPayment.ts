@@ -2,11 +2,12 @@ import { Static, Type } from '@sinclair/typebox'
 import { FastifyInstance, RouteShorthandOptions } from 'fastify'
 import auth from '../middlewares/auth'
 import GenericTransactionalWallet from '../transactionalWallets/GenericTransactionalWallet'
-import { encrypt } from '../utils'
-import currenciesToWallets from '../currenciesToWallets'
-import { AvailableCurrencies } from '@snow/common/src'
-import config from 'config'
+import { encrypt, randU32Sync } from '../utils'
+import { availableCoinlibCurrencies, AvailableCurrencies, availableNativeCurrencies } from '@snow/common/src'
+import config from '../config'
 import idsToProviders from '@snow/api-providers/src'
+import GenericCoinlibWrapper from "../transactionalWallets/coinlib/GenericCoinlibWrapper"
+import context from "../context"
 
 const CreatePaymentBody = Type.Object({
     currency: Type.String(),
@@ -27,6 +28,7 @@ const CreatePaymentResponse = Type.Object({
     invoiceCallbackUrl: Type.Optional(Type.String({ format: 'uri' })),
     invoiceUrl: Type.String({ format: 'uri' }),
     currency: Type.String(),
+    type: Type.String()
 })
 
 const opts: RouteShorthandOptions = {
@@ -41,7 +43,6 @@ const opts: RouteShorthandOptions = {
 
 export default function createPaymentRoute(
     server: FastifyInstance,
-    activePayments: Record<string, GenericTransactionalWallet>,
 ) {
     server.post<{ Body: Static<typeof CreatePaymentBody>; Reply: Static<typeof CreatePaymentResponse> }>(
         '/createPayment',
@@ -49,32 +50,40 @@ export default function createPaymentRoute(
         async (request, reply) => {
             const { body } = request
 
-            const currency = body.currency.toLowerCase() as AvailableCurrencies
+            const createCurrency = body.currency.toUpperCase() as AvailableCurrencies
             let transactionalWallet: GenericTransactionalWallet
-            if (currenciesToWallets[currency]) {
+            const transactionalWalletNewObj = {
+                amount: body.amount,
+                invoiceCallbackUrl: body.invoiceCallbackUrl,
+                ipnCallbackUrl: body.ipnCallbackUrl,
+            }
+            if (context.enabledNativeCurrencies.includes(createCurrency as any)) {
                 const params = [
-                    (id) => delete activePayments[id],
-                    config.getTyped(currency).PROVIDER
-                        ? new idsToProviders[config.getTyped(currency).PROVIDER](
-                              config.getTyped(currency).PROVIDER_PARAMS,
+                    (id) => delete context.activePayments[id],
+                    config.getTyped(createCurrency).PROVIDER
+                        ? new idsToProviders[config.getTyped(createCurrency).PROVIDER](
+                              config.getTyped(createCurrency).PROVIDER_PARAMS,
                           )
                         : undefined,
-                    currenciesToWallets[currency].Admin,
+                    context.nativeCurrencyToClient[createCurrency].Admin,
                 ] as const
 
-                transactionalWallet = await new currenciesToWallets[currency].Transactional(...params).fromNew({
-                    amount: body.amount,
-                    invoiceCallbackUrl: body.invoiceCallbackUrl,
-                    ipnCallbackUrl: body.ipnCallbackUrl,
-                })
+                transactionalWallet = await new context.nativeCurrencyToClient[createCurrency].Transactional(...params).fromNew(transactionalWalletNewObj)
+            } else if (context.enabledCoinlibCurrencies.includes(createCurrency as any)) {
+                const params = [
+                    (id) => delete context.activePayments[id],
+                    context.coinlibCurrencyToClient[createCurrency],
+                    randU32Sync()
+                ] as const
+    
+                transactionalWallet = await new GenericCoinlibWrapper(...params).fromNew(transactionalWalletNewObj)
             } else {
-                console.error(`No transactional wallet found for currency ${body.currency}`)
+                console.error(`No transactional wallet found/enabled for currency ${body.currency}`)
                 return
             }
 
             const newWalletDetails: any = { ...transactionalWallet.getDetails() }
-            activePayments[newWalletDetails.id] = transactionalWallet
-            delete newWalletDetails.privateKey
+            context.activePayments[newWalletDetails.id] = transactionalWallet
             delete newWalletDetails.payoutTransactionHash
             newWalletDetails.invoiceUrl = `/invoice/${newWalletDetails.currency}/${encrypt(newWalletDetails.id)}`
             reply.status(200).send(newWalletDetails)

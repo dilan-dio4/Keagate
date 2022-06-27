@@ -1,32 +1,35 @@
-export type AvailableCoins = 'Solana' | 'Dash' | 'Litecoin' | 'Ripple' | 'Bitcoin' | 'Cardano'
-export type AvailableCurrencies = 'sol' | 'dash' | 'ltc' | 'xrp' | 'btc' | 'ada'
+export const availableCoinlibCurrencies = ['DASH', 'LTC', 'XRP', 'BTC', 'ADA'] as const;
+export const availableNativeCurrencies = ["SOL"] as const;
 
-export const currencies: Record<AvailableCurrencies, { name: AvailableCoins; explorer: string; networkName?: string }> =
+export type AvailableCoins = 'Solana' | 'Dash' | 'Litecoin' | 'Ripple' | 'Bitcoin' | 'Cardano'
+export type AvailableCurrencies = typeof availableCoinlibCurrencies[number] | typeof availableNativeCurrencies[number];
+
+export const currencies: Record<AvailableCurrencies, { name: string; explorer: string; networkName?: string }> =
     {
-        ltc: {
+        LTC: {
             name: 'Litecoin',
             explorer: 'https://live.blockcypher.com/ltc/',
         },
-        sol: {
+        SOL: {
             networkName: 'Solana Mainnet',
             name: 'Solana',
             explorer: 'https://explorer.solana.com/',
         },
-        dash: {
+        DASH: {
             networkName: 'Dash Mainnet',
             name: 'Dash',
             explorer: 'https://explorer.dash.org/insight/',
         },
-        btc: {
+        BTC: {
             networkName: 'Bitcoin Network Mainnet',
             name: 'Bitcoin',
             explorer: 'https://live.blockcypher.com/btc/',
         },
-        ada: {
+        ADA: {
             name: 'Cardano',
             explorer: 'https://cardanoscan.io/',
         },
-        xrp: {
+        XRP: {
             name: 'Ripple',
             explorer: 'https://xrpscan.com/',
             networkName: 'XRP Ledger',

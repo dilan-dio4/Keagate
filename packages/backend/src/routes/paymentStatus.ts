@@ -1,6 +1,5 @@
 import { Static, Type } from '@sinclair/typebox'
 import { FastifyInstance, RouteShorthandOptions } from 'fastify'
-import { RequestPayment } from '../types'
 import auth from '../middlewares/auth'
 import mongoGenerator from '../mongoGenerator'
 import { ObjectId } from 'mongodb'
@@ -20,6 +19,7 @@ const PaymentStatusResponse = Type.Object({
     invoiceCallbackUrl: Type.Optional(Type.String({ format: 'uri' })),
     payoutTransactionHash: Type.Optional(Type.String()),
     invoiceUrl: Type.String(),
+    type: Type.String()
 })
 
 const PaymentStatusQueryString = Type.Object({
@@ -46,9 +46,9 @@ export default function createPaymentStatusRoute(server: FastifyInstance) {
     }>('/getPaymentStatus', opts, async (request, reply) => {
         const id = request.query.id
         const { db } = await mongoGenerator()
-        const selectedPayment: Record<string, any> | null = await db
+        const selectedPayment = await db
             .collection('payments')
-            .findOne({ _id: new ObjectId(id) })
+            .findOne({ _id: new ObjectId(id) }) as Record<string, any> & { _id: ObjectId } | null
         if (!selectedPayment) {
             return reply.status(300).send('No payment found')
         }
@@ -59,6 +59,6 @@ export default function createPaymentStatusRoute(server: FastifyInstance) {
         selectedPayment.expiresAt = selectedPayment.expiresAt.toISOString()
         selectedPayment.invoiceUrl = `/invoice/${selectedPayment.currency}/${encrypt(selectedPayment.id)}`
         delete selectedPayment._id
-        reply.status(200).send(selectedPayment as RequestPayment)
+        reply.status(200).send(selectedPayment)
     })
 }

@@ -6,7 +6,7 @@ import config from '../../config'
 // https://jestersimpps.github.io/my-first-experience-with-bitpay-bitcore/
 // TODO custom fee like LTC
 export default class AdminDash extends GenericAdminWallet {
-    public currency: AvailableCurrencies = 'dash'
+    public currency: AvailableCurrencies = 'DASH'
     public coinName: AvailableCoins = 'Dash'
     static TRANSACTION_FEE = 1000
 

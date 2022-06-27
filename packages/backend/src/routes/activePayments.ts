@@ -1,8 +1,8 @@
 import { Static, Type } from '@sinclair/typebox'
 import { FastifyInstance, RouteShorthandOptions } from 'fastify'
-import { RequestPayment } from '../types'
+import { MongoPayment, ForRequest } from '../types'
 import auth from '../middlewares/auth'
-import GenericTransactionalWallet from '../transactionalWallets/GenericTransactionalWallet'
+import context from "../context"
 
 const ActivePaymentsResponse = Type.Array(
     Type.Object({
@@ -17,6 +17,7 @@ const ActivePaymentsResponse = Type.Array(
         ipnCallbackUrl: Type.Optional(Type.String()),
         invoiceCallbackUrl: Type.Optional(Type.String()),
         payoutTransactionHash: Type.Optional(Type.String()),
+        type: Type.String(),
     }),
 )
 
@@ -30,14 +31,12 @@ const opts: RouteShorthandOptions = {
 }
 
 export default function createActivePaymentsRoute(
-    server: FastifyInstance,
-    activePayments: Record<string, GenericTransactionalWallet>,
+    server: FastifyInstance
 ) {
     server.get<{ Reply: Static<typeof ActivePaymentsResponse> }>('/activePayments', opts, async (request, reply) => {
-        const cleanedTransactions: RequestPayment[] = []
-        Object.values(activePayments).forEach((ele) => {
+        const cleanedTransactions: ForRequest<MongoPayment>[] = []
+        Object.values(context.activePayments).forEach((ele) => {
             const details: Record<string, any> = { ...ele.getDetails() }
-            delete details['privateKey']
             cleanedTransactions.push({
                 ...(details as any),
                 createdAt: details.createdAt.toISOString(),

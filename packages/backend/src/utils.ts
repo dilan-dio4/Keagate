@@ -1,4 +1,8 @@
 import crypto from 'crypto'
+import { BIP32Factory, BIP32API } from 'bip32'
+import * as ecc from 'tiny-secp256k1'
+
+export const bip32: BIP32API = BIP32Factory(ecc)
 
 export const isBase58 = (value: string): boolean => /^[A-HJ-NP-Za-km-z1-9]*$/.test(value)
 
@@ -21,4 +25,8 @@ export function decrypt(text: string, encryptionKey: string = ENCRYPTION_KEY): s
     let decrypted = decipher.update(encryptedText)
     decrypted = Buffer.concat([decrypted, decipher.final()])
     return decrypted.toString()
+}
+
+export function randU32Sync() {
+    return crypto.randomBytes(4).readUInt32BE(0);
 }
