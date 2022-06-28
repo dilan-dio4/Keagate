@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import { ObjectId } from 'mongodb';
 import { AvailableCurrencies, PaymentStatusType } from '@snow/common/src';
 import mongoGenerator from '../mongo/generator';
-import { MongoPayment, IFromNew, NativePaymentConstructor, CoinlibPaymentConstructor } from '../types';
+import { MongoPayment, IFromNew, NativePaymentConstructor, CoinlibPaymentConstructor, INativeInitInDatabase, ICoinlibInitInDatabase } from '../types';
 import config from '../config';
 
 export default abstract class GenericTransactionalWallet {
@@ -37,9 +37,9 @@ export default abstract class GenericTransactionalWallet {
     public abstract getDetails(): MongoPayment;
 
     // This always gets called from the three `from` constructors
-    public fromManual(initObj: MongoPayment, constructor: NativePaymentConstructor | CoinlibPaymentConstructor) {
+    public fromManual(initObj: MongoPayment, constructor?: NativePaymentConstructor | CoinlibPaymentConstructor) {
         this.setFromObject(initObj);
-        this.construct(constructor);
+        constructor && this.construct(constructor);
         this._initialized = true;
         return this;
     }
@@ -72,7 +72,7 @@ export default abstract class GenericTransactionalWallet {
         }
     }
 
-    protected async initInDatabase(obj: IFromNew & { publicKey: string; privateKey?: string; currency?: AvailableCurrencies }): Promise<MongoPayment> {
+    protected async initInDatabase(obj: INativeInitInDatabase | ICoinlibInitInDatabase): Promise<MongoPayment> {
         const now = dayjs().toDate();
         const { db } = await mongoGenerator();
         const insertObj: Omit<MongoPayment, 'id'> = {
@@ -94,7 +94,9 @@ export default abstract class GenericTransactionalWallet {
 
     protected setFromObject(update: Partial<MongoPayment> | NativePaymentConstructor | CoinlibPaymentConstructor) {
         for (const [key, val] of Object.entries(update)) {
-            this[key] = val;
+            if (this[key] === undefined) {
+                this[key] = val;
+            }
         }
     }
 

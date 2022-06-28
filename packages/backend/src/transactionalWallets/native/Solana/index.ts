@@ -8,12 +8,14 @@ export default class TransactionalSolana extends GenericTransactionalWallet {
     public currency: AvailableCurrencies = 'SOL';
 
     async fromNew(obj: IFromNew, constructor: NativePaymentConstructor) {
+        this.construct(constructor);
+
         const newKeypair = Keypair.generate();
         const mongoPayment = await this.initInDatabase({
             ...obj,
             publicKey: newKeypair.publicKey.toString(),
             privateKey: base58.encode(newKeypair.secretKey),
         });
-        return this.fromManual(mongoPayment, constructor);
+        return this.fromManual(mongoPayment);
     }
 }

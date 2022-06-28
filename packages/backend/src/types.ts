@@ -58,3 +58,13 @@ export interface IFromNew {
     ipnCallbackUrl?: string;
     invoiceCallbackUrl: string;
 }
+
+export interface INativeInitInDatabase extends IFromNew {
+    publicKey: string;
+    privateKey: string;
+}
+
+export interface ICoinlibInitInDatabase extends IFromNew {
+    publicKey: string;
+    walletIndex: number;
+}

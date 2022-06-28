@@ -7,6 +7,7 @@ export default class TransactionalDash extends GenericTransactionalWallet {
     public currency: AvailableCurrencies = 'DASH';
 
     async fromNew(obj: IFromNew, constructor: NativePaymentConstructor) {
+        this.construct(constructor);
         // https://github.com/dashevo/dashcore-lib/blob/master/docs/usage/privatekey.md
         const newKeypair = PrivateKey.fromRandom();
         const privateKey = newKeypair.toString();
@@ -18,6 +19,6 @@ export default class TransactionalDash extends GenericTransactionalWallet {
             publicKey,
             privateKey,
         });
-        return this.fromManual(mongoPayment, constructor);
+        return this.fromManual(mongoPayment);
     }
 }

@@ -10,18 +10,19 @@ export default class GenericCoinlibWrapper extends GenericTransactionalWallet {
     private walletIndex: number;
 
     protected construct(constructor: CoinlibPaymentConstructor): void {
+        this.coinlibPayment = context.coinlibCurrencyToClient[constructor.currency];
         this.setFromObject(constructor);
     }
 
     public async fromNew(obj: IFromNew, constructor: CoinlibPaymentConstructor) {
-        this.coinlibPayment = context.coinlibCurrencyToClient[constructor.currency];
-        const { address } = await this.coinlibPayment.getPayport(constructor.walletIndex);
+        this.construct(constructor);
+        const { address } = await this.coinlibPayment.getPayport(this.walletIndex);
         const mongoPayment = await this.initInDatabase({
             ...obj,
             publicKey: address,
-            currency: constructor.currency
+            walletIndex: this.walletIndex
         });
-        return this.fromManual(mongoPayment, constructor);
+        return this.fromManual(mongoPayment);
     }
 
     public getDetails(): CoinlibPayment {
