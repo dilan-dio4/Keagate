@@ -30,19 +30,12 @@ export default abstract class GenericTransactionalWallet {
     protected abstract _getBalance(): Promise<number>;
     // --
 
-    protected abstract construct(constructor: NativePaymentConstructor | CoinlibPaymentConstructor): void;
-
     // fromManual always gets called from other `from` constructors
     public abstract fromNew(obj: IFromNew, constructor: NativePaymentConstructor | CoinlibPaymentConstructor): Promise<this>;
     public abstract getDetails(): MongoPayment;
 
+    public abstract fromManual(initObj: MongoPayment, constructor?: NativePaymentConstructor | CoinlibPaymentConstructor);
     // This always gets called from the three `from` constructors
-    public fromManual(initObj: MongoPayment, constructor?: NativePaymentConstructor | CoinlibPaymentConstructor) {
-        this.setFromObject(initObj);
-        constructor && this.construct(constructor);
-        this._initialized = true;
-        return this;
-    }
 
     public async checkTransaction() {
         if (!this._initialized) {
@@ -59,6 +52,10 @@ export default abstract class GenericTransactionalWallet {
         } else if (confirmedBalance > 0 && this.amountPaid !== confirmedBalance) {
             this.updateStatus({ status: 'PARTIALLY_PAID', amountPaid: confirmedBalance });
         }
+    }
+
+    protected construct(constructor: CoinlibPaymentConstructor | NativePaymentConstructor): void {
+        this.setFromObject(constructor);
     }
 
     protected async cashOut(balance: number) {

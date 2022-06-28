@@ -1,4 +1,4 @@
-import { CoinlibPayment, IFromNew, CoinlibPaymentConstructor } from '../../types';
+import { CoinlibPayment, IFromNew, CoinlibPaymentConstructor, MongoPayment } from '../../types';
 import config from '../../config';
 import { AnyPayments } from 'coinlib-port';
 import GenericTransactionalWallet from '../GenericTransactionalWallet';
@@ -9,13 +9,12 @@ export default class GenericCoinlibWrapper extends GenericTransactionalWallet {
     private coinlibPayment: AnyPayments<any>;
     private walletIndex: number;
 
-    protected construct(constructor: CoinlibPaymentConstructor): void {
-        this.coinlibPayment = context.coinlibCurrencyToClient[constructor.currency];
-        this.setFromObject(constructor);
-    }
-
     public async fromNew(obj: IFromNew, constructor: CoinlibPaymentConstructor) {
+        // Instantiate --
         this.construct(constructor);
+        this.coinlibPayment = context.coinlibCurrencyToClient[constructor.currency];
+        // --
+
         const { address } = await this.coinlibPayment.getPayport(this.walletIndex);
         const mongoPayment = await this.initInDatabase({
             ...obj,
@@ -24,6 +23,19 @@ export default class GenericCoinlibWrapper extends GenericTransactionalWallet {
         });
         return this.fromManual(mongoPayment);
     }
+
+    public fromManual(initObj: MongoPayment, constructor?: CoinlibPaymentConstructor) {
+        this.setFromObject(initObj);
+        if (constructor) {
+            // Direct instantiation --
+            this.coinlibPayment = context.coinlibCurrencyToClient[constructor.currency];
+            this.construct(constructor);
+            // --
+        }
+        this._initialized = true;
+        return this;
+    }
+
 
     public getDetails(): CoinlibPayment {
         return {

@@ -19,6 +19,8 @@ export default class TransactionalDash extends GenericTransactionalWallet {
             publicKey,
             privateKey,
         });
+        
+        this.adminWalletMask = new constructor.adminWalletClass(publicKey, privateKey, constructor.apiProvider);
         return this.fromManual(mongoPayment);
     }
 }

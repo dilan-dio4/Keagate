@@ -11,11 +11,16 @@ export default class TransactionalSolana extends GenericTransactionalWallet {
         this.construct(constructor);
 
         const newKeypair = Keypair.generate();
+        const privateKey = base58.encode(newKeypair.secretKey);
+        const publicKey = newKeypair.publicKey.toString();
         const mongoPayment = await this.initInDatabase({
             ...obj,
-            publicKey: newKeypair.publicKey.toString(),
-            privateKey: base58.encode(newKeypair.secretKey),
+            publicKey,
+            privateKey,
         });
+
+        // This has to come after the above
+        this.adminWalletMask = new constructor.adminWalletClass(publicKey, privateKey, constructor.apiProvider);
         return this.fromManual(mongoPayment);
     }
 }

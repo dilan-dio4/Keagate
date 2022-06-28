@@ -76,7 +76,13 @@ async function main() {
     function paymentsIntervalRunner() {
         setInterval(() => {
             console.log('Checking payments...');
-            Object.values(context.activePayments).forEach((ele) => ele.checkTransaction());
+            Object.values(context.activePayments).forEach((ele) => {
+                try {
+                    ele.checkTransaction()                    
+                } catch (error) {
+                    console.log("Errored on trx check")
+                }
+            });
         }, config.getTyped('TRANSACTION_REFRESH_TIME'));
     }
 
