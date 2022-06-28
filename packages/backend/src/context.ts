@@ -51,7 +51,7 @@ class SnowContext {
     }
 
     private async initCoinlibToCurrencyClient() {
-        const coinPayments = new CoinPayments({ seed: config.getTyped('SEED' as any), network: NetworkType.Mainnet });
+        const coinPayments = new CoinPayments({ seed: config.getTyped('SEED'), network: NetworkType.Mainnet });
         // type coinlibToCurrenyType = {
         //     [key in SUPPORTED_NETWORK_SYMBOLS[number]]: string;
         // }

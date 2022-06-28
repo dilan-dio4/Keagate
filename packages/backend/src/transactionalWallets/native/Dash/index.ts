@@ -1,5 +1,5 @@
 import GenericTransactionalWallet from '../GenericNativeTransactionalWallet';
-import { AvailableCoins, AvailableCurrencies } from '@snow/common/src';
+import { AvailableCurrencies } from '@snow/common/src';
 import { IFromNew, NativePaymentConstructor } from '../../../types';
 import { PrivateKey } from '@dashevo/dashcore-lib';
 
