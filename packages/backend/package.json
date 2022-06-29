@@ -1,13 +1,13 @@
 {
-  "name": "@snow/backend",
+  "name": "@firagate/backend",
   "version": "1.0.0",
-  "description": "\"# snow\"",
+  "description": "\"# firagate\"",
   "main": "build/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc -p ./tsconfig.package.json",
     "dev": "ts-node-dev --project ./tsconfig.package.json --respawn src/index.ts",
-    "run": "npm run build && pm2 restart build/index.js --name \"Snow\" --time && pm2 save",
+    "run": "npm run build && pm2 restart build/index.js --name \"Firagate\" --time && pm2 save",
     "prepack": "tsc --project tsconfig.build.json",
     "clean": "shx rm -rf build package-lock.json node_modules"
   },
@@ -16,19 +16,24 @@
     "@dashevo/dashcore-lib": "^0.19.38",
     "@fastify/static": "^6.4.0",
     "@sinclair/typebox": "^0.23.5",
-    "@snow/api-providers": "file:packages/api-providers",
-    "@snow/common": "file:packages/common",
+    "@firagate/api-providers": "file:packages/api-providers",
+    "@firagate/common": "file:packages/common",
     "@solana/web3.js": "^1.44.0",
+    "bip32": "^3.0.1",
+    "bip39": "^3.0.4",
     "bitcore-lib-ltc": "^8.25.30",
     "bs58": "^5.0.0",
+    "coinlib-port": "github:dilan-dio4/coinlib-port",
     "config": "^3.3.7",
     "cross-fetch": "^3.1.5",
     "dayjs": "^1.11.3",
+    "ed25519-hd-key": "^1.2.0",
     "ethers": "^5.6.8",
     "fastify": "^4.0.1",
     "find-up": "^6.3.0",
     "mongodb": "^4.7.0",
-    "multicoin-address-validator": "^0.5.10"
+    "multicoin-address-validator": "^0.5.10",
+    "tiny-secp256k1": "^2.2.1"
   },
   "devDependencies": {
     "@types/config": "^0.0.41"

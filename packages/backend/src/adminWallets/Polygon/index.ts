@@ -7,7 +7,7 @@
 //     private wallet: ethers.Wallet;
 //     public ticker: AvailableCurrencies = "asdf";
 //     public coinName: AvailableCoins = "Solana";
-    
+
 //     constructor(...args: ConstructorParameters<typeof GenericWallet>) {
 //         super(...args);
 //         this.provider = new ethers.providers.JsonRpcProvider(process.env['POLYGON_RPC']);

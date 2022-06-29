@@ -4,7 +4,7 @@
         "baseUrl": ".",
         "noEmit": true,
         "paths": {
-            "@snow/*": [
+            "@firagate/*": [
                 "./packages/*/src"
             ]
         }

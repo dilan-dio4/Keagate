@@ -1,33 +1,40 @@
-export type AvailableCoins = "Solana" | "Dash" | "Litecoin" | "Ripple" | "Bitcoin" | "Cardano";
-export type AvailableCurrencies = "sol" | "dash" | "ltc" | "xrp" | "btc" | "ada";
+export const availableCoinlibCurrencies = ['DASH', 'LTC', 'XRP', 'BTC', 'ADA', 'TRX'] as const;
+export const availableNativeCurrencies = ['SOL'] as const;
 
-export const currencies: Record<AvailableCurrencies, { name: AvailableCoins; explorer: string; networkName?: string; }> = {
-    "ltc": {
-        name: "Litecoin",
-        explorer: "https://live.blockcypher.com/ltc/",
+export type AvailableCurrencies = typeof availableCoinlibCurrencies[number] | typeof availableNativeCurrencies[number];
+
+export const currencies: Record<AvailableCurrencies, { name: string; explorer: string; networkName?: string }> = {
+    LTC: {
+        name: 'Litecoin',
+        explorer: 'https://live.blockcypher.com/ltc/',
     },
-    "sol": {
-        networkName: "Solana Mainnet",
-        name: "Solana",
-        explorer: "https://explorer.solana.com/"
+    SOL: {
+        networkName: 'Solana Mainnet',
+        name: 'Solana',
+        explorer: 'https://explorer.solana.com/',
     },
-    "dash": {
-        networkName: "Dash Mainnet",
-        name: "Dash",
-        explorer: "https://explorer.dash.org/insight/"
+    DASH: {
+        networkName: 'Dash Mainnet',
+        name: 'Dash',
+        explorer: 'https://explorer.dash.org/insight/',
     },
-    "btc": {
-        networkName: "Bitcoin Network Mainnet",
-        name: "Bitcoin",
-        explorer: "https://live.blockcypher.com/btc/"
+    BTC: {
+        networkName: 'Bitcoin Network Mainnet',
+        name: 'Bitcoin',
+        explorer: 'https://live.blockcypher.com/btc/',
     },
-    "ada": {
-        name: "Cardano",
-        explorer: "https://cardanoscan.io/"
+    ADA: {
+        name: 'Cardano',
+        explorer: 'https://cardanoscan.io/',
     },
-    "xrp": {
-        name: "Ripple",
-        explorer: "https://xrpscan.com/",
-        networkName: "XRP Ledger"
-    }
-}
+    XRP: {
+        name: 'Ripple',
+        explorer: 'https://xrpscan.com/',
+        networkName: 'XRP Ledger',
+    },
+    TRX: {
+        name: 'Tron',
+        explorer: 'https://tronscan.org',
+        networkName: 'TRON network',
+    },
+};

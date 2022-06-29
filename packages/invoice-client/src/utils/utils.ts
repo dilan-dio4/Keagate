@@ -1,4 +1,4 @@
-import toast from "react-hot-toast";
+import toast from 'react-hot-toast';
 
 export const copyToClipboard = (value: string, successText: string) => {
     if (!navigator.clipboard) {
@@ -19,11 +19,14 @@ export const copyToClipboard = (value: string, successText: string) => {
             document.body.removeChild(myInput);
         }
     } else {
-        navigator.clipboard.writeText(value).then(() => {
-            toast.success(successText)
-        }, (error) => {
-            console.error(error);
-            toast.error('Error copying')
-        });
+        navigator.clipboard.writeText(value).then(
+            () => {
+                toast.success(successText);
+            },
+            (error) => {
+                console.error(error);
+                toast.error('Error copying');
+            },
+        );
     }
-}
+};

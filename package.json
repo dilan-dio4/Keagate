@@ -1,17 +1,18 @@
 {
-  "name": "Snow",
+  "name": "Firagate",
   "version": "1.0.0",
-  "description": "\"# snow\"",
+  "description": "\"# firagate\"",
   "workspaces": [
     "packages/*"
   ],
   "scripts": {
     "build": "tsc --build ./tsconfig.project.json",
-    "run": "npm run build && pm2 restart build/index.js --name \"Snow\" --time && pm2 save",
+    "run": "npm run build && pm2 restart build/index.js --name \"Firagate\" --time && pm2 save",
     "clean": "npm run clean -ws",
-    "dev": "npm-run-all build --parallel dev:backend dev:invoice-client",
+    "dev": "npm-run-all build --parallel dev:*",
     "dev:backend": "cd packages/backend && npm run dev",
-    "dev:invoice-client": "cd packages/invoice-client && npm run dev"
+    "dev:invoice-client": "cd packages/invoice-client && npm run dev",
+    "prettier-format": "prettier --config prettier.config.js 'packages/*/src/**/*{.ts,.tsx,.js,.jsx}' --write"
   },
   "author": "dilan-dio4",
   "license": "ISC",
@@ -23,6 +24,7 @@
     "@typescript-eslint/parser": "^4.14.2",
     "eslint": "^7.19.0",
     "npm-run-all": "^4.1.5",
+    "prettier": "^2.7.1",
     "shx": "^0.3.4",
     "ts-node-dev": "^2.0.0",
     "typescript": "^4.7.4"

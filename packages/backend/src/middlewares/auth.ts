@@ -1,15 +1,15 @@
-import { FastifyReply, FastifyRequest, HookHandlerDoneFunction } from "fastify";
+import { FastifyReply, FastifyRequest, HookHandlerDoneFunction } from 'fastify';
 import config from '../config';
 
 let IP_WHITELIST: Set<string> = undefined;
 
 if (config.getTyped('IP_WHITELIST').length > 0) {
     IP_WHITELIST = new Set(config.getTyped('IP_WHITELIST'));
-    IP_WHITELIST.add("127.0.0.1")
+    IP_WHITELIST.add('127.0.0.1');
 }
 
 const auth = (request: FastifyRequest, reply: FastifyReply, done: HookHandlerDoneFunction) => {
-    if (request.headers['snow-api-key'] === config.getTyped('SNOW_API_KEY')) {
+    if (!config.getTyped('FIRAGATE_API_KEY') || request.headers['firagate-api-key'] === config.getTyped('FIRAGATE_API_KEY')) {
         if (IP_WHITELIST !== undefined) {
             if (IP_WHITELIST.has(request.ip)) {
                 done();
@@ -18,6 +18,6 @@ const auth = (request: FastifyRequest, reply: FastifyReply, done: HookHandlerDon
             done();
         }
     }
-}
+};
 
 export default auth;

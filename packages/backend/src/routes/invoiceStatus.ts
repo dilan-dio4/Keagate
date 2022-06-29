@@ -1,9 +1,9 @@
 import { Static, Type } from '@sinclair/typebox';
-import { FastifyInstance, RouteShorthandOptions } from "fastify";
-import { ClassPayment } from '../types';
-import mongoGenerator from "../mongoGenerator";
-import { ObjectId } from "mongodb";
-import { decrypt } from "../utils";
+import { FastifyInstance, RouteShorthandOptions } from 'fastify';
+import { MongoPayment } from '../types';
+import mongoGenerator from '../mongo/generator';
+import { ObjectId } from 'mongodb';
+import { decrypt } from '../utils';
 
 const InvoiceStatusResponse = Type.Object({
     publicKey: Type.String(),
@@ -12,32 +12,32 @@ const InvoiceStatusResponse = Type.Object({
     expiresAt: Type.String(),
     status: Type.String(),
     currency: Type.String(),
-    invoiceCallbackUrl: Type.Optional(Type.String({ format: "uri" })),
+    invoiceCallbackUrl: Type.Optional(Type.String({ format: 'uri' })),
 });
 
 const InvoiceStatusQueryString = Type.Object({
-    invoiceId: Type.String()
-})
+    invoiceId: Type.String(),
+});
 
 const opts: RouteShorthandOptions = {
     schema: {
         response: {
             200: InvoiceStatusResponse,
-            300: Type.String()
+            300: Type.String(),
         },
-        querystring: InvoiceStatusQueryString
-    }
-}
+        querystring: InvoiceStatusQueryString,
+    },
+};
 
 export default function createInvoiceStatusRoute(server: FastifyInstance) {
-    server.get<{ Reply: Static<typeof InvoiceStatusResponse>, Querystring: Static<typeof InvoiceStatusQueryString> }>(
+    server.get<{ Reply: Static<typeof InvoiceStatusResponse>; Querystring: Static<typeof InvoiceStatusQueryString> }>(
         '/getInvoiceStatus',
         opts,
         async (request, reply) => {
             const invoiceId = request.query.invoiceId;
             const mongoId = decrypt(invoiceId);
             const { db } = await mongoGenerator();
-            const selectedPayment = await db.collection('payments').findOne({ _id: new ObjectId(mongoId) }) as ClassPayment & { _id: any };
+            const selectedPayment = (await db.collection('payments').findOne({ _id: new ObjectId(mongoId) })) as MongoPayment & { _id: ObjectId };
             if (!selectedPayment) {
                 return;
             }
@@ -49,8 +49,8 @@ export default function createInvoiceStatusRoute(server: FastifyInstance) {
                 status: selectedPayment.status,
                 amountPaid: selectedPayment.amountPaid,
                 currency: selectedPayment.currency,
-                invoiceCallbackUrl: selectedPayment.invoiceCallbackUrl
+                invoiceCallbackUrl: selectedPayment.invoiceCallbackUrl,
             });
-        }
-    )
+        },
+    );
 }
