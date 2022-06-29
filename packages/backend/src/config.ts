@@ -24,7 +24,7 @@ interface MyConfig extends MyCurrencyConfig {
     SEED: string;
 
     TRANSACTION_TIMEOUT: number;
-    TRANSACTION_REFRESH_TIME: number;
+    TRANSACTION_MIN_REFRESH_TIME: number;
     TRANSACTION_SLIPPAGE_TOLERANCE: number;
 
     MONGO_CONNECTION_STRING: string;

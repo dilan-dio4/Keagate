@@ -27,8 +27,6 @@ export function decrypt(text: string, encryptionKey: string = ENCRYPTION_KEY): s
     return decrypted.toString();
 }
 
-// Needs to be smaller for TRX
-
 export function randU32Sync() {
     return crypto.randomBytes(4).readUInt32BE(0);
 }
@@ -36,3 +34,5 @@ export function randU32Sync() {
 export function randomSeedGenerator() {
     return crypto.randomBytes(32).toString('hex');
 }
+
+export const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))

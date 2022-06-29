@@ -1,7 +1,7 @@
 <br />
 
 <h2 align="center">
-🌨️ Firagate – A High-Performance Cryptocurrency Payment Gateway
+⛩️ Firagate – A High-Performance Cryptocurrency Payment Gateway
 </h2>
 
 <h4 align="center">

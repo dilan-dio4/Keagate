@@ -26,7 +26,7 @@ export default abstract class GenericTransactionalWallet {
 
     // You implement these
     // --
-    protected abstract _cashOut(balance?: number): Promise<string>;
+    protected abstract _cashOut(balance?: number): Promise<string>; // TODO: Retry loop this
     protected abstract _getBalance(): Promise<number>;
     // --
 
@@ -37,20 +37,26 @@ export default abstract class GenericTransactionalWallet {
     public abstract fromManual(initObj: MongoPayment, constructor?: NativePaymentConstructor | CoinlibPaymentConstructor);
     // This always gets called from the three `from` constructors
 
-    public async checkTransaction() {
+    public async checkTransaction(statusCallback: (status: PaymentStatusType) => any = (status: PaymentStatusType) => null) {
         if (!this._initialized) {
+            statusCallback("WAITING");
             return;
         } else if (dayjs().isAfter(dayjs(this.expiresAt))) {
+            statusCallback("EXPIRED");
             this.updateStatus({ status: 'EXPIRED' });
             this.onDie(this.id);
             return;
         }
         const confirmedBalance = await this._getBalance();
         if (confirmedBalance >= this.amount * (1 - config.getTyped('TRANSACTION_SLIPPAGE_TOLERANCE')) && this.status !== 'CONFIRMED') {
+            await this._cashOut(confirmedBalance);
+            statusCallback("CONFIRMED");
             this.updateStatus({ status: 'CONFIRMED', amountPaid: confirmedBalance });
-            this._cashOut(confirmedBalance);
         } else if (confirmedBalance > 0 && this.amountPaid !== confirmedBalance) {
+            statusCallback("PARTIALLY_PAID");
             this.updateStatus({ status: 'PARTIALLY_PAID', amountPaid: confirmedBalance });
+        } else {
+            statusCallback("WAITING");
         }
     }
 

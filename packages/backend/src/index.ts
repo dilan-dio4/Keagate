@@ -10,6 +10,7 @@ import createPaymentStatusRoute from './routes/paymentStatus';
 import createInvoiceClientRoute from './routes/invoiceClient';
 import createInvoiceStatusRoute from './routes/invoiceStatus';
 import context from './context';
+import activityLoop from './activityLoop';
 
 const server = fastify({
     trustProxy: true,
@@ -73,18 +74,6 @@ async function main() {
         // )
     }
 
-    function paymentsIntervalRunner() {
-        setInterval(() => {
-            console.log('Checking payments...');
-            Object.values(context.activePayments).forEach((ele) => {
-                try {
-                    ele.checkTransaction()                    
-                } catch (error) {
-                    console.log("Errored on trx check")
-                }
-            });
-        }, config.getTyped('TRANSACTION_REFRESH_TIME'));
-    }
 
     // Create other routes for API and invoice client
     createInvoiceClientRoute(server);
@@ -94,7 +83,7 @@ async function main() {
     createPaymentStatusRoute(server);
 
     // Start the processing intervals
-    paymentsIntervalRunner();
+    activityLoop.start();
 
     server.listen({ port: 8081 }, (err, address) => {
         if (err) {

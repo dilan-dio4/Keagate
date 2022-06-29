@@ -3,6 +3,17 @@ import config from '../../config';
 import { AnyPayments } from 'coinlib-port';
 import GenericTransactionalWallet from '../GenericTransactionalWallet';
 import context from '../../context';
+import { availableCoinlibCurrencies } from '@firagate/common/src';
+import { randU32Sync } from '../../utils';
+
+export const walletIndexGenerator: Record<typeof availableCoinlibCurrencies[number], () => number> = {
+    LTC: randU32Sync,
+    TRX: () => Math.round(randU32Sync() / 10000),
+    ADA: randU32Sync,
+    BTC: randU32Sync,
+    DASH: randU32Sync,
+    XRP: randU32Sync
+}
 
 export default class GenericCoinlibWrapper extends GenericTransactionalWallet {
     protected type = 'coinlib' as const;

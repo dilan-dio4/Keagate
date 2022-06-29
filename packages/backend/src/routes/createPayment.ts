@@ -2,11 +2,11 @@ import { Static, Type } from '@sinclair/typebox';
 import { FastifyInstance, RouteShorthandOptions } from 'fastify';
 import auth from '../middlewares/auth';
 import GenericTransactionalWallet from '../transactionalWallets/GenericTransactionalWallet';
-import { encrypt, randU32Sync } from '../utils';
+import { encrypt } from '../utils';
 import { AvailableCurrencies } from '@firagate/common/src';
 import config from '../config';
 import idsToProviders from '@firagate/api-providers/src';
-import GenericCoinlibWrapper from '../transactionalWallets/coinlib/GenericCoinlibWrapper';
+import GenericCoinlibWrapper, { walletIndexGenerator } from '../transactionalWallets/coinlib/GenericCoinlibWrapper';
 import context from '../context';
 
 const CreatePaymentBody = Type.Object({
@@ -64,7 +64,7 @@ export default function createPaymentRoute(server: FastifyInstance) {
             transactionalWallet = await new GenericCoinlibWrapper().fromNew(transactionalWalletNewObj, {
                 onDie: (id) => delete context.activePayments[id],
                 currency: createCurrency,
-                walletIndex: randU32Sync(),
+                walletIndex: walletIndexGenerator[createCurrency](),
             });
         } else {
             console.error(`No transactional wallet found/enabled for currency ${body.currency}`);
