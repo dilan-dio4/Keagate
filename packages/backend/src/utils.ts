@@ -32,3 +32,7 @@ export function decrypt(text: string, encryptionKey: string = ENCRYPTION_KEY): s
 export function randU32Sync() {
     return crypto.randomBytes(4).readUInt32BE(0);
 }
+
+export function randomSeedGenerator() {
+    return crypto.randomBytes(32).toString('hex');
+}
