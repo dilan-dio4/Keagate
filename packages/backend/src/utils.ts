@@ -27,6 +27,8 @@ export function decrypt(text: string, encryptionKey: string = ENCRYPTION_KEY): s
     return decrypted.toString();
 }
 
+// Needs to be smaller for TRX
+
 export function randU32Sync() {
     return crypto.randomBytes(4).readUInt32BE(0);
 }
