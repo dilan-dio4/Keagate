@@ -1,5 +1,5 @@
-import { AvailableCurrencies, ConcreteConstructor, PaymentStatusType } from '@snow/common/src';
-import { GenericProvider } from '@snow/api-providers/src';
+import { AvailableCurrencies, ConcreteConstructor, PaymentStatusType } from '@firagate/common/src';
+import { GenericProvider } from '@firagate/api-providers/src';
 import GenericAdminWallet from './adminWallets/GenericAdminWallet';
 
 // Inherited from all payment types

@@ -2,8 +2,8 @@
 import path from 'path';
 process.env['NODE_CONFIG_DIR'] = path.join(__dirname, '..', '..', '..', 'config/'); // Must be in this order
 import config from 'config';
-import { AvailableProviders } from '@snow/api-providers/src';
-import { AvailableCurrencies } from '@snow/common/src';
+import { AvailableProviders } from '@firagate/api-providers/src';
+import { AvailableCurrencies } from '@firagate/common/src';
 
 type MyCurrencyConfig = Partial<
     Record<
@@ -18,7 +18,7 @@ type MyCurrencyConfig = Partial<
 >;
 
 interface MyConfig extends MyCurrencyConfig {
-    SNOW_API_KEY?: string;
+    FIRAGATE_API_KEY?: string;
     IP_WHITELIST: string[];
 
     SEED: string;
@@ -28,7 +28,7 @@ interface MyConfig extends MyCurrencyConfig {
     TRANSACTION_SLIPPAGE_TOLERANCE: number;
 
     MONGO_CONNECTION_STRING: string;
-    MONGO_SNOW_DB: string;
+    MONGO_FIRAGATE_DB: string;
 
     TESTNETS: boolean;
     USE_SO_CHAIN: boolean;

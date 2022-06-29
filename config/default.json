@@ -7,7 +7,7 @@
     },
     
 
-    "SNOW_API_KEY": "",
+    "FIRAGATE_API_KEY": "",
     "IP_WHITELIST": [],
 
     "TRANSACTION_TIMEOUT": 1000000,
@@ -15,7 +15,7 @@
     "TRANSACTION_SLIPPAGE_TOLERANCE": 0.02,
     
     "MONGO_CONNECTION_STRING": "mongodb://localhost:27017",
-    "MONGO_SNOW_DB": "snow",
+    "MONGO_FIRAGATE_DB": "firagate",
 
     "TESTNETS": false,
     "USE_SO_CHAIN": true

@@ -15,7 +15,7 @@ import clsx from 'clsx';
 import React, { useState, useEffect } from 'react';
 import { copyToClipboard } from '../utils/utils';
 // import useAsyncEffect from "use-async-effect";
-import { AvailableCurrencies, currencies, fGet, PaymentStatusType } from '@snow/common/src';
+import { AvailableCurrencies, currencies, fGet, PaymentStatusType } from '@firagate/common/src';
 import ThreeDotsOverlay from './ThreeDotsOverlay';
 
 export default function Invoice() {
@@ -258,7 +258,7 @@ export default function Invoice() {
                     </div>
                 </div>
                 <h1 className='text-xs font-bold text-center text-slate-600 mt-12 tracking-tight'>
-                    Powered by open-source software <a href='https://github.com/dilan-dio4/Snow'>Snow</a>
+                    Powered by open-source software <a href='https://github.com/dilan-dio4/Firagate'>Firagate</a>
                 </h1>
             </div>
             <div className='bottom-0 absolute w-full -z-10 h-[20vh] bg-slate-100 sm:hidden sm:invisible'></div>

@@ -1,5 +1,5 @@
 {
-  "name": "@snow/invoice-client",
+  "name": "@firagate/invoice-client",
   "scripts": {
     "pureDev": "vite",
     "dev": "tsc --project tsconfig.package.json && vite build --watch",
@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "@fastify/static": "^6.4.0",
-    "@snow/common": "file:packages/common",
+    "@firagate/common": "file:packages/common",
     "clsx": "^1.1.1",
     "cross-fetch": "^3.1.5",
     "cryptocurrency-icons": "^0.18.0",

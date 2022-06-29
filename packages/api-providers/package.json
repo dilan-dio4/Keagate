@@ -1,7 +1,7 @@
 {
-  "name": "@snow/api-providers",
+  "name": "@firagate/api-providers",
   "version": "1.0.0",
-  "description": "\"# snow\"",
+  "description": "\"# firagate\"",
   "main": "build/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -9,6 +9,6 @@
     "clean": "shx rm -rf build package-lock.json node_modules"
   },
   "dependencies": {
-    "@snow/common": "file:packages/common"
+    "@firagate/common": "file:packages/common"
   }
 }

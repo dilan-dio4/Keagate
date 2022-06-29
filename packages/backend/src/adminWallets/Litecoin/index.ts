@@ -1,6 +1,6 @@
 import GenericAdminWallet from '../GenericAdminWallet';
 import { Transaction } from 'bitcore-lib-ltc';
-import { AvailableCurrencies, fGet, convertChainsoToNativeUtxo } from '@snow/common/src';
+import { AvailableCurrencies, fGet, convertChainsoToNativeUtxo } from '@firagate/common/src';
 import config from '../../config';
 
 export default class AdminLitecoin extends GenericAdminWallet {

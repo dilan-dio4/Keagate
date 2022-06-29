@@ -1,6 +1,6 @@
-import { AvailableCurrencies } from '@snow/common/src';
+import { AvailableCurrencies } from '@firagate/common/src';
 import WAValidator from 'multicoin-address-validator';
-import { GenericProvider } from '@snow/api-providers/src';
+import { GenericProvider } from '@firagate/api-providers/src';
 
 export default abstract class GenericAdminWallet {
     protected currency: AvailableCurrencies;

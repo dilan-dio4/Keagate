@@ -2,7 +2,7 @@ import NowNodesProvider from './NowNodesProvider';
 import SoChainProvider from './SoChainProvider';
 import TatumProvider from './TatumProvider';
 import GenericProvider from './GenericProvider';
-import { ConcreteConstructor } from '@snow/common/src';
+import { ConcreteConstructor } from '@firagate/common/src';
 
 export type AvailableProviders = 'NowNodes' | 'Tatum';
 

@@ -1,4 +1,4 @@
-"# Snow" 
+"# Firagate" 
 
 Installation instructions:
 *. sudo apt update

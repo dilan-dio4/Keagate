@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import { ObjectId } from 'mongodb';
-import { AvailableCurrencies, PaymentStatusType } from '@snow/common/src';
+import { AvailableCurrencies, PaymentStatusType } from '@firagate/common/src';
 import mongoGenerator from '../mongo/generator';
 import { MongoPayment, IFromNew, NativePaymentConstructor, CoinlibPaymentConstructor, INativeInitInDatabase, ICoinlibInitInDatabase } from '../types';
 import config from '../config';

@@ -1,4 +1,4 @@
-import { AvailableCurrencies } from '@snow/common/src';
+import { AvailableCurrencies } from '@firagate/common/src';
 
 export default abstract class GenericProvider {
     public supportedCurrencies: AvailableCurrencies[];

@@ -1,7 +1,7 @@
 import config from './config';
 import fastify from 'fastify';
-import { currencies } from '@snow/common/src';
-import idsToProviders from '@snow/api-providers/src';
+import { currencies } from '@firagate/common/src';
+import idsToProviders from '@firagate/api-providers/src';
 import GenericAdminWallet from './adminWallets/GenericAdminWallet';
 import auth from './middlewares/auth';
 import createPaymentRoute from './routes/createPayment';
@@ -22,7 +22,7 @@ const server = fastify({
 });
 
 /**
- * Native = currency processed by a wallet built into Snow
+ * Native = currency processed by a wallet built into Firagate
  * Coinlib = currency processed by the port of coinlib
  */
 

@@ -1,5 +1,5 @@
 import GenericProvider from './GenericProvider';
-import { AvailableCurrencies, fGet } from '@snow/common/src';
+import { AvailableCurrencies, fGet } from '@firagate/common/src';
 
 // https://documenter.getpostman.com/view/13630829/TVmFkLwy#cebd6a63-13bc-4ba1-81f7-360c88871b90
 

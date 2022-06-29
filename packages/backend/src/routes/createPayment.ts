@@ -3,9 +3,9 @@ import { FastifyInstance, RouteShorthandOptions } from 'fastify';
 import auth from '../middlewares/auth';
 import GenericTransactionalWallet from '../transactionalWallets/GenericTransactionalWallet';
 import { encrypt, randU32Sync } from '../utils';
-import { AvailableCurrencies } from '@snow/common/src';
+import { AvailableCurrencies } from '@firagate/common/src';
 import config from '../config';
-import idsToProviders from '@snow/api-providers/src';
+import idsToProviders from '@firagate/api-providers/src';
 import GenericCoinlibWrapper from '../transactionalWallets/coinlib/GenericCoinlibWrapper';
 import context from '../context';
 

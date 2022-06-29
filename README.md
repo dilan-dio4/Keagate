@@ -1,7 +1,7 @@
 <br />
 
 <h2 align="center">
-🌨️ Snow – A High-Performance Cryptocurrency Payment Gateway
+🌨️ Firagate – A High-Performance Cryptocurrency Payment Gateway
 </h2>
 
 <h4 align="center">
@@ -9,7 +9,7 @@
 </h4>
 
 <br />
-<!-- TODO: Snow Vector --->
+<!-- TODO: Firagate Vector --->
 
 <!-- TABLE OF CONTENTS -->
 ## Table of Contents
@@ -28,7 +28,7 @@
 
 ## About The Project
 
-Snow is a self-hosted, high-performance cryptocurrency payment gateway. Payments can administer via the API or with the built-in invoicing client (image below).
+Firagate is a self-hosted, high-performance cryptocurrency payment gateway. Payments can administer via the API or with the built-in invoicing client (image below).
 
 **Currently support currencies: Solana, Cardano, Litecoin, and Dash.** (Bitcoin, Ripple coming next)
 
@@ -63,7 +63,7 @@ TODO Create Dockerfile (Nginx, Mongo no external, Node, Npm)
 
 ### API Providers
 
-In order to check wallet balances and broadcast transactions, snow needs to interact with particular blockchain APIs. There's a variety of providers out there that support different sets of blockchains. This packages bundles up connectors to popular providers with a simple, unified API.
+In order to check wallet balances and broadcast transactions, Firagate needs to interact with particular blockchain APIs. There's a variety of providers out there that support different sets of blockchains. This packages bundles up connectors to popular providers with a simple, unified API.
 
 Existing connectors can be seen in the [packages/api-providers](packages/api-providers/src/) folder. All of the one available in this package provide generous free tiers. Simply pass your API keys with the configuration below.
 
@@ -80,7 +80,7 @@ Make sure that one of the available API providers cover each currency you plan o
 
 ## Usage
 
-Snow requires some configuration. Create a file called `local.json` in `/config`, next to `default.json`, to edit of the parameters below. Use the provided `default.json` file as a reference (your `local.json` will override these).
+Firagate requires some configuration. Create a file called `local.json` in `/config`, next to `default.json`, to edit of the parameters below. Use the provided `default.json` file as a reference (your `local.json` will override these).
 
 To configure a single currency, add an object with the key of the currencies ticker with the following attributes:
 
@@ -95,13 +95,13 @@ Other root configuration options:
 
 | Key                              | Description                    | Required | Default |
 |----------------------------------|----------------------------|----------------------------------|--|
-| `SNOW_API_KEY`         | Custom key that will be required in the administrative requests `snow-api-key` requests to Snow | No | *null* (string) |
+| `FIRAGATE_API_KEY`         | Custom key that will be required in the administrative requests `firagate-api-key` requests to Firagate | No | *null* (string) |
 | `IP_WHITELIST`         | List of IP address ["1.1.1.1" , "2.2.2.2",...] to be whitelisted for administrative requests | No | [] (string[]) |
 | `TRANSACTION_TIMEOUT` | Milliseconds for which a transaction will be valid for  | No | 1200000 [20 Minutes] (number) |
 | `TRANSACTION_REFRESH_TIME` | Milliseconds for which each active transaction will be re-scanned | No | 10000 [10 Seconds] (number) |
 | `TRANSACTION_SLIPPAGE_TOLERANCE` | Percentage of a payment that discounted as from a total payment.<br /><br />Example: a TRANSACTION_SLIPPAGE_TOLERANCE of 0.02 for a 100 SOL payment will be fulfilled at 98 SOL. | No | 0.02 (number) |
 | `MONGO_CONNECTION_STRING` | Connection string for mongodb instance, which is installed automatically with docker | No | mongodb://localhost:27017 (string) |
-| `MONGO_SNOW_DB` | Mongo database to use for storing/managing payments | No | snow (string) |
+| `MONGO_FIRAGATE_DB` | Mongo database to use for storing/managing payments | No | firagate (string) |
 | `USE_SO_CHAIN` | [SoChain](https://sochain.com/api/#introduction) is a free blockchain infrastructure API for that allows for 300 requests/minute free-of-charge.<br /><br />Setting this to `true` will utilize SoChain for part of the btc, dash, and ltc payment process. **Recommended** | No | true (boolean) |
 | `TESTNETS` | **For development only**. Turn on testnets for given currencies | No | false (boolean) |
 
@@ -116,7 +116,7 @@ Your `config/local.json` could look something like:
     "PROVIDER_PARAMS": ["MY_API_KEY"]
   },
 
-  "SNOW_API_KEY": "abcd123",
+  "FIRAGATE_API_KEY": "abcd123",
   "IP_WHITELIST": ["1.1.1.1","2.2.2.2"]
   // ...
 }
@@ -127,7 +127,7 @@ Your `config/local.json` could look something like:
 Development experience and extensibility are a high priority for this package.
 
 1. Git clone this package.
-2. `cd Snow && npm i`
+2. `cd Firagate && npm i`
 3. Add a mongoDB connection to the `MONGO_CONNECTION_STRING` attribute in `config/local.json` along with some admin wallet credentials. For development, the [Mongo Atlas free tier](https://www.mongodb.com/cloud/atlas/signup) works great.
 4. `npm run dev` to start the invoice client and backend.
     * Any changes in `packages/invoice-client/src` will be automatically reflected on refresh.

@@ -1,5 +1,5 @@
 import GenericProvider from './GenericProvider';
-import { AvailableCurrencies, fGet, fPost, currencies } from '@snow/common/src';
+import { AvailableCurrencies, fGet, fPost, currencies } from '@firagate/common/src';
 import units from './units';
 import Big from 'big.js';
 
