@@ -4,7 +4,11 @@ import { AnyPayments } from 'coinlib-port';
 import GenericTransactionalWallet from '../GenericTransactionalWallet';
 import context from '../../context';
 import { availableCoinlibCurrencies } from '@firagate/common/src';
-import { randU32Sync } from '../../utils';
+import crypto from 'crypto';
+
+function randU32Sync() {
+    return crypto.randomBytes(4).readUInt32BE(0);
+}
 
 export const walletIndexGenerator: Record<typeof availableCoinlibCurrencies[number], () => number> = {
     LTC: randU32Sync,

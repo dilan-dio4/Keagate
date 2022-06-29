@@ -18,6 +18,8 @@
     "MONGO_CONNECTION_STRING": "mongodb://localhost:27017",
     "MONGO_FIRAGATE_DB": "firagate",
 
+    "INVOICE_ENC_KEY": "D(G+KbPeShVmYq3s6v9y$B&E)H@McQfT",
+
     "TESTNETS": false,
     "USE_SO_CHAIN": true
 }

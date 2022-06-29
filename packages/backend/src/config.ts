@@ -32,6 +32,8 @@ interface MyConfig extends MyCurrencyConfig {
     MONGO_CONNECTION_STRING: string;
     MONGO_FIRAGATE_DB: string;
 
+    INVOICE_ENC_KEY: string;
+
     TESTNETS: boolean;
     USE_SO_CHAIN: boolean;
 }
