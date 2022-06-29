@@ -41,7 +41,11 @@ class ActivityLoop {
         return new Promise((resolve, reject) => {
             const runner = async () => {
                 let _status: PaymentStatusType;
-                await trx.checkTransaction(status => _status = status)
+                try {
+                    await trx.checkTransaction(status => _status = status)
+                } catch (error) {
+                    _status = undefined;
+                }
                 if (_status) {
                     resolve(_status);
                 } else {
