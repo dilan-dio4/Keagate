@@ -27,6 +27,7 @@ class ActivityLoop {
         this.lastBatchStart = dayjs();
         for (const aTrx of Object.values(context.activePayments)) {
             await this.checkSingleTransaction(aTrx);
+            // TODO: Separate by currency (or just type depends on blockbook rate limits)
         }
 
         const howLongTheBatchTook = dayjs().diff(this.lastBatchStart, 'millisecond');
