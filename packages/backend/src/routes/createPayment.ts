@@ -27,7 +27,7 @@ const CreatePaymentResponse = Type.Object({
     ipnCallbackUrl: Type.Optional(Type.String({ format: 'uri' })),
     invoiceCallbackUrl: Type.Optional(Type.String({ format: 'uri' })),
     invoiceUrl: Type.String({ format: 'uri' }),
-    currency: Type.String()
+    currency: Type.String(),
 });
 
 const opts: RouteShorthandOptions = {

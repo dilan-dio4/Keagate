@@ -39,10 +39,10 @@ export default abstract class GenericTransactionalWallet {
 
     public async checkTransaction(statusCallback: (status: PaymentStatusType) => any = (status: PaymentStatusType) => null) {
         if (!this._initialized) {
-            statusCallback("WAITING");
+            statusCallback('WAITING');
             return;
         } else if (dayjs().isAfter(dayjs(this.expiresAt))) {
-            statusCallback("EXPIRED");
+            statusCallback('EXPIRED');
             this.updateStatus({ status: 'EXPIRED' });
             this.onDie(this.id);
             return;
@@ -50,13 +50,13 @@ export default abstract class GenericTransactionalWallet {
         const confirmedBalance = await this._getBalance();
         if (confirmedBalance >= this.amount * (1 - config.getTyped('TRANSACTION_SLIPPAGE_TOLERANCE')) && this.status !== 'CONFIRMED') {
             await this._cashOut(confirmedBalance);
-            statusCallback("CONFIRMED");
+            statusCallback('CONFIRMED');
             this.updateStatus({ status: 'CONFIRMED', amountPaid: confirmedBalance });
         } else if (confirmedBalance > 0 && this.amountPaid !== confirmedBalance) {
-            statusCallback("PARTIALLY_PAID");
+            statusCallback('PARTIALLY_PAID');
             this.updateStatus({ status: 'PARTIALLY_PAID', amountPaid: confirmedBalance });
         } else {
-            statusCallback("WAITING");
+            statusCallback('WAITING');
         }
     }
 
@@ -86,7 +86,7 @@ export default abstract class GenericTransactionalWallet {
             status: 'WAITING',
             type: this.type,
             currency: this.currency,
-            ...obj
+            ...obj,
         };
         const { insertedId } = await db.collection('payments').insertOne(insertObj);
         return {

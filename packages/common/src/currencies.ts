@@ -33,8 +33,8 @@ export const currencies: Record<AvailableCurrencies, { name: string; explorer: s
         networkName: 'XRP Ledger',
     },
     TRX: {
-        name: "Tron",
+        name: 'Tron',
         explorer: 'https://tronscan.org',
-        networkName: 'TRON network'
-    }
+        networkName: 'TRON network',
+    },
 };

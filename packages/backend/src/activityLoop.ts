@@ -1,10 +1,10 @@
-import context from "./context"
-import GenericCoinlibWrapper from "./transactionalWallets/coinlib/GenericCoinlibWrapper";
-import GenericTransactionalWallet from "./transactionalWallets/GenericTransactionalWallet";
-import dayjs, { Dayjs } from "dayjs";
-import { PaymentStatusType } from "@firagate/common/src";
+import context from './context';
+import GenericCoinlibWrapper from './transactionalWallets/coinlib/GenericCoinlibWrapper';
+import GenericTransactionalWallet from './transactionalWallets/GenericTransactionalWallet';
+import dayjs, { Dayjs } from 'dayjs';
+import { PaymentStatusType } from '@firagate/common/src';
 import { delay } from './utils';
-import config from "./config";
+import config from './config';
 
 class ActivityLoop {
     private needsToStop = false;
@@ -15,7 +15,7 @@ class ActivityLoop {
     }
 
     public stop() {
-        this.needsToStop = true
+        this.needsToStop = true;
     }
 
     private async startBatch() {
@@ -23,7 +23,7 @@ class ActivityLoop {
             this.needsToStop = false;
             return;
         }
-        
+
         this.lastBatchStart = dayjs();
         for (const aTrx of Object.values(context.activePayments)) {
             await this.checkSingleTransaction(aTrx);
@@ -31,7 +31,7 @@ class ActivityLoop {
 
         const howLongTheBatchTook = dayjs().diff(this.lastBatchStart, 'millisecond');
         if (howLongTheBatchTook < config.getTyped('TRANSACTION_MIN_REFRESH_TIME')) {
-            console.log("Waiting for min refresh time")
+            console.log('Waiting for min refresh time');
             await delay(config.getTyped('TRANSACTION_MIN_REFRESH_TIME') - howLongTheBatchTook);
         }
         this.startBatch();
@@ -42,7 +42,7 @@ class ActivityLoop {
             const runner = async () => {
                 let _status: PaymentStatusType;
                 try {
-                    await trx.checkTransaction(status => _status = status)
+                    await trx.checkTransaction((status) => (_status = status));
                 } catch (error) {
                     _status = undefined;
                 }
@@ -52,11 +52,11 @@ class ActivityLoop {
                     await delay(config.getTyped('BLOCKBOOK_RETRY_DELAY'));
                     runner();
                 }
-            }
-            console.log("Checking transaction: ", trx.getDetails().id);
+            };
+            console.log('Checking transaction: ', trx.getDetails().id);
             runner();
-        })
+        });
     }
 }
 
-export default new ActivityLoop()
+export default new ActivityLoop();

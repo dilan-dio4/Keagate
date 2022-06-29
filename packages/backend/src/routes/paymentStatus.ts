@@ -19,7 +19,7 @@ const PaymentStatusResponse = Type.Object({
     invoiceCallbackUrl: Type.Optional(Type.String({ format: 'uri' })),
     payoutTransactionHash: Type.Optional(Type.String()),
     invoiceUrl: Type.String(),
-    currency: Type.String()
+    currency: Type.String(),
 });
 
 const PaymentStatusQueryString = Type.Object({

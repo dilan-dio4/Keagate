@@ -26,7 +26,7 @@ export default function Invoice() {
         ADA: <AdaIcon width={50} height={50} />,
         BTC: <BtcIcon width={50} height={50} />,
         XRP: <XrpIcon width={50} height={50} />,
-        TRX: <TrxIcon width={50} height={50} />
+        TRX: <TrxIcon width={50} height={50} />,
     };
 
     const [isBlockchainInfoOpen, setIsBlockchainInfoOpen] = useState<boolean>(false);

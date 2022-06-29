@@ -12,8 +12,8 @@ export const walletIndexGenerator: Record<typeof availableCoinlibCurrencies[numb
     ADA: randU32Sync,
     BTC: randU32Sync,
     DASH: randU32Sync,
-    XRP: randU32Sync
-}
+    XRP: randU32Sync,
+};
 
 export default class GenericCoinlibWrapper extends GenericTransactionalWallet {
     protected type = 'coinlib' as const;
@@ -30,7 +30,7 @@ export default class GenericCoinlibWrapper extends GenericTransactionalWallet {
         const mongoPayment = await this.initInDatabase({
             ...obj,
             publicKey: address,
-            walletIndex: this.walletIndex
+            walletIndex: this.walletIndex,
         });
         return this.fromManual(mongoPayment);
     }
@@ -46,7 +46,6 @@ export default class GenericCoinlibWrapper extends GenericTransactionalWallet {
         this._initialized = true;
         return this;
     }
-
 
     public getDetails(): CoinlibPayment {
         return {

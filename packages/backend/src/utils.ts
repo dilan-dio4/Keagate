@@ -35,4 +35,4 @@ export function randomSeedGenerator() {
     return crypto.randomBytes(32).toString('hex');
 }
 
-export const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+export const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));

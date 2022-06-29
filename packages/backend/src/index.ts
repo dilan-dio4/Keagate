@@ -74,7 +74,6 @@ async function main() {
         // )
     }
 
-
     // Create other routes for API and invoice client
     createInvoiceClientRoute(server);
     createInvoiceStatusRoute(server);
