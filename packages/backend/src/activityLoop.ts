@@ -49,7 +49,7 @@ class ActivityLoop {
                 if (_status) {
                     resolve(_status);
                 } else {
-                    await delay(3000); // TODO: Config
+                    await delay(config.getTyped('BLOCKBOOK_RETRY_DELAY'));
                     runner();
                 }
             }

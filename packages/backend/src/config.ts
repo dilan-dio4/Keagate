@@ -27,6 +27,8 @@ interface MyConfig extends MyCurrencyConfig {
     TRANSACTION_MIN_REFRESH_TIME: number;
     TRANSACTION_SLIPPAGE_TOLERANCE: number;
 
+    BLOCKBOOK_RETRY_DELAY: number;
+
     MONGO_CONNECTION_STRING: string;
     MONGO_FIRAGATE_DB: string;
 
