@@ -27,8 +27,7 @@ const CreatePaymentResponse = Type.Object({
     ipnCallbackUrl: Type.Optional(Type.String({ format: 'uri' })),
     invoiceCallbackUrl: Type.Optional(Type.String({ format: 'uri' })),
     invoiceUrl: Type.String({ format: 'uri' }),
-    currency: Type.String(),
-    type: Type.String(),
+    currency: Type.String()
 });
 
 const opts: RouteShorthandOptions = {
@@ -74,6 +73,7 @@ export default function createPaymentRoute(server: FastifyInstance) {
         const newWalletDetails: any = { ...transactionalWallet.getDetails() };
         context.activePayments[newWalletDetails.id] = transactionalWallet;
         delete newWalletDetails.payoutTransactionHash;
+        delete newWalletDetails.type;
         newWalletDetails.invoiceUrl = `/invoice/${newWalletDetails.currency}/${encrypt(newWalletDetails.id)}`;
         reply.status(200).send(newWalletDetails);
     });

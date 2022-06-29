@@ -7,7 +7,6 @@ import context from '../context';
 const ActivePaymentsResponse = Type.Array(
     Type.Object({
         publicKey: Type.String(),
-        // privateKey: Type.String(),
         amount: Type.Number(),
         expiresAt: Type.String(),
         createdAt: Type.String(),

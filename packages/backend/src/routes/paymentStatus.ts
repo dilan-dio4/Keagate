@@ -19,7 +19,6 @@ const PaymentStatusResponse = Type.Object({
     invoiceCallbackUrl: Type.Optional(Type.String({ format: 'uri' })),
     payoutTransactionHash: Type.Optional(Type.String()),
     invoiceUrl: Type.String(),
-    type: Type.String(),
     currency: Type.String()
 });
 
@@ -54,6 +53,7 @@ export default function createPaymentStatusRoute(server: FastifyInstance) {
         delete selectedPayment['privateKey'];
         selectedPayment.id = selectedPayment._id.toString();
         delete selectedPayment._id;
+        delete selectedPayment.type;
         selectedPayment.createdAt = selectedPayment.createdAt.toISOString();
         selectedPayment.updatedAt = selectedPayment.updatedAt.toISOString();
         selectedPayment.expiresAt = selectedPayment.expiresAt.toISOString();
