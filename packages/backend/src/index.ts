@@ -1,6 +1,6 @@
 import config from './config';
 import fastify from 'fastify';
-import { currencies } from '@keagate/common/src';
+import { currencies, availableCoinlibCurrencies, availableNativeCurrencies } from '@keagate/common/src';
 import idsToProviders from '@keagate/api-providers/src';
 import GenericAdminWallet from './adminWallets/GenericAdminWallet';
 import auth from './middlewares/auth';
@@ -30,9 +30,9 @@ const server = fastify({
 async function main() {
     await context.init();
 
-    // Initalize the admin wallet routes for native currencies
+    // Initialize the admin wallet routes for native currencies
     for (const _currency of context.enabledNativeCurrencies) {
-        const coinName = currencies[_currency].name;
+        const coinName = currencies[_currency].name as typeof availableNativeCurrencies[number];
         const publicKey: string = config.getTyped(_currency).ADMIN_PUBLIC_KEY;
         const privateKey: string = config.getTyped(_currency).ADMIN_PRIVATE_KEY;
 
@@ -66,7 +66,15 @@ async function main() {
 
     // Do the same for coinlib currencies
     for (const _currency of context.enabledCoinlibCurrencies) {
-        const coinName = currencies[_currency].name;
+        const coinName = currencies[_currency].name as typeof availableCoinlibCurrencies[number];
+
+        const publicKey: string = config.getTyped(_currency).ADMIN_PUBLIC_KEY;
+        const privateKey: string = config.getTyped(_currency).ADMIN_PRIVATE_KEY;
+
+        if (!publicKey || !privateKey) {
+            console.error(`No admin public key and private key found for currency ${_currency}`);
+            continue;
+        }
         // TODO
         // server.get(`/get${coinName}Balance`, { preHandler: auth }, (request, reply) => currentClient.getBalance())
         // server.post<{ Body: Record<string, any> }>(`/send${coinName}Transaction`, { preHandler: auth }, (request, reply) =>

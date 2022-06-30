@@ -1,10 +1,10 @@
 // https://github.com/p2p-org/p2p-wallet-web/blob/2d894ae5893b8566760c8a52050fde7e918d3139/packages/core/src/contexts/seed/utils/hd_wallet.ts
 import * as ed25519 from 'ed25519-hd-key';
 import nacl from 'tweetnacl';
-import { bip32 } from '../../utils';
+import { bip32 } from '../../../utils';
 import * as bip39 from 'bip39';
 import { PublicKey } from '@solana/web3.js';
-import config from '../../config';
+import config from '../../../config';
 
 const DERIVATION_PATH = {
     Deprecated: 'deprecated',

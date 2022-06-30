@@ -3,10 +3,10 @@ import { availableCoinlibCurrencies, AvailableCurrencies, availableNativeCurrenc
 import { CoinPayments, NetworkType, SUPPORTED_NETWORK_SYMBOLS, AnyPayments } from 'coinlib-port';
 import { WithId } from 'mongodb';
 import GenericAdminWallet from './adminWallets/GenericAdminWallet';
-import AdminSolana from './adminWallets/Solana';
+import AdminSolana from './adminWallets/native/Solana';
 import config from './config';
 import { getExistingPayments } from './mongo';
-import GenericCoinlibWrapper from './transactionalWallets/coinlib/GenericCoinlibWrapper';
+import TransactionalCoinlibWrapper from './transactionalWallets/coinlib/TransactionalCoinlibWrapper';
 import GenericTransactionalWallet from './transactionalWallets/GenericTransactionalWallet';
 import GenericNativeTransactionalWallet from './transactionalWallets/native/GenericNativeTransactionalWallet';
 import TransactionalSolana from './transactionalWallets/native/Solana';
@@ -28,7 +28,7 @@ class KeagateContext {
             Transactional: TransactionalSolana,
         },
     };
-    public activePayments: Record<string, GenericCoinlibWrapper | GenericTransactionalWallet> = {};
+    public activePayments: Record<string, GenericTransactionalWallet> = {};
 
     public async init() {
         // Preserve order
@@ -92,7 +92,7 @@ class KeagateContext {
                 }
             } else if (_currActivePayment.type === 'coinlib') {
                 if (this.enabledCoinlibCurrencies.includes(currTxCurrency as any)) {
-                    this.activePayments[_currActivePayment._id.toString()] = new GenericCoinlibWrapper().fromManual(
+                    this.activePayments[_currActivePayment._id.toString()] = new TransactionalCoinlibWrapper().fromManual(
                         {
                             ...(_currActivePayment as any),
                             id: _currActivePayment._id.toString(),

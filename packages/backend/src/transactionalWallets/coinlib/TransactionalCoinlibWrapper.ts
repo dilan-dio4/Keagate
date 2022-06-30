@@ -19,7 +19,7 @@ export const walletIndexGenerator: Record<typeof availableCoinlibCurrencies[numb
     XRP: randU32Sync,
 };
 
-export default class GenericCoinlibWrapper extends GenericTransactionalWallet {
+export default class TransactionalCoinlibWrapper extends GenericTransactionalWallet {
     protected type = 'coinlib' as const;
     private coinlibPayment: AnyPayments<any>;
     private walletIndex: number;

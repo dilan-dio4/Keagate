@@ -6,7 +6,7 @@ import { encrypt } from '../utils';
 import { AvailableCurrencies } from '@keagate/common/src';
 import config from '../config';
 import idsToProviders from '@keagate/api-providers/src';
-import GenericCoinlibWrapper, { walletIndexGenerator } from '../transactionalWallets/coinlib/GenericCoinlibWrapper';
+import TransactionalCoinlibWrapper, { walletIndexGenerator } from '../transactionalWallets/coinlib/TransactionalCoinlibWrapper';
 import context from '../context';
 
 const CreatePaymentBody = Type.Object({
@@ -60,7 +60,7 @@ export default function createPaymentRoute(server: FastifyInstance) {
                     : undefined,
             });
         } else if (context.enabledCoinlibCurrencies.includes(createCurrency as any)) {
-            transactionalWallet = await new GenericCoinlibWrapper().fromNew(transactionalWalletNewObj, {
+            transactionalWallet = await new TransactionalCoinlibWrapper().fromNew(transactionalWalletNewObj, {
                 onDie: (id) => delete context.activePayments[id],
                 currency: createCurrency,
                 walletIndex: walletIndexGenerator[createCurrency](),

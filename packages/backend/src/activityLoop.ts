@@ -1,5 +1,4 @@
 import context from './context';
-import GenericCoinlibWrapper from './transactionalWallets/coinlib/GenericCoinlibWrapper';
 import GenericTransactionalWallet from './transactionalWallets/GenericTransactionalWallet';
 import dayjs, { Dayjs } from 'dayjs';
 import { PaymentStatusType } from '@keagate/common/src';
@@ -18,7 +17,7 @@ class ActivityLoop {
         this.needsToStop = true;
     }
 
-    private async runTxsCohort(cohort: (GenericTransactionalWallet | GenericCoinlibWrapper)[]) {
+    private async runTxsCohort(cohort: GenericTransactionalWallet[]) {
         for (const aTrx of cohort) {
             await this.checkSingleTransaction(aTrx);
         }
@@ -32,7 +31,7 @@ class ActivityLoop {
 
         this.lastBatchStart = dayjs();
 
-        const txsByCohort: Record<"native" | "coinlib", (GenericTransactionalWallet | GenericCoinlibWrapper)[]> = {
+        const txsByCohort: Record<"native" | "coinlib", GenericTransactionalWallet[]> = {
             native: [],
             coinlib: []
         };
@@ -52,7 +51,7 @@ class ActivityLoop {
         this.startBatch();
     }
 
-    private checkSingleTransaction(trx: GenericTransactionalWallet | GenericCoinlibWrapper): Promise<PaymentStatusType> {
+    private checkSingleTransaction(trx: GenericTransactionalWallet): Promise<PaymentStatusType> {
         return new Promise((resolve, reject) => {
             const runner = async () => {
                 let _status: PaymentStatusType;
