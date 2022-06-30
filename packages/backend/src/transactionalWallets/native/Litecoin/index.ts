@@ -1,7 +1,8 @@
 import GenericTransactionalWallet from '../GenericNativeTransactionalWallet';
 import { AvailableCurrencies } from '@keagate/common/src';
-import { IFromNew, NativePaymentConstructor } from '../../../types';
+import { IFromNew } from '../../../types';
 import { PrivateKey } from 'bitcore-lib-ltc';
+import { NativePaymentConstructor } from '../../GenericTransactionalWallet';
 
 export default class TransactionalLitecoin extends GenericTransactionalWallet {
     public currency: AvailableCurrencies = 'LTC';
@@ -20,7 +21,11 @@ export default class TransactionalLitecoin extends GenericTransactionalWallet {
             privateKey,
         });
 
-        this.adminWalletMask = new constructor.adminWalletClass(publicKey, privateKey, constructor.apiProvider);
+        this.adminWalletMask = new constructor.adminWalletClass({
+            publicKey,
+            privateKey,
+            apiProvider: constructor.apiProvider
+        });
         return this.fromManual(mongoPayment);
     }
 }

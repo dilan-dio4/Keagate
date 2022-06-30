@@ -1,8 +1,9 @@
+import { NativePaymentConstructor } from '../../GenericTransactionalWallet';
 import GenericTransactionalWallet from '../GenericNativeTransactionalWallet';
 import { Keypair } from '@solana/web3.js';
 import { AvailableCurrencies } from '@keagate/common/src';
 import base58 from 'bs58';
-import { IFromNew, NativePaymentConstructor } from '../../../types';
+import { IFromNew } from '../../../types';
 
 export default class TransactionalSolana extends GenericTransactionalWallet {
     public currency: AvailableCurrencies = 'SOL';
@@ -20,7 +21,11 @@ export default class TransactionalSolana extends GenericTransactionalWallet {
         });
 
         // This has to come after the above
-        this.adminWalletMask = new constructor.adminWalletClass(publicKey, privateKey, constructor.apiProvider);
+        this.adminWalletMask = new constructor.adminWalletClass({
+            publicKey,
+            privateKey,
+            apiProvider: constructor.apiProvider
+        });
         return this.fromManual(mongoPayment);
     }
 }

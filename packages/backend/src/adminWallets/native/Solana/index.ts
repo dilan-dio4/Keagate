@@ -1,16 +1,17 @@
 import { Connection, clusterApiUrl, PublicKey, Keypair, Transaction, SystemProgram, LAMPORTS_PER_SOL, sendAndConfirmTransaction } from '@solana/web3.js';
-import GenericAdminWallet from '../../GenericAdminWallet';
+import GenericNativeAdminWallet from '../GenericNativeAdminWallet';
 import base58 from 'bs58';
 import { AvailableCurrencies } from '@keagate/common/src';
 import config from '../../../config';
+import { NativeAdminConstructor } from '../../GenericAdminWallet';
 
-export default class AdminSolana extends GenericAdminWallet {
+export default class AdminSolana extends GenericNativeAdminWallet {
     private connection: Connection;
     public currency: AvailableCurrencies = 'SOL';
     static TRANSFER_FEE_LAMPORTS = 5000;
 
-    constructor(...args: ConstructorParameters<typeof GenericAdminWallet>) {
-        super(...args);
+    constructor(constructor: NativeAdminConstructor) {
+        super(constructor);
         this.connection = new Connection(clusterApiUrl(config.getTyped('TESTNETS') ? 'devnet' : 'mainnet-beta'), 'confirmed');
     }
 

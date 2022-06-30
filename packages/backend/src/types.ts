@@ -1,6 +1,4 @@
-import { AvailableCurrencies, ConcreteConstructor, PaymentStatusType } from '@keagate/common/src';
-import { GenericProvider } from '@keagate/api-providers/src';
-import GenericAdminWallet from './adminWallets/GenericAdminWallet';
+import { AvailableCurrencies, PaymentStatusType } from '@keagate/common/src';
 
 // Inherited from all payment types
 interface PaymentRoot {
@@ -18,30 +16,16 @@ interface PaymentRoot {
     updatedAt: Date;
 }
 
-interface PaymentConstructorRoot {
-    onDie: (id: string) => any;
-}
-
 // Native specific
 export interface NativePayment extends PaymentRoot {
     privateKey: string;
     type: 'native';
 }
 
-export interface NativePaymentConstructor extends PaymentConstructorRoot {
-    apiProvider: GenericProvider;
-    adminWalletClass: ConcreteConstructor<typeof GenericAdminWallet>;
-}
-
 // Coinlib specific
 export interface CoinlibPayment extends PaymentRoot {
     type: 'coinlib';
     walletIndex: number;
-}
-
-export interface CoinlibPaymentConstructor extends PaymentConstructorRoot {
-    walletIndex: number;
-    currency: AvailableCurrencies;
 }
 
 // Helpers

@@ -1,7 +1,8 @@
 import GenericTransactionalWallet from '../GenericNativeTransactionalWallet';
 import { AvailableCurrencies } from '@keagate/common/src';
-import { IFromNew, NativePaymentConstructor } from '../../../types';
+import { IFromNew } from '../../../types';
 import { PrivateKey } from '@dashevo/dashcore-lib';
+import { NativePaymentConstructor } from '../../GenericTransactionalWallet';
 
 export default class TransactionalDash extends GenericTransactionalWallet {
     public currency: AvailableCurrencies = 'DASH';
@@ -20,7 +21,11 @@ export default class TransactionalDash extends GenericTransactionalWallet {
             privateKey,
         });
 
-        this.adminWalletMask = new constructor.adminWalletClass(publicKey, privateKey, constructor.apiProvider);
+        this.adminWalletMask = new constructor.adminWalletClass({
+            publicKey,
+            privateKey,
+            apiProvider: constructor.apiProvider
+        });
         return this.fromManual(mongoPayment);
     }
 }

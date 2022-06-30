@@ -1,7 +1,7 @@
-import { CoinlibPayment, IFromNew, CoinlibPaymentConstructor, MongoPayment } from '../../types';
+import { CoinlibPayment, IFromNew, MongoPayment } from '../../types';
 import config from '../../config';
 import { AnyPayments } from 'coinlib-port';
-import GenericTransactionalWallet from '../GenericTransactionalWallet';
+import GenericTransactionalWallet, { CoinlibPaymentConstructor } from '../GenericTransactionalWallet';
 import context from '../../context';
 import { availableCoinlibCurrencies } from '@keagate/common/src';
 import crypto from 'crypto';
@@ -71,6 +71,7 @@ export default class TransactionalCoinlibWrapper extends GenericTransactionalWal
     }
 
     protected async _cashOut() {
+        // TODO: NO sweep
         const unsignedTx = await this.coinlibPayment.createSweepTransaction(this.walletIndex, config.getTyped(this.currency).ADMIN_PUBLIC_KEY);
         try {
             const signedTx = await this.coinlibPayment.signTransaction(unsignedTx);

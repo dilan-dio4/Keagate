@@ -1,11 +1,11 @@
-import GenericAdminWallet from '../GenericAdminWallet';
+import GenericNativeAdminWallet from '../GenericNativeAdminWallet';
 import { Transaction } from '@dashevo/dashcore-lib';
 import { AvailableCurrencies, fGet, convertChainsoToNativeUtxo } from '@keagate/common/src';
-import config from '../../config';
+import config from '../../../config';
 
 // https://jestersimpps.github.io/my-first-experience-with-bitpay-bitcore/
 // TODO custom fee like LTC
-export default class AdminDash extends GenericAdminWallet {
+export default class AdminDash extends GenericNativeAdminWallet {
     public currency: AvailableCurrencies = 'DASH';
     static TRANSACTION_FEE = 1000;
 

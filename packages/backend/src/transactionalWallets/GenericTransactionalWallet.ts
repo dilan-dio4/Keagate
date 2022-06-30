@@ -1,9 +1,11 @@
 import dayjs from 'dayjs';
 import { ObjectId } from 'mongodb';
-import { AvailableCurrencies, PaymentStatusType } from '@keagate/common/src';
+import { AvailableCurrencies, ConcreteConstructor, PaymentStatusType } from '@keagate/common/src';
 import mongoGenerator from '../mongo/generator';
-import { MongoPayment, IFromNew, NativePaymentConstructor, CoinlibPaymentConstructor, INativeInitInDatabase, ICoinlibInitInDatabase } from '../types';
+import { MongoPayment, IFromNew, INativeInitInDatabase, ICoinlibInitInDatabase } from '../types';
 import config from '../config';
+import GenericAdminWallet from '../adminWallets/GenericAdminWallet';
+import { GenericProvider } from '@keagate/api-providers/src';
 
 export default abstract class GenericTransactionalWallet {
     public currency: AvailableCurrencies;
@@ -129,4 +131,18 @@ export default abstract class GenericTransactionalWallet {
             });
         }
     }
+}
+
+interface PaymentConstructorRoot {
+    onDie: (id: string) => any;
+}
+
+export interface NativePaymentConstructor extends PaymentConstructorRoot {
+    apiProvider: GenericProvider;
+    adminWalletClass: ConcreteConstructor<typeof GenericAdminWallet>;
+}
+
+export interface CoinlibPaymentConstructor extends PaymentConstructorRoot {
+    walletIndex: number;
+    currency: AvailableCurrencies;
 }

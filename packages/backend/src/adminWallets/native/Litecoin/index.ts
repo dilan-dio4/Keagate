@@ -1,9 +1,9 @@
-import GenericAdminWallet from '../GenericAdminWallet';
+import GenericNativeAdminWallet from '../GenericNativeAdminWallet';
 import { Transaction } from 'bitcore-lib-ltc';
 import { AvailableCurrencies, fGet, convertChainsoToNativeUtxo } from '@keagate/common/src';
-import config from '../../config';
+import config from '../../../config';
 
-export default class AdminLitecoin extends GenericAdminWallet {
+export default class AdminLitecoin extends GenericNativeAdminWallet {
     private mediumGasFee: number; // TODO: Maybe do lowest gas fee?
     public currency: AvailableCurrencies = 'LTC';
 

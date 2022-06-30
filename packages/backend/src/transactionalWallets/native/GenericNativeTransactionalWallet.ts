@@ -1,7 +1,7 @@
-import { MongoPayment, NativePayment, NativePaymentConstructor } from '../../types';
+import { MongoPayment, NativePayment } from '../../types';
 import config from '../../config';
 import GenericAdminWallet from '../../adminWallets/GenericAdminWallet';
-import GenericTransactionalWallet from '../GenericTransactionalWallet';
+import GenericTransactionalWallet, { NativePaymentConstructor } from '../GenericTransactionalWallet';
 
 export default abstract class GenericNativeTransactionalWallet extends GenericTransactionalWallet {
     protected privateKey: string;
@@ -12,7 +12,11 @@ export default abstract class GenericNativeTransactionalWallet extends GenericTr
         this.setFromObject(initObj);
         if (constructor) {
             // Direct instantiation --
-            this.adminWalletMask = new constructor.adminWalletClass(this.publicKey, this.privateKey, constructor.apiProvider);
+            this.adminWalletMask = new constructor.adminWalletClass({
+                publicKey: this.publicKey,
+                privateKey: this.privateKey,
+                apiProvider: constructor.apiProvider
+            });
             this.construct(constructor);
             // --
         }
