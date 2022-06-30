@@ -1,15 +1,16 @@
-import idsToProviders from '@keagate/api-providers/src';
 import { availableCoinlibCurrencies, AvailableCurrencies, availableNativeCurrencies, ConcreteConstructor, currencies } from '@keagate/common/src';
 import { CoinPayments, NetworkType, SUPPORTED_NETWORK_SYMBOLS, AnyPayments } from 'coinlib-port';
 import { WithId } from 'mongodb';
 import GenericAdminWallet from './adminWallets/GenericAdminWallet';
 import AdminSolana from './adminWallets/native/Solana';
+import AdminPolygon from './adminWallets/native/Polygon';
 import config from './config';
 import { getExistingPayments } from './mongo';
 import TransactionalCoinlibWrapper from './transactionalWallets/coinlib/TransactionalCoinlibWrapper';
 import GenericTransactionalWallet from './transactionalWallets/GenericTransactionalWallet';
 import GenericNativeTransactionalWallet from './transactionalWallets/native/GenericNativeTransactionalWallet';
 import TransactionalSolana from './transactionalWallets/native/Solana';
+import TransactionalPolygon from './transactionalWallets/native/Polygon';
 import { CoinlibPayment, NativePayment } from './types';
 import { deadLogger } from './utils';
 
@@ -18,7 +19,7 @@ class KeagateContext {
     public enabledCoinlibCurrencies: typeof availableCoinlibCurrencies[number][] = [];
     public coinlibCurrencyToClient: Record<string, AnyPayments<any>> = {};
     public nativeCurrencyToClient: Record<
-        string,
+        typeof availableNativeCurrencies[number],
         {
             Admin: ConcreteConstructor<typeof GenericAdminWallet>;
             Transactional: ConcreteConstructor<typeof GenericNativeTransactionalWallet>;
@@ -27,6 +28,10 @@ class KeagateContext {
         SOL: {
             Admin: AdminSolana,
             Transactional: TransactionalSolana,
+        },
+        MATIC: {
+            Admin: AdminPolygon,
+            Transactional: TransactionalPolygon,
         },
     };
     public activePayments: Record<string, GenericTransactionalWallet> = {};
