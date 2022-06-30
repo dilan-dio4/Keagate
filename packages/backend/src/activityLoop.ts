@@ -2,7 +2,7 @@ import context from './context';
 import GenericCoinlibWrapper from './transactionalWallets/coinlib/GenericCoinlibWrapper';
 import GenericTransactionalWallet from './transactionalWallets/GenericTransactionalWallet';
 import dayjs, { Dayjs } from 'dayjs';
-import { PaymentStatusType } from '@firagate/common/src';
+import { PaymentStatusType } from '@keagate/common/src';
 import { delay } from './utils';
 import config from './config';
 

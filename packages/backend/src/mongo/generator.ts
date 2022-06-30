@@ -17,7 +17,7 @@ export default async function generator() {
     }
 
     return {
-        db: clientInstance.db(config.getTyped('MONGO_FIRAGATE_DB')),
+        db: clientInstance.db(config.getTyped('MONGO_KEAGATE_DB')),
         client: clientInstance,
     };
 }

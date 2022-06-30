@@ -1,5 +1,5 @@
-import idsToProviders from '@firagate/api-providers/src';
-import { availableCoinlibCurrencies, AvailableCurrencies, availableNativeCurrencies, ConcreteConstructor, currencies } from '@firagate/common/src';
+import idsToProviders from '@keagate/api-providers/src';
+import { availableCoinlibCurrencies, AvailableCurrencies, availableNativeCurrencies, ConcreteConstructor, currencies } from '@keagate/common/src';
 import { CoinPayments, NetworkType, SUPPORTED_NETWORK_SYMBOLS, AnyPayments } from 'coinlib-port';
 import { WithId } from 'mongodb';
 import GenericAdminWallet from './adminWallets/GenericAdminWallet';
@@ -12,7 +12,7 @@ import GenericNativeTransactionalWallet from './transactionalWallets/native/Gene
 import TransactionalSolana from './transactionalWallets/native/Solana';
 import { CoinlibPayment, NativePayment } from './types';
 
-class FiragateContext {
+class KeagateContext {
     public enabledNativeCurrencies: typeof availableNativeCurrencies[number][] = [];
     public enabledCoinlibCurrencies: typeof availableCoinlibCurrencies[number][] = [];
     public coinlibCurrencyToClient: Record<string, AnyPayments<any>> = {};
@@ -112,4 +112,4 @@ class FiragateContext {
     }
 }
 
-export default new FiragateContext();
+export default new KeagateContext();

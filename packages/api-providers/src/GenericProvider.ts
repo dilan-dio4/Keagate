@@ -1,4 +1,4 @@
-import { AvailableCurrencies } from '@firagate/common/src';
+import { AvailableCurrencies } from '@keagate/common/src';
 
 export default abstract class GenericProvider {
     public supportedCurrencies: AvailableCurrencies[];

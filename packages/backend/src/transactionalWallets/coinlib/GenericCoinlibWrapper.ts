@@ -3,7 +3,7 @@ import config from '../../config';
 import { AnyPayments } from 'coinlib-port';
 import GenericTransactionalWallet from '../GenericTransactionalWallet';
 import context from '../../context';
-import { availableCoinlibCurrencies } from '@firagate/common/src';
+import { availableCoinlibCurrencies } from '@keagate/common/src';
 import crypto from 'crypto';
 
 function randU32Sync() {

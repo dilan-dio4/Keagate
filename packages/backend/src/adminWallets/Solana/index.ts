@@ -1,7 +1,7 @@
 import { Connection, clusterApiUrl, PublicKey, Keypair, Transaction, SystemProgram, LAMPORTS_PER_SOL, sendAndConfirmTransaction } from '@solana/web3.js';
 import GenericAdminWallet from '../GenericAdminWallet';
 import base58 from 'bs58';
-import { AvailableCurrencies } from '@firagate/common/src';
+import { AvailableCurrencies } from '@keagate/common/src';
 import config from '../../config';
 
 export default class AdminSolana extends GenericAdminWallet {

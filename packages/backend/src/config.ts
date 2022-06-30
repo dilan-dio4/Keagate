@@ -2,8 +2,8 @@
 import path from 'path';
 process.env['NODE_CONFIG_DIR'] = path.join(__dirname, '..', '..', '..', 'config/'); // Must be in this order
 import config from 'config';
-import { AvailableProviders } from '@firagate/api-providers/src';
-import { AvailableCurrencies } from '@firagate/common/src';
+import { AvailableProviders } from '@keagate/api-providers/src';
+import { AvailableCurrencies } from '@keagate/common/src';
 
 type MyCurrencyConfig = Partial<
     Record<
@@ -18,7 +18,7 @@ type MyCurrencyConfig = Partial<
 >;
 
 interface MyConfig extends MyCurrencyConfig {
-    FIRAGATE_API_KEY?: string;
+    KEAGATE_API_KEY?: string;
     IP_WHITELIST: string[];
 
     SEED: string;
@@ -30,7 +30,7 @@ interface MyConfig extends MyCurrencyConfig {
     BLOCKBOOK_RETRY_DELAY: number;
 
     MONGO_CONNECTION_STRING: string;
-    MONGO_FIRAGATE_DB: string;
+    MONGO_KEAGATE_DB: string;
 
     INVOICE_ENC_KEY: string;
 

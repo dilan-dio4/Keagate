@@ -7,7 +7,7 @@
     },
     
 
-    "FIRAGATE_API_KEY": "",
+    "KEAGATE_API_KEY": "",
     "IP_WHITELIST": [],
 
     "TRANSACTION_TIMEOUT": 1000000,
@@ -16,7 +16,7 @@
     "BLOCKBOOK_RETRY_DELAY": 50000,
     
     "MONGO_CONNECTION_STRING": "mongodb://localhost:27017",
-    "MONGO_FIRAGATE_DB": "firagate",
+    "MONGO_KEAGATE_DB": "keagate",
 
     "INVOICE_ENC_KEY": "D(G+KbPeShVmYq3s6v9y$B&E)H@McQfT",
 

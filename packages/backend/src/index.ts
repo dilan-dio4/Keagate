@@ -1,7 +1,7 @@
 import config from './config';
 import fastify from 'fastify';
-import { currencies } from '@firagate/common/src';
-import idsToProviders from '@firagate/api-providers/src';
+import { currencies } from '@keagate/common/src';
+import idsToProviders from '@keagate/api-providers/src';
 import GenericAdminWallet from './adminWallets/GenericAdminWallet';
 import auth from './middlewares/auth';
 import createPaymentRoute from './routes/createPayment';
@@ -23,7 +23,7 @@ const server = fastify({
 });
 
 /**
- * Native = currency processed by a wallet built into Firagate
+ * Native = currency processed by a wallet built into Keagate
  * Coinlib = currency processed by the port of coinlib
  */
 

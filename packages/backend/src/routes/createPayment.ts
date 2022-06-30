@@ -3,9 +3,9 @@ import { FastifyInstance, RouteShorthandOptions } from 'fastify';
 import auth from '../middlewares/auth';
 import GenericTransactionalWallet from '../transactionalWallets/GenericTransactionalWallet';
 import { encrypt } from '../utils';
-import { AvailableCurrencies } from '@firagate/common/src';
+import { AvailableCurrencies } from '@keagate/common/src';
 import config from '../config';
-import idsToProviders from '@firagate/api-providers/src';
+import idsToProviders from '@keagate/api-providers/src';
 import GenericCoinlibWrapper, { walletIndexGenerator } from '../transactionalWallets/coinlib/GenericCoinlibWrapper';
 import context from '../context';
 

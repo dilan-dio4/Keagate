@@ -1,13 +1,13 @@
 {
-  "name": "@firagate/backend",
+  "name": "@keagate/backend",
   "version": "1.0.0",
-  "description": "\"# firagate\"",
+  "description": "\"# keagate\"",
   "main": "build/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc -p ./tsconfig.package.json",
     "dev": "ts-node-dev --project ./tsconfig.package.json --respawn src/index.ts",
-    "run": "npm run build && pm2 restart build/index.js --name \"Firagate\" --time && pm2 save",
+    "run": "npm run build && pm2 restart build/index.js --name \"Keagate\" --time && pm2 save",
     "prepack": "tsc --project tsconfig.build.json",
     "clean": "shx rm -rf build package-lock.json node_modules"
   },
@@ -16,8 +16,8 @@
     "@dashevo/dashcore-lib": "^0.19.38",
     "@fastify/static": "^6.4.0",
     "@sinclair/typebox": "^0.23.5",
-    "@firagate/api-providers": "file:packages/api-providers",
-    "@firagate/common": "file:packages/common",
+    "@keagate/api-providers": "file:packages/api-providers",
+    "@keagate/common": "file:packages/common",
     "@solana/web3.js": "^1.44.0",
     "bip32": "^3.0.1",
     "bip39": "^3.0.4",

@@ -1,6 +1,6 @@
 import GenericAdminWallet from '../GenericAdminWallet';
 import { Transaction } from '@dashevo/dashcore-lib';
-import { AvailableCurrencies, fGet, convertChainsoToNativeUtxo } from '@firagate/common/src';
+import { AvailableCurrencies, fGet, convertChainsoToNativeUtxo } from '@keagate/common/src';
 import config from '../../config';
 
 // https://jestersimpps.github.io/my-first-experience-with-bitpay-bitcore/

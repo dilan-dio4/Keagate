@@ -1,7 +1,7 @@
 {
-  "name": "@firagate/api-providers",
+  "name": "@keagate/api-providers",
   "version": "1.0.0",
-  "description": "\"# firagate\"",
+  "description": "\"# keagate\"",
   "main": "build/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -9,6 +9,6 @@
     "clean": "shx rm -rf build package-lock.json node_modules"
   },
   "dependencies": {
-    "@firagate/common": "file:packages/common"
+    "@keagate/common": "file:packages/common"
   }
 }

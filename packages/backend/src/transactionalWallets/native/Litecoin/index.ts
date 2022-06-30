@@ -1,5 +1,5 @@
 import GenericTransactionalWallet from '../GenericNativeTransactionalWallet';
-import { AvailableCurrencies } from '@firagate/common/src';
+import { AvailableCurrencies } from '@keagate/common/src';
 import { IFromNew, NativePaymentConstructor } from '../../../types';
 import { PrivateKey } from 'bitcore-lib-ltc';
 

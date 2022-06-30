@@ -9,7 +9,7 @@ if (config.getTyped('IP_WHITELIST').length > 0) {
 }
 
 const auth = (request: FastifyRequest, reply: FastifyReply, done: HookHandlerDoneFunction) => {
-    if (!config.getTyped('FIRAGATE_API_KEY') || request.headers['firagate-api-key'] === config.getTyped('FIRAGATE_API_KEY')) {
+    if (!config.getTyped('KEAGATE_API_KEY') || request.headers['keagate-api-key'] === config.getTyped('KEAGATE_API_KEY')) {
         if (IP_WHITELIST !== undefined) {
             if (IP_WHITELIST.has(request.ip)) {
                 done();
