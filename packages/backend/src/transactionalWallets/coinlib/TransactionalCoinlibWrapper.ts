@@ -1,10 +1,11 @@
 import { CoinlibPayment, IFromNew, MongoPayment } from '../../types';
 import config from '../../config';
-import { AnyPayments } from 'coinlib-port';
+import { AnyPayments, BalanceResult, BaseUnsignedTransaction, BaseSignedTransaction, BaseBroadcastResult } from 'coinlib-port';
 import GenericTransactionalWallet, { CoinlibPaymentConstructor } from '../GenericTransactionalWallet';
 import context from '../../context';
 import { availableCoinlibCurrencies } from '@keagate/common/src';
 import crypto from 'crypto';
+import { requestRetry } from '../../utils';
 
 function randU32Sync() {
     return crypto.randomBytes(4).readUInt32BE(0);
@@ -71,11 +72,12 @@ export default class TransactionalCoinlibWrapper extends GenericTransactionalWal
     }
 
     protected async _cashOut() {
-        // TODO: NO sweep
-        const unsignedTx = await this.coinlibPayment.createSweepTransaction(this.walletIndex, config.getTyped(this.currency).ADMIN_PUBLIC_KEY);
+        const confirmedBalance = await this._getBalance();
+
         try {
-            const signedTx = await this.coinlibPayment.signTransaction(unsignedTx);
-            const { id: txHash } = await this.coinlibPayment.broadcastTransaction(signedTx);
+            const createTx = await requestRetry<BaseUnsignedTransaction>(() => this.coinlibPayment.createTransaction(this.walletIndex, config.getTyped(this.currency).ADMIN_PUBLIC_KEY, "" + confirmedBalance));
+            const signedTx = await requestRetry<BaseSignedTransaction>(() => this.coinlibPayment.signTransaction(createTx));
+            const { id: txHash } = await requestRetry<BaseBroadcastResult>(() => this.coinlibPayment.broadcastTransaction(signedTx));
             return txHash;
         } catch (error) {
             throw new Error(error);
@@ -83,7 +85,7 @@ export default class TransactionalCoinlibWrapper extends GenericTransactionalWal
     }
 
     protected async _getBalance(): Promise<number> {
-        const { confirmedBalance } = await this.coinlibPayment.getBalance(this.walletIndex);
+        const { confirmedBalance } = await requestRetry<BalanceResult>(() => this.coinlibPayment.getBalance(this.walletIndex));
         return +confirmedBalance;
     }
 }

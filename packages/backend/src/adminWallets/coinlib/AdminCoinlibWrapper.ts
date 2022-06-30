@@ -1,5 +1,5 @@
 import GenericAdminWallet, { CoinlibAdminConstructor } from '../GenericAdminWallet';
-import { AnyPayments, CoinPayments, NetworkType, BaseUnsignedTransaction, BaseSignedTransaction, BaseBroadcastResult } from 'coinlib-port';
+import { AnyPayments, CoinPayments, NetworkType, BaseUnsignedTransaction, BaseSignedTransaction, BaseBroadcastResult, BalanceResult } from 'coinlib-port';
 import config from '../../config';
 import { delay, requestRetry } from '../../utils';
 
@@ -37,7 +37,7 @@ export default class AdminCoinlibWrapper extends GenericAdminWallet {
             await delay(1000);
         }
 
-        const { confirmedBalance, unconfirmedBalance } = await this.coinlibMask.getBalance(0);
+        const { confirmedBalance, unconfirmedBalance } = await requestRetry<BalanceResult>(() => this.coinlibMask.getBalance(0));
         return {
             result: {
                 confirmedBalance: +confirmedBalance,

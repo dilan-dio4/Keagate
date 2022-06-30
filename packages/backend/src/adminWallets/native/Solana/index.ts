@@ -4,6 +4,7 @@ import base58 from 'bs58';
 import { AvailableCurrencies } from '@keagate/common/src';
 import config from '../../../config';
 import { NativeAdminConstructor } from '../../GenericAdminWallet';
+import { requestRetry } from '../../../utils';
 
 export default class AdminSolana extends GenericNativeAdminWallet {
     private connection: Connection;
@@ -16,7 +17,7 @@ export default class AdminSolana extends GenericNativeAdminWallet {
     }
 
     async getBalance() {
-        const balance = await this.connection.getBalance(new PublicKey(this.publicKey), 'confirmed');
+        const balance = await requestRetry<number>(() => this.connection.getBalance(new PublicKey(this.publicKey), 'confirmed'));
 
         return {
             result: {
@@ -47,7 +48,7 @@ export default class AdminSolana extends GenericNativeAdminWallet {
         transaction.feePayer = adminKeypair.publicKey;
 
         try {
-            const signature = await sendAndConfirmTransaction(this.connection, transaction, [adminKeypair]);
+            const signature = await requestRetry<string>(() => sendAndConfirmTransaction(this.connection, transaction, [adminKeypair]));
             return { result: signature };
         } catch (error) {
             throw new Error(error);
