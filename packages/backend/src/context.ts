@@ -11,6 +11,7 @@ import GenericTransactionalWallet from './transactionalWallets/GenericTransactio
 import GenericNativeTransactionalWallet from './transactionalWallets/native/GenericNativeTransactionalWallet';
 import TransactionalSolana from './transactionalWallets/native/Solana';
 import { CoinlibPayment, NativePayment } from './types';
+import { deadLogger } from './utils';
 
 class KeagateContext {
     public enabledNativeCurrencies: typeof availableNativeCurrencies[number][] = [];
@@ -51,7 +52,7 @@ class KeagateContext {
     }
 
     private async initCoinlibToCurrencyClient() {
-        const coinPayments = new CoinPayments({ seed: config.getTyped('SEED'), network: NetworkType.Mainnet });
+        const coinPayments = new CoinPayments({ seed: config.getTyped('SEED'), network: NetworkType.Mainnet, logger: deadLogger });
         // type coinlibToCurrenyType = {
         //     [key in SUPPORTED_NETWORK_SYMBOLS[number]]: string;
         // }

@@ -40,6 +40,7 @@ export async function requestRetry<T>(request: (_?: any) => Promise<T>, delayMs 
         try {
             result = await request();
         } catch (error) {
+            console.debug(error, result);
             result = undefined;
         }
 
@@ -49,4 +50,13 @@ export async function requestRetry<T>(request: (_?: any) => Promise<T>, delayMs 
     }
 
     return result;
+}
+
+export const deadLogger = {
+    error: (...args: any[]) => null,
+    warn: (...args: any[]) => null,
+    info: (...args: any[]) => null,
+    log: (...args: any[]) => null,
+    debug: (...args: any[]) => null,
+    trace: (...args: any[]) => null
 }

@@ -1,7 +1,7 @@
 import GenericAdminWallet, { CoinlibAdminConstructor } from '../GenericAdminWallet';
 import { AnyPayments, CoinPayments, NetworkType, BaseUnsignedTransaction, BaseSignedTransaction, BaseBroadcastResult, BalanceResult } from 'coinlib-port';
 import config from '../../config';
-import { delay, requestRetry } from '../../utils';
+import { delay, requestRetry, deadLogger } from '../../utils';
 
 export default class AdminCoinlibWrapper extends GenericAdminWallet {
     private coinlibMask: AnyPayments<any>;
@@ -14,6 +14,7 @@ export default class AdminCoinlibWrapper extends GenericAdminWallet {
             network: config.getTyped('TESTNETS') ? NetworkType.Testnet : NetworkType.Mainnet,
             addressType: 'p2pkh',
             keyPairs: [this.privateKey],
+            logger: deadLogger
         } as any);
 
         this.coinlibMask.init().then((_) => (this._initialized = true));
