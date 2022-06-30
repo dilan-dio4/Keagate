@@ -42,18 +42,22 @@ export default abstract class GenericTransactionalWallet {
         if (!this._initialized) {
             statusCallback('WAITING');
             return;
-        } else if (dayjs().isAfter(dayjs(this.expiresAt))) {
-            statusCallback('EXPIRED');
-            this.updateStatus({ status: 'EXPIRED' });
-            this.onDie(this.id);
-            return;
         }
+        
         const confirmedBalance = await this._getBalance();
 
+        // Follow this flow...
         if (confirmedBalance >= this.amount * (1 - config.getTyped('TRANSACTION_SLIPPAGE_TOLERANCE')) && this.status !== 'CONFIRMED') {
             await this._cashOut(confirmedBalance);
             statusCallback('CONFIRMED');
             this.updateStatus({ status: 'CONFIRMED', amountPaid: confirmedBalance });
+        } else if (dayjs().isAfter(dayjs(this.expiresAt))) {
+            statusCallback('EXPIRED');
+            this.updateStatus({ status: 'EXPIRED' });
+            if (confirmedBalance > 0) {
+                await this._cashOut(confirmedBalance);
+            }
+            this.onDie(this.id);
         } else if (confirmedBalance > 0 && this.amountPaid !== confirmedBalance) {
             statusCallback('PARTIALLY_PAID');
             this.updateStatus({ status: 'PARTIALLY_PAID', amountPaid: confirmedBalance });
