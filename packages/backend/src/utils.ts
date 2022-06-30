@@ -34,14 +34,23 @@ export function randomSeedGenerator() {
 
 export const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-export async function requestRetry<T>(request: (_?: any) => Promise<T>, delayMs = 2000): Promise<T> {
+export async function requestRetry<T>(request: (_?: any) => Promise<T>, delayMs = 2000, retryLimit=15): Promise<T> {
     let result: T;
+    let attempts = 0;
+    let lastError;
     while (result === undefined) {
+        attempts++;
+
+        if (attempts >= retryLimit) {
+            throw new Error("Retry request exceeded maximum trys: " + JSON.stringify(lastError))
+        }
+
         try {
             result = await request();
         } catch (error) {
             console.debug(error, result);
             result = undefined;
+            lastError = error;
         }
 
         if (result === undefined) {
