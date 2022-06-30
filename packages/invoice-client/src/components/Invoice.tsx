@@ -6,6 +6,7 @@ import { ReactComponent as AdaIcon } from 'cryptocurrency-icons/svg/color/ada.sv
 import { ReactComponent as DashIcon } from 'cryptocurrency-icons/svg/color/dash.svg';
 import { ReactComponent as XrpIcon } from 'cryptocurrency-icons/svg/color/xrp.svg';
 import { ReactComponent as TrxIcon } from 'cryptocurrency-icons/svg/color/trx.svg';
+import { ReactComponent as MaticIcon } from 'cryptocurrency-icons/svg/color/matic.svg';
 
 import { BiTimer, BiCopy } from 'react-icons/bi';
 import { FiChevronUp, FiChevronDown } from 'react-icons/fi';
@@ -27,6 +28,7 @@ export default function Invoice() {
         BTC: <BtcIcon width={50} height={50} />,
         XRP: <XrpIcon width={50} height={50} />,
         TRX: <TrxIcon width={50} height={50} />,
+        MATIC: <MaticIcon width={50} height={50} />,
     };
 
     const [isBlockchainInfoOpen, setIsBlockchainInfoOpen] = useState<boolean>(false);

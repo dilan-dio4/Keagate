@@ -7,10 +7,9 @@ export default class AdminCoinlibWrapper extends GenericAdminWallet {
     private coinlibMask: AnyPayments<any>;
     private _initialized = false;
 
-    constructor(constuctor: CoinlibAdminConstructor) {
-        super(constuctor);
+    constructor(constructor: CoinlibAdminConstructor) {
+        super(constructor);
         this.coinlibMask = CoinPayments.getFactory(this.currency as any).newPayments({
-            // TODO: drop any
             network: config.getTyped('TESTNETS') ? NetworkType.Testnet : NetworkType.Mainnet,
             addressType: 'p2pkh',
             keyPairs: [this.privateKey],

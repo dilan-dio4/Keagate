@@ -1,5 +1,5 @@
 export const availableCoinlibCurrencies = ['DASH', 'LTC', 'XRP', 'BTC', 'ADA', 'TRX'] as const;
-export const availableNativeCurrencies = ['SOL'] as const;
+export const availableNativeCurrencies = ['SOL', 'MATIC'] as const;
 
 export type AvailableCurrencies = typeof availableCoinlibCurrencies[number] | typeof availableNativeCurrencies[number];
 
@@ -37,4 +37,9 @@ export const currencies: Record<AvailableCurrencies, { name: string; explorer: s
         explorer: 'https://tronscan.org',
         networkName: 'TRON network',
     },
+    MATIC: {
+        name: 'Polygon',
+        explorer: "https://polygonscan.com/",
+        networkName: 'Polygon PoS Mainnet',
+    }
 };

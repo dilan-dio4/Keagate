@@ -5,6 +5,7 @@ import { AvailableCurrencies } from '@keagate/common/src';
 import config from '../../../config';
 import { NativeAdminConstructor } from '../../GenericAdminWallet';
 import { requestRetry } from '../../../utils';
+import sample from 'lodash.sample';
 
 export default class AdminSolana extends GenericNativeAdminWallet {
     private connection: Connection;
@@ -13,7 +14,21 @@ export default class AdminSolana extends GenericNativeAdminWallet {
 
     constructor(constructor: NativeAdminConstructor) {
         super(constructor);
-        this.connection = new Connection(clusterApiUrl(config.getTyped('TESTNETS') ? 'devnet' : 'mainnet-beta'), 'confirmed');
+        this.connection = new Connection(this.getRandomRPC(), 'confirmed');
+    }
+
+    private getRandomRPC() {
+        if (config.getTyped('TESTNETS')) {
+            return sample([
+                clusterApiUrl('devnet'),
+                "https://rpc.ankr.com/solana_devnet"
+            ])
+        } else {
+            return sample([
+                clusterApiUrl('mainnet-beta'),
+                "https://rpc.ankr.com/solana"
+            ])
+        }
     }
 
     async getBalance() {

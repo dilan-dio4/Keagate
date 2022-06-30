@@ -6,8 +6,8 @@ export default abstract class GenericAdminWallet {
     public currency: AvailableCurrencies;
     protected privateKey: string;
 
-    constructor(constuctor: CoinlibAdminConstructor | NativeAdminConstructor) {
-        this.setFromObject(constuctor);
+    constructor(constructor: CoinlibAdminConstructor | NativeAdminConstructor) {
+        this.setFromObject(constructor);
     }
 
     public abstract getBalance(): Promise<{ result: { confirmedBalance: number; unconfirmedBalance?: number } }>;
