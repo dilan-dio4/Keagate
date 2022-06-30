@@ -81,7 +81,7 @@ class KeagateContext {
                         },
                         {
                             onDie: (id) => delete this.activePayments[id],
-                            adminWalletClass: this.nativeCurrencyToClient[currTxCurrency].Admin
+                            adminWalletClass: this.nativeCurrencyToClient[currTxCurrency].Admin,
                         },
                     );
                 } else {

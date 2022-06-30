@@ -46,7 +46,7 @@ async function main() {
         if (context.nativeCurrencyToClient[_currency]) {
             currentClient = new context.nativeCurrencyToClient[_currency].Admin({
                 publicKey,
-                privateKey
+                privateKey,
             });
         } else {
             console.error(`No admin wallet found for currency ${_currency}`);

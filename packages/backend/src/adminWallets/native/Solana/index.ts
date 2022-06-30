@@ -19,15 +19,9 @@ export default class AdminSolana extends GenericNativeAdminWallet {
 
     private getRandomRPC() {
         if (config.getTyped('TESTNETS')) {
-            return sample([
-                clusterApiUrl('devnet'),
-                "https://rpc.ankr.com/solana_devnet"
-            ])
+            return sample([clusterApiUrl('devnet'), 'https://rpc.ankr.com/solana_devnet']);
         } else {
-            return sample([
-                clusterApiUrl('mainnet-beta'),
-                "https://rpc.ankr.com/solana"
-            ])
+            return sample([clusterApiUrl('mainnet-beta'), 'https://rpc.ankr.com/solana']);
         }
     }
 

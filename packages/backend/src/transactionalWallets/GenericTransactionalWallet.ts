@@ -5,7 +5,6 @@ import mongoGenerator from '../mongo/generator';
 import { MongoPayment, IFromNew, INativeInitInDatabase, ICoinlibInitInDatabase } from '../types';
 import config from '../config';
 import GenericAdminWallet from '../adminWallets/GenericAdminWallet';
-import { GenericProvider } from '@keagate/api-providers/src';
 
 export default abstract class GenericTransactionalWallet {
     public currency: AvailableCurrencies;

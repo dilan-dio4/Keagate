@@ -1,6 +1,5 @@
 import { availableCoinlibCurrencies, AvailableCurrencies } from '@keagate/common/src';
 import WAValidator from 'multicoin-address-validator';
-import { GenericProvider } from '@keagate/api-providers/src';
 
 export default abstract class GenericAdminWallet {
     public currency: AvailableCurrencies;

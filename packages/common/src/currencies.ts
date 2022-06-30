@@ -39,7 +39,7 @@ export const currencies: Record<AvailableCurrencies, { name: string; explorer: s
     },
     MATIC: {
         name: 'Polygon',
-        explorer: "https://polygonscan.com/",
+        explorer: 'https://polygonscan.com/',
         networkName: 'Polygon PoS Mainnet',
-    }
+    },
 };
