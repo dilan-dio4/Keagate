@@ -8,7 +8,7 @@ import { requestRetry } from '../../../utils';
 export default class Polygon extends GenericNativeAdminWallet {
     private provider: ethers.providers.JsonRpcProvider;
     private wallet: ethers.Wallet;
-    public currency: AvailableCurrencies = 'SOL';
+    public currency: AvailableCurrencies = 'MATIC';
 
     constructor(constructor: NativeAdminConstructor) {
         super(constructor);
