@@ -4,6 +4,7 @@ import { NativeAdminConstructor } from '../../GenericAdminWallet';
 import { AvailableCurrencies } from '@keagate/common/src';
 import config from '../../../config';
 import { requestRetry } from '../../../utils';
+import Big from 'big.js';
 
 export default class Polygon extends GenericNativeAdminWallet {
     private provider: ethers.providers.JsonRpcProvider;
@@ -13,7 +14,7 @@ export default class Polygon extends GenericNativeAdminWallet {
     constructor(constructor: NativeAdminConstructor) {
         super(constructor);
         this.provider = new ethers.providers.JsonRpcProvider(this.getRandomRPC());
-        this.wallet = new ethers.Wallet(config.getTyped('MATIC').ADMIN_PRIVATE_KEY, this.provider);
+        this.wallet = new ethers.Wallet(this.privateKey, this.provider);
     }
 
     private getRandomRPC() {
@@ -25,10 +26,13 @@ export default class Polygon extends GenericNativeAdminWallet {
     }
 
     async getBalance() {
-        const balance = await requestRetry<ethers.BigNumber>(() => this.wallet.getBalance());
+        const balance = await this.wallet.getBalance();
+        // https://github.com/ethjs/ethjs-unit/blob/35d870eae1c32c652da88837a71e252a63a83ebb/src/index.js#L38
+        const confirmedBalance = Big(balance.toString()).div('1000000000000000000').toNumber()
+        console.log("confirmedBalance", confirmedBalance)
         return {
             result: {
-                confirmedBalance: balance.toNumber(),
+                confirmedBalance,
                 unconfirmedBalance: null,
             },
         };
@@ -38,15 +42,17 @@ export default class Polygon extends GenericNativeAdminWallet {
         if (!this.isValidAddress(destination)) {
             throw new Error('Invalid destination address');
         }
+        const gasPrice = await this.provider.getGasPrice();
 
-        const [nonce, gasPrice] = await Promise.all([this.wallet.getTransactionCount('pending'), this.provider.getGasPrice()]);
+        // https://docs.ethers.io/v4/cookbook-accounts.html
+        const gasLimit = 21000;
+        const value = ethers.utils.parseEther('' + amount).sub(gasPrice.mul(gasLimit));
         // https://docs.ethers.io/v5/api/providers/provider/#Provider-sendTransaction
         const tx = {
             to: destination,
-            // Convert currency unit from ether to wei
-            value: ethers.utils.parseEther('' + amount),
-            gasPrice: gasPrice.mul(2),
-            nonce,
+            value,
+            gasPrice,
+            gasLimit
         };
         const txObj = await requestRetry<ethers.providers.TransactionResponse>(() => this.wallet.sendTransaction(tx));
         return { result: txObj.hash };

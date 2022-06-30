@@ -49,6 +49,7 @@ export default abstract class GenericTransactionalWallet {
             return;
         }
         const confirmedBalance = await this._getBalance();
+
         if (confirmedBalance >= this.amount * (1 - config.getTyped('TRANSACTION_SLIPPAGE_TOLERANCE')) && this.status !== 'CONFIRMED') {
             await this._cashOut(confirmedBalance);
             statusCallback('CONFIRMED');
