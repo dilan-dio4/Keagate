@@ -34,7 +34,7 @@ export function randomSeedGenerator() {
 
 export const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-export async function requestRetry<T>(request: (_?: any) => Promise<T>, delayMs=2000): Promise<T> {
+export async function requestRetry<T>(request: (_?: any) => Promise<T>, delayMs = 2000): Promise<T> {
     let result: T;
     while (result === undefined) {
         try {
@@ -44,7 +44,7 @@ export async function requestRetry<T>(request: (_?: any) => Promise<T>, delayMs=
         }
 
         if (result === undefined) {
-            await delay(delayMs)
+            await delay(delayMs);
         }
     }
 

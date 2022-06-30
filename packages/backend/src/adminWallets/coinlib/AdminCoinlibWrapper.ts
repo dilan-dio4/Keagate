@@ -9,30 +9,28 @@ export default class AdminCoinlibWrapper extends GenericAdminWallet {
 
     constructor(constuctor: CoinlibAdminConstructor) {
         super(constuctor);
-        this.coinlibMask = CoinPayments.getFactory(this.currency as any).newPayments({ // TODO: drop any
+        this.coinlibMask = CoinPayments.getFactory(this.currency as any).newPayments({
+            // TODO: drop any
             network: config.getTyped('TESTNETS') ? NetworkType.Testnet : NetworkType.Mainnet,
             addressType: 'p2pkh',
-            keyPairs: [
-                this.privateKey
-            ]
-        } as any)
+            keyPairs: [this.privateKey],
+        } as any);
 
-        this.coinlibMask.init()
-            .then(_ => this._initialized = true)
+        this.coinlibMask.init().then((_) => (this._initialized = true));
     }
 
-    public async sendTransaction(destination: string, amount: number): Promise<{ result: string; }> {
+    public async sendTransaction(destination: string, amount: number): Promise<{ result: string }> {
         while (!this._initialized) {
             await delay(1000);
         }
 
-        const createTx = await requestRetry<BaseUnsignedTransaction>(() => this.coinlibMask.createTransaction(0, destination, "" + amount));
+        const createTx = await requestRetry<BaseUnsignedTransaction>(() => this.coinlibMask.createTransaction(0, destination, '' + amount));
         const signedTx = await requestRetry<BaseSignedTransaction>(() => this.coinlibMask.signTransaction(createTx));
         const { id: txHash } = await requestRetry<BaseBroadcastResult>(() => this.coinlibMask.broadcastTransaction(signedTx));
         return { result: txHash };
     }
 
-    public async getBalance(): Promise<{ result: { confirmedBalance: number; unconfirmedBalance?: number; }; }> {
+    public async getBalance(): Promise<{ result: { confirmedBalance: number; unconfirmedBalance?: number } }> {
         while (!this._initialized) {
             await delay(1000);
         }
@@ -41,9 +39,8 @@ export default class AdminCoinlibWrapper extends GenericAdminWallet {
         return {
             result: {
                 confirmedBalance: +confirmedBalance,
-                unconfirmedBalance: +unconfirmedBalance
-            }
-        }
+                unconfirmedBalance: +unconfirmedBalance,
+            },
+        };
     }
-
 }

@@ -11,6 +11,7 @@ import createInvoiceClientRoute from './routes/invoiceClient';
 import createInvoiceStatusRoute from './routes/invoiceStatus';
 import context from './context';
 import activityLoop from './activityLoop';
+import AdminCoinlibWrapper from './adminWallets/coinlib/AdminCoinlibWrapper';
 
 const server = fastify({
     trustProxy: true,
@@ -41,17 +42,15 @@ async function main() {
             continue;
         }
 
-        const adminWalletParams = [
-            publicKey,
-            privateKey,
-            config.getTyped(_currency).PROVIDER
-                ? new idsToProviders[config.getTyped(_currency).PROVIDER](config.getTyped(_currency).PROVIDER_PARAMS)
-                : undefined,
-        ] as const;
-
         let currentClient: GenericAdminWallet;
         if (context.nativeCurrencyToClient[_currency]) {
-            currentClient = new context.nativeCurrencyToClient[_currency].Admin(...adminWalletParams);
+            currentClient = new context.nativeCurrencyToClient[_currency].Admin({
+                publicKey,
+                privateKey,
+                apiProvider: config.getTyped(_currency).PROVIDER
+                    ? new idsToProviders[config.getTyped(_currency).PROVIDER](config.getTyped(_currency).PROVIDER_PARAMS)
+                    : undefined,
+            });
         } else {
             console.error(`No admin wallet found for currency ${_currency}`);
             continue;
@@ -75,11 +74,16 @@ async function main() {
             console.error(`No admin public key and private key found for currency ${_currency}`);
             continue;
         }
-        // TODO
-        // server.get(`/get${coinName}Balance`, { preHandler: auth }, (request, reply) => currentClient.getBalance())
-        // server.post<{ Body: Record<string, any> }>(`/send${coinName}Transaction`, { preHandler: auth }, (request, reply) =>
-        //     currentClient.sendTransaction(request.body.destination, request.body.amount),
-        // )
+
+        const currentClient = new AdminCoinlibWrapper({
+            currency: _currency,
+            privateKey: privateKey,
+        });
+
+        server.get(`/get${coinName}Balance`, { preHandler: auth }, (request, reply) => currentClient.getBalance());
+        server.post<{ Body: Record<string, any> }>(`/send${coinName}Transaction`, { preHandler: auth }, (request, reply) =>
+            currentClient.sendTransaction(request.body.destination, request.body.amount),
+        );
     }
 
     // Create other routes for API and invoice client

@@ -75,7 +75,9 @@ export default class TransactionalCoinlibWrapper extends GenericTransactionalWal
         const confirmedBalance = await this._getBalance();
 
         try {
-            const createTx = await requestRetry<BaseUnsignedTransaction>(() => this.coinlibPayment.createTransaction(this.walletIndex, config.getTyped(this.currency).ADMIN_PUBLIC_KEY, "" + confirmedBalance));
+            const createTx = await requestRetry<BaseUnsignedTransaction>(() =>
+                this.coinlibPayment.createTransaction(this.walletIndex, config.getTyped(this.currency).ADMIN_PUBLIC_KEY, '' + confirmedBalance),
+            );
             const signedTx = await requestRetry<BaseSignedTransaction>(() => this.coinlibPayment.signTransaction(createTx));
             const { id: txHash } = await requestRetry<BaseBroadcastResult>(() => this.coinlibPayment.broadcastTransaction(signedTx));
             return txHash;

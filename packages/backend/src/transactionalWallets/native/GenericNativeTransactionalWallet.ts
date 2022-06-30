@@ -15,7 +15,7 @@ export default abstract class GenericNativeTransactionalWallet extends GenericTr
             this.adminWalletMask = new constructor.adminWalletClass({
                 publicKey: this.publicKey,
                 privateKey: this.privateKey,
-                apiProvider: constructor.apiProvider
+                apiProvider: constructor.apiProvider,
             });
             this.construct(constructor);
             // --

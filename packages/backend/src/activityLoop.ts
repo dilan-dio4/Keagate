@@ -31,9 +31,9 @@ class ActivityLoop {
 
         this.lastBatchStart = dayjs();
 
-        const txsByCohort: Record<"native" | "coinlib", GenericTransactionalWallet[]> = {
+        const txsByCohort: Record<'native' | 'coinlib', GenericTransactionalWallet[]> = {
             native: [],
-            coinlib: []
+            coinlib: [],
         };
 
         for (const aTrx of Object.values(context.activePayments)) {
@@ -41,7 +41,7 @@ class ActivityLoop {
             txsByCohort[type].push(aTrx);
         }
 
-        await Promise.all(Object.values(txsByCohort).map(cohort => this.runTxsCohort(cohort)))
+        await Promise.all(Object.values(txsByCohort).map((cohort) => this.runTxsCohort(cohort)));
 
         const howLongTheBatchTook = dayjs().diff(this.lastBatchStart, 'millisecond');
         if (howLongTheBatchTook < config.getTyped('TRANSACTION_MIN_REFRESH_TIME')) {
