@@ -46,10 +46,7 @@ async function main() {
         if (context.nativeCurrencyToClient[_currency]) {
             currentClient = new context.nativeCurrencyToClient[_currency].Admin({
                 publicKey,
-                privateKey,
-                apiProvider: config.getTyped(_currency).PROVIDER
-                    ? new idsToProviders[config.getTyped(_currency).PROVIDER](config.getTyped(_currency).PROVIDER_PARAMS)
-                    : undefined,
+                privateKey
             });
         } else {
             console.error(`No admin wallet found for currency ${_currency}`);

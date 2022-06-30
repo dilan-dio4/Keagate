@@ -55,9 +55,6 @@ export default function createPaymentRoute(server: FastifyInstance) {
             transactionalWallet = await new context.nativeCurrencyToClient[createCurrency].Transactional().fromNew(transactionalWalletNewObj, {
                 onDie: (id) => delete context.activePayments[id],
                 adminWalletClass: context.nativeCurrencyToClient[createCurrency].Admin,
-                apiProvider: config.getTyped(createCurrency).PROVIDER
-                    ? new idsToProviders[config.getTyped(createCurrency).PROVIDER](config.getTyped(createCurrency).PROVIDER_PARAMS)
-                    : undefined,
             });
         } else if (context.enabledCoinlibCurrencies.includes(createCurrency as any)) {
             transactionalWallet = await new TransactionalCoinlibWrapper().fromNew(transactionalWalletNewObj, {

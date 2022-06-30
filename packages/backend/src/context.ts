@@ -81,10 +81,7 @@ class KeagateContext {
                         },
                         {
                             onDie: (id) => delete this.activePayments[id],
-                            adminWalletClass: this.nativeCurrencyToClient[currTxCurrency].Admin,
-                            apiProvider: config.getTyped(currTxCurrency).PROVIDER
-                                ? new idsToProviders[config.getTyped(currTxCurrency).PROVIDER](config.getTyped(currTxCurrency).PROVIDER_PARAMS)
-                                : undefined,
+                            adminWalletClass: this.nativeCurrencyToClient[currTxCurrency].Admin
                         },
                     );
                 } else {

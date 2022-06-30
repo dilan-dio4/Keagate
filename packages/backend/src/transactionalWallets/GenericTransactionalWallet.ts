@@ -138,7 +138,6 @@ interface PaymentConstructorRoot {
 }
 
 export interface NativePaymentConstructor extends PaymentConstructorRoot {
-    apiProvider: GenericProvider;
     adminWalletClass: ConcreteConstructor<typeof GenericAdminWallet>;
 }
 

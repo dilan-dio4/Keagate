@@ -36,5 +36,4 @@ export interface CoinlibAdminConstructor extends RootAdminConstructor {
 
 export interface NativeAdminConstructor extends RootAdminConstructor {
     publicKey: string; // TODO: don't need public
-    apiProvider: GenericProvider;
 }

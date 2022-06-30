@@ -23,8 +23,7 @@ export default class TransactionalSolana extends GenericTransactionalWallet {
         // This has to come after the above
         this.adminWalletMask = new constructor.adminWalletClass({
             publicKey,
-            privateKey,
-            apiProvider: constructor.apiProvider,
+            privateKey
         });
         return this.fromManual(mongoPayment);
     }

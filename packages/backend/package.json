@@ -13,7 +13,6 @@
   },
   "dependencies": {
     "@blockfrost/blockfrost-js": "^4.1.0",
-    "@dashevo/dashcore-lib": "^0.19.38",
     "@fastify/static": "^6.4.0",
     "@keagate/api-providers": "file:packages/api-providers",
     "@keagate/common": "file:packages/common",
