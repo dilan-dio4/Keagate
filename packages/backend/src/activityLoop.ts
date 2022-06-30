@@ -18,6 +18,12 @@ class ActivityLoop {
         this.needsToStop = true;
     }
 
+    private async runTxsCohort(cohort: (GenericTransactionalWallet | GenericCoinlibWrapper)[]) {
+        for (const aTrx of cohort) {
+            await this.checkSingleTransaction(aTrx);
+        }
+    }
+
     private async startBatch() {
         if (this.needsToStop) {
             this.needsToStop = false;
@@ -25,10 +31,18 @@ class ActivityLoop {
         }
 
         this.lastBatchStart = dayjs();
+
+        const txsByCohort: Record<"native" | "coinlib", (GenericTransactionalWallet | GenericCoinlibWrapper)[]> = {
+            native: [],
+            coinlib: []
+        };
+
         for (const aTrx of Object.values(context.activePayments)) {
-            await this.checkSingleTransaction(aTrx);
-            // TODO: Separate by currency (or just type depends on blockbook rate limits)
+            const type = aTrx.getDetails().type;
+            txsByCohort[type].push(aTrx);
         }
+
+        await Promise.all(Object.values(txsByCohort).map(cohort => this.runTxsCohort(cohort)))
 
         const howLongTheBatchTook = dayjs().diff(this.lastBatchStart, 'millisecond');
         if (howLongTheBatchTook < config.getTyped('TRANSACTION_MIN_REFRESH_TIME')) {
