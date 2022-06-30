@@ -14,7 +14,7 @@ export default class AdminCoinlibWrapper extends GenericAdminWallet {
             network: config.getTyped('TESTNETS') ? NetworkType.Testnet : NetworkType.Mainnet,
             addressType: 'p2pkh',
             keyPairs: [this.privateKey],
-            logger: deadLogger
+            logger: deadLogger,
         } as any);
 
         this.coinlibMask.init().then((_) => (this._initialized = true));

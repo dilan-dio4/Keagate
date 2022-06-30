@@ -58,5 +58,5 @@ export const deadLogger = {
     info: (...args: any[]) => null,
     log: (...args: any[]) => null,
     debug: (...args: any[]) => null,
-    trace: (...args: any[]) => null
-}
+    trace: (...args: any[]) => null,
+};
