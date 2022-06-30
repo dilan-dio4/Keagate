@@ -1,13 +1,11 @@
 import GenericAdminWallet, { CoinlibAdminConstructor } from '../GenericAdminWallet';
-import { AnyPayments, CoinPayments, NetworkType } from 'coinlib-port';
+import { AnyPayments, CoinPayments, NetworkType, BaseUnsignedTransaction, BaseSignedTransaction, BaseBroadcastResult } from 'coinlib-port';
 import config from '../../config';
-import { delay } from '../../utils';
-import { availableCoinlibCurrencies } from 'packages/common/build/currencies';
+import { delay, requestRetry } from '../../utils';
 
 export default class AdminCoinlibWrapper extends GenericAdminWallet {
     private coinlibMask: AnyPayments<any>;
     private _initialized = false;
-    private currency: typeof availableCoinlibCurrencies[number];
 
     constructor(constuctor: CoinlibAdminConstructor) {
         super(constuctor);
@@ -28,9 +26,9 @@ export default class AdminCoinlibWrapper extends GenericAdminWallet {
             await delay(1000);
         }
 
-        const createTx = await this.coinlibMask.createTransaction(0, destination, "" + amount);
-        const signedTx = await this.coinlibMask.signTransaction(createTx);
-        const { id: txHash } = await this.coinlibMask.broadcastTransaction(signedTx);
+        const createTx = await requestRetry<BaseUnsignedTransaction>(() => this.coinlibMask.createTransaction(0, destination, "" + amount));
+        const signedTx = await requestRetry<BaseSignedTransaction>(() => this.coinlibMask.signTransaction(createTx));
+        const { id: txHash } = await requestRetry<BaseBroadcastResult>(() => this.coinlibMask.broadcastTransaction(signedTx));
         return { result: txHash };
     }
 
