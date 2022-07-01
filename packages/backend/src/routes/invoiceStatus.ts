@@ -31,7 +31,7 @@ const opts: RouteShorthandOptions = {
 };
 
 export default function createInvoiceStatusRoute(server: FastifyInstance) {
-    server.get<{ Reply: Static<typeof InvoiceStatusResponse> | string; Querystring: Static<typeof InvoiceStatusQueryString> }>(
+    server.get<{ Reply: Static<typeof InvoiceStatusResponse>; Querystring: Static<typeof InvoiceStatusQueryString> }>(
         '/getInvoiceStatus',
         opts,
         async (request, reply) => {
@@ -40,7 +40,7 @@ export default function createInvoiceStatusRoute(server: FastifyInstance) {
             const { db } = await mongoGenerator();
             const selectedPayment = (await db.collection('payments').findOne({ _id: new ObjectId(mongoId) })) as WithId<MongoPayment>;
             if (!selectedPayment) {
-                reply.status(300).send(`No transaction found with given id`);
+                reply.status(300).send(`No transaction found with given id` as any);
                 return;
             }
 
@@ -52,9 +52,7 @@ export default function createInvoiceStatusRoute(server: FastifyInstance) {
                 amountPaid: selectedPayment.amountPaid,
                 currency: selectedPayment.currency,
                 invoiceCallbackUrl: selectedPayment.invoiceCallbackUrl,
-                ...({
-                    memo: (selectedPayment as any).memo
-                })
+                memo: "memo" in selectedPayment ? selectedPayment.memo : undefined
             });
         },
     );

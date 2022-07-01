@@ -8,13 +8,14 @@ import { walletIndexGenerator } from '../transactionalWallets/coinlib/trxLimits'
 import context from '../context';
 import { currencyDusts } from '../transactionalWallets/coinlib/trxLimits';
 import { cleanDetails, MongoTypeForRequest } from './types';
+import { IFromNew } from '../types';
 
 const CreatePaymentBody = Type.Object({
     currency: Type.String(),
     amount: Type.Number({ minimum: 0 }),
     ipnCallbackUrl: Type.Optional(Type.String({ format: 'uri' })),
     invoiceCallbackUrl: Type.Optional(Type.String({ format: 'uri' })),
-    extraId: Type.Optional(Type.Union([Type.String(), Type.Number()])),
+    extraId: Type.Optional(Type.String()),
 });
 
 const opts: RouteShorthandOptions = {
@@ -34,10 +35,11 @@ export default function createPaymentRoute(server: FastifyInstance) {
 
         const createCurrency = body.currency.toUpperCase() as AvailableCurrencies;
         let transactionalWallet: GenericTransactionalWallet;
-        const transactionalWalletNewObj = {
+        const transactionalWalletNewObj: IFromNew = {
             amount: body.amount,
             invoiceCallbackUrl: body.invoiceCallbackUrl,
             ipnCallbackUrl: body.ipnCallbackUrl,
+            extraId: body.extraId
         };
         if (context.enabledNativeCurrencies.includes(createCurrency as any)) {
             transactionalWallet = await new context.nativeCurrencyToClient[createCurrency].Transactional().fromNew(transactionalWalletNewObj, {

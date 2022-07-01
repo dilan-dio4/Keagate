@@ -17,6 +17,7 @@ export default class TransactionalCoinlibWrapper extends GenericTransactionalWal
         this.construct(constructor);
         // --
 
+        // NOT THE SAME AS `extraId` from transactional payments
         const { address, extraId: memo } = await this.coinlibPayment.getPayport(this.walletIndex);
         const mongoPayment = await this.initInDatabase({
             ...obj,

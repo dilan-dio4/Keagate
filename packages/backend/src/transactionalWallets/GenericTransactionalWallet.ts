@@ -20,7 +20,7 @@ export default abstract class GenericTransactionalWallet {
     protected updatedAt: Date;
     protected status: PaymentStatusType;
     protected id: string;
-    protected extraId?: string | number;
+    protected extraId?: string;
     protected ipnCallbackUrl?: string;
     protected invoiceCallbackUrl?: string;
     protected payoutTransactionHash?: string;
@@ -29,7 +29,7 @@ export default abstract class GenericTransactionalWallet {
 
     // You implement these
     // --
-    protected abstract _cashOut(balance?: number): Promise<string>; // TODO: Retry loop this
+    protected abstract _cashOut(balance?: number): Promise<string>;
     protected abstract _getBalance(): Promise<number>;
     // --
 

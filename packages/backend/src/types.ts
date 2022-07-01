@@ -6,7 +6,7 @@ interface PaymentRoot {
     amountPaid: number;
     status: PaymentStatusType;
     id: string;
-    extraId?: string | number;
+    extraId?: string;
     ipnCallbackUrl?: string;
     invoiceCallbackUrl?: string;
     payoutTransactionHash?: string;
@@ -44,7 +44,7 @@ export interface IFromNew {
     amount: number;
     ipnCallbackUrl?: string;
     invoiceCallbackUrl: string;
-    extraId?: string | number;
+    extraId?: string;
 }
 
 export interface INativeInitInDatabase extends IFromNew {

@@ -12,7 +12,7 @@ export const MongoTypeForRequest = Type.Object({
     updatedAt: Type.String(),
     status: Type.String(),
     id: Type.String(),
-    extraId: Type.Optional(Type.Union([Type.String(), Type.Number()])),
+    extraId: Type.Optional(Type.String()),
     ipnCallbackUrl: Type.Optional(Type.String({ format: 'uri' })),
     invoiceCallbackUrl: Type.Optional(Type.String({ format: 'uri' })),
     payoutTransactionHash: Type.Optional(Type.String()),
@@ -23,7 +23,7 @@ export const MongoTypeForRequest = Type.Object({
 })
 
 export function cleanDetails(details: MongoPayment | WithId<Omit<MongoPayment, "id">>): ForRequest<MongoPayment> {
-    const id = (details as any).id ? (details as MongoPayment).id : (details as WithId<Omit<MongoPayment, "id">>)._id.toString();
+    const id = "id" in details ? details.id : details._id.toString();
 
     return {
         publicKey: details.publicKey,
@@ -41,8 +41,8 @@ export function cleanDetails(details: MongoPayment | WithId<Omit<MongoPayment, "
         currency: details.currency,
         amountPaid: details.amountPaid,
         ...({
-            walletIndex: (details as any).walletIndex,
-            memo: (details as any).memo,
+            walletIndex: "walletIndex" in details ? details.walletIndex : undefined,
+            memo: "memo" in details ? details.memo : undefined,
         } as any)
     }
 }

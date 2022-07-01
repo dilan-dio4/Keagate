@@ -8,6 +8,7 @@ import createActivePaymentsRoute from './routes/activePayments';
 import createPaymentStatusRoute from './routes/paymentStatus';
 import createInvoiceClientRoute from './routes/invoiceClient';
 import createInvoiceStatusRoute from './routes/invoiceStatus';
+import createPaymentsByExtraIdRoute from './routes/paymentsByExtraId';
 import context from './context';
 import activityLoop from './activityLoop';
 import AdminCoinlibWrapper from './adminWallets/coinlib/AdminCoinlibWrapper';
@@ -88,7 +89,8 @@ async function main() {
     createPaymentRoute(server);
     createActivePaymentsRoute(server);
     createPaymentStatusRoute(server);
-
+    createPaymentsByExtraIdRoute(server);
+    
     // Start the processing intervals
     activityLoop.start();
 

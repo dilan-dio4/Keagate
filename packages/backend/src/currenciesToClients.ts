@@ -29,13 +29,10 @@ export const getNativeCurrencyToClient = (): Record<
 
 export async function getCoinlibCurrencyToClient(): Promise<Record<typeof availableCoinlibCurrencies[number], AnyPayments<any>>> {
     const coinPayments = new CoinPayments({ seed: config.getTyped('SEED'), network: NetworkType.Mainnet, logger: deadLogger });
-    // type coinlibToCurrenyType = {
-    //     [key in SUPPORTED_NETWORK_SYMBOLS[number]]: string;
-    // }
     const coinlibCurrencyToClient: Partial<Record<typeof availableCoinlibCurrencies[number], AnyPayments<any>>> = {};
     for (const _currency of SUPPORTED_NETWORK_SYMBOLS) {
         const currClient = coinPayments.forNetwork(_currency);
-        await currClient.init(); // TODO: Promise.all
+        await currClient.init();
         coinlibCurrencyToClient[_currency] = currClient;
     }
     return coinlibCurrencyToClient as Record<typeof availableCoinlibCurrencies[number], AnyPayments<any>>;

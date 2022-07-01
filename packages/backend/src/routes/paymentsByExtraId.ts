@@ -27,7 +27,7 @@ export default function createPaymentStatusRoute(server: FastifyInstance) {
     server.get<{
         Reply: Static<typeof PaymentsByExtraIdResponse> | string;
         Querystring: Static<typeof PaymentsByExtraIdQueryString>;
-    }>('/getPaymentStatus', opts, async (request, reply) => {
+    }>('/getPaymentsByExtraId', opts, async (request, reply) => {
         const extraId = request.query.extraId;
         const { db } = await mongoGenerator();
         const selectedPayments = (await db.collection('payments').find({ extraId }).toArray()) as (WithId<MongoPayment>)[];
