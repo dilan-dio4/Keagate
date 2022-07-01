@@ -27,6 +27,7 @@ export interface NativePayment extends PaymentRoot {
 export interface CoinlibPayment extends PaymentRoot {
     type: 'coinlib';
     walletIndex: number;
+    memo?: string;
 }
 
 // Helpers
@@ -54,4 +55,5 @@ export interface INativeInitInDatabase extends IFromNew {
 export interface ICoinlibInitInDatabase extends IFromNew {
     publicKey: string;
     walletIndex: number;
+    memo?: string;
 }

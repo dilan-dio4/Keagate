@@ -5,7 +5,7 @@ import GenericTransactionalWallet from '../transactionalWallets/GenericTransacti
 import { AvailableCurrencies } from '@keagate/common/src';
 import TransactionalCoinlibWrapper, { walletIndexGenerator } from '../transactionalWallets/coinlib/TransactionalCoinlibWrapper';
 import context from '../context';
-import { currencyDusts } from '../adminWallets/coinlib/trxLimits';
+import { currencyDusts } from '../transactionalWallets/coinlib/trxLimits';
 import { cleanDetails, MongoTypeForRequest } from './types';
 
 const CreatePaymentBody = Type.Object({

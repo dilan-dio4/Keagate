@@ -39,6 +39,7 @@ export default abstract class GenericNativeTransactionalWallet extends GenericTr
             amountPaid: this.amountPaid,
             type: this.type,
             privateKey: this.privateKey,
+            extraId: this.extraId
         };
     }
 

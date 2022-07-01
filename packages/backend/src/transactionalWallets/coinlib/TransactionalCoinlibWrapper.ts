@@ -13,7 +13,6 @@ function randU32Sync() {
 
 export const walletIndexGenerator: Record<typeof availableCoinlibCurrencies[number], () => number> = {
     LTC: randU32Sync,
-    TRX: () => Math.round(randU32Sync() / 10000),
     BTC: randU32Sync,
     DASH: randU32Sync,
 };
@@ -22,6 +21,7 @@ export default class TransactionalCoinlibWrapper extends GenericTransactionalWal
     protected type = 'coinlib' as const;
     private coinlibPayment: AnyPayments<any>;
     private walletIndex: number;
+    private memo?: string;
 
     public async fromNew(obj: IFromNew, constructor: CoinlibPaymentConstructor) {
         // Instantiate --
@@ -29,11 +29,12 @@ export default class TransactionalCoinlibWrapper extends GenericTransactionalWal
         this.coinlibPayment = context.coinlibCurrencyToClient[constructor.currency];
         // --
 
-        const { address } = await this.coinlibPayment.getPayport(this.walletIndex);
+        const { address, extraId: memo } = await this.coinlibPayment.getPayport(this.walletIndex);
         const mongoPayment = await this.initInDatabase({
             ...obj,
             publicKey: address,
             walletIndex: this.walletIndex,
+            memo
         });
         return this.fromManual(mongoPayment);
     }
@@ -66,6 +67,8 @@ export default class TransactionalCoinlibWrapper extends GenericTransactionalWal
             amountPaid: this.amountPaid,
             type: this.type,
             walletIndex: this.walletIndex,
+            extraId: this.extraId,
+            memo: this.memo
         };
     }
 
