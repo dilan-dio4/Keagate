@@ -1,4 +1,4 @@
-export const availableCoinlibCurrencies = ['DASH', 'LTC', 'XRP', 'BTC', 'ADA', 'TRX'] as const;
+export const availableCoinlibCurrencies = ['DASH', 'LTC', 'BTC', 'TRX'] as const;
 export const availableNativeCurrencies = ['SOL', 'MATIC'] as const;
 
 export type AvailableCurrencies = typeof availableCoinlibCurrencies[number] | typeof availableNativeCurrencies[number];
@@ -23,15 +23,15 @@ export const currencies: Record<AvailableCurrencies, { name: string; explorer: s
         name: 'Bitcoin',
         explorer: 'https://live.blockcypher.com/btc/',
     },
-    ADA: {
-        name: 'Cardano',
-        explorer: 'https://cardanoscan.io/',
-    },
-    XRP: {
-        name: 'Ripple',
-        explorer: 'https://xrpscan.com/',
-        networkName: 'XRP Ledger',
-    },
+    // ADA: {
+    //     name: 'Cardano',
+    //     explorer: 'https://cardanoscan.io/',
+    // },
+    // XRP: {
+    //     name: 'Ripple',
+    //     explorer: 'https://xrpscan.com/',
+    //     networkName: 'XRP Ledger',
+    // },
     TRX: {
         name: 'Tron',
         explorer: 'https://tronscan.org',

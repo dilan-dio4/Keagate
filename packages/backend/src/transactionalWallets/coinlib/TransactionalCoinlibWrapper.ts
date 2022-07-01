@@ -14,10 +14,8 @@ function randU32Sync() {
 export const walletIndexGenerator: Record<typeof availableCoinlibCurrencies[number], () => number> = {
     LTC: randU32Sync,
     TRX: () => Math.round(randU32Sync() / 10000),
-    ADA: randU32Sync,
     BTC: randU32Sync,
     DASH: randU32Sync,
-    XRP: randU32Sync,
 };
 
 export default class TransactionalCoinlibWrapper extends GenericTransactionalWallet {

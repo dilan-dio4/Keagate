@@ -62,7 +62,7 @@ class KeagateContext {
         //     [key in SUPPORTED_NETWORK_SYMBOLS[number]]: string;
         // }
         for (const _currency of SUPPORTED_NETWORK_SYMBOLS) {
-            if (!this.enabledCoinlibCurrencies.includes(_currency)) {
+            if (!this.enabledCoinlibCurrencies.includes(_currency as any)) {
                 continue;
             }
             const currClient = coinPayments.forNetwork(_currency);

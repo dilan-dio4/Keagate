@@ -6,7 +6,7 @@ import Big from 'big.js';
 // https://documenter.getpostman.com/view/13630829/TVmFkLwy#cebd6a63-13bc-4ba1-81f7-360c88871b90
 
 export default class TatumProvider extends GenericProvider {
-    public supportedCurrencies: AvailableCurrencies[] = ['LTC', 'BTC', 'ADA', 'XRP'];
+    public supportedCurrencies: AvailableCurrencies[] = ['LTC', 'BTC'];
 
     constructor(public apiKey: string, public location: 'eu1' | 'us-west1') {
         super();
@@ -32,25 +32,26 @@ export default class TatumProvider extends GenericProvider {
             } else if (currency === 'LTC') {
                 confirmedBalance = bigBalanceSatoshiLike.times(Big(units.ltc.litoshi));
             }
-        } else if (currency === 'ADA') {
-            const {
-                summary: { assetBalances },
-            } = await fGet(`https://api-${this.location}.tatum.io/v3/${currency}/account/${address}`, {
-                'x-api-key': this.apiKey,
-            });
+        } 
+        // else if (currency === 'ADA') {
+        //     const {
+        //         summary: { assetBalances },
+        //     } = await fGet(`https://api-${this.location}.tatum.io/v3/${currency}/account/${address}`, {
+        //         'x-api-key': this.apiKey,
+        //     });
 
-            for (const currAsset of assetBalances) {
-                if (currAsset.asset.assetId === 'ada') {
-                    confirmedBalance = Big(currAsset.quantity).times(Big(units.ada.lovelace));
-                    break;
-                }
-            }
-        } else if (currency === 'XRP') {
-            const { balance } = await fGet(`https://api-${this.location}.tatum.io/v3/${currency}/account/${address}/balance`, {
-                'x-api-key': this.apiKey,
-            });
-            confirmedBalance = Big(balance).times(Big(units.xrp.drop));
-        }
+        //     for (const currAsset of assetBalances) {
+        //         if (currAsset.asset.assetId === 'ada') {
+        //             confirmedBalance = Big(currAsset.quantity).times(Big(units.ada.lovelace));
+        //             break;
+        //         }
+        //     }
+        // } else if (currency === 'XRP') {
+        //     const { balance } = await fGet(`https://api-${this.location}.tatum.io/v3/${currency}/account/${address}/balance`, {
+        //         'x-api-key': this.apiKey,
+        //     });
+        //     confirmedBalance = Big(balance).times(Big(units.xrp.drop));
+        // }
 
         return {
             result: {
@@ -65,7 +66,8 @@ export default class TatumProvider extends GenericProvider {
             throw new Error('Currency not supported');
         }
 
-        const route = currency === 'ADA' || currency === 'XRP' ? currency : currencies[currency].name.toLowerCase();
+        // const route = currency === 'ADA' || currency === 'XRP' ? currency : currencies[currency].name.toLowerCase();
+        const route = currencies[currency].name.toLowerCase();
 
         const { txId } = await fPost(
             `https://api-${this.location}.tatum.io/v3/${route}/broadcast`,
