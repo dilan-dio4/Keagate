@@ -2,38 +2,25 @@ import { Static, Type } from '@sinclair/typebox';
 import { FastifyInstance, RouteShorthandOptions } from 'fastify';
 import auth from '../middlewares/auth';
 import GenericTransactionalWallet from '../transactionalWallets/GenericTransactionalWallet';
-import { encrypt } from '../utils';
 import { AvailableCurrencies } from '@keagate/common/src';
 import TransactionalCoinlibWrapper, { walletIndexGenerator } from '../transactionalWallets/coinlib/TransactionalCoinlibWrapper';
 import context from '../context';
 import { currencyDusts } from '../adminWallets/coinlib/trxLimits';
+import { cleanDetails, MongoTypeForRequest } from './types';
 
 const CreatePaymentBody = Type.Object({
     currency: Type.String(),
     amount: Type.Number({ minimum: 0 }),
     ipnCallbackUrl: Type.Optional(Type.String({ format: 'uri' })),
     invoiceCallbackUrl: Type.Optional(Type.String({ format: 'uri' })),
-});
-
-const CreatePaymentResponse = Type.Object({
-    publicKey: Type.String(),
-    amount: Type.Number(),
-    expiresAt: Type.String(),
-    createdAt: Type.String(),
-    updatedAt: Type.String(),
-    status: Type.String(),
-    id: Type.String(),
-    ipnCallbackUrl: Type.Optional(Type.String({ format: 'uri' })),
-    invoiceCallbackUrl: Type.Optional(Type.String({ format: 'uri' })),
-    invoiceUrl: Type.String({ format: 'uri' }),
-    currency: Type.String(),
+    extraId: Type.Optional(Type.Union([Type.String(), Type.Number()])),
 });
 
 const opts: RouteShorthandOptions = {
     schema: {
         body: CreatePaymentBody,
         response: {
-            200: CreatePaymentResponse,
+            200: MongoTypeForRequest,
             300: Type.String()
         },
     },
@@ -41,7 +28,7 @@ const opts: RouteShorthandOptions = {
 };
 
 export default function createPaymentRoute(server: FastifyInstance) {
-    server.post<{ Body: Static<typeof CreatePaymentBody>; Reply: Static<typeof CreatePaymentResponse> | string }>('/createPayment', opts, async (request, reply) => {
+    server.post<{ Body: Static<typeof CreatePaymentBody>; Reply: Static<typeof MongoTypeForRequest> | string }>('/createPayment', opts, async (request, reply) => {
         const { body } = request;
 
         const createCurrency = body.currency.toUpperCase() as AvailableCurrencies;
@@ -71,11 +58,7 @@ export default function createPaymentRoute(server: FastifyInstance) {
             return;
         }
 
-        const newWalletDetails: any = { ...transactionalWallet.getDetails() };
-        context.activePayments[newWalletDetails.id] = transactionalWallet;
-        delete newWalletDetails.payoutTransactionHash;
-        delete newWalletDetails.type;
-        newWalletDetails.invoiceUrl = `/invoice/${newWalletDetails.currency}/${encrypt(newWalletDetails.id)}`;
-        reply.status(200).send(newWalletDetails);
+        context.activePayments[transactionalWallet.getDetails().id] = transactionalWallet;
+        reply.status(200).send(cleanDetails(transactionalWallet.getDetails()));
     });
 }

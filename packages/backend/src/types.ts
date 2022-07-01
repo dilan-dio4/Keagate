@@ -6,6 +6,7 @@ interface PaymentRoot {
     amountPaid: number;
     status: PaymentStatusType;
     id: string;
+    extraId?: string | number;
     ipnCallbackUrl?: string;
     invoiceCallbackUrl?: string;
     payoutTransactionHash?: string;
@@ -33,6 +34,7 @@ export type ForRequest<T> = Omit<T, 'expiresAt' | 'createdAt' | 'updatedAt'> & {
     expiresAt: string;
     createdAt: string;
     updatedAt: string;
+    invoiceUrl: string;
 };
 
 export type MongoPayment = CoinlibPayment | NativePayment;
@@ -41,6 +43,7 @@ export interface IFromNew {
     amount: number;
     ipnCallbackUrl?: string;
     invoiceCallbackUrl: string;
+    extraId?: string | number;
 }
 
 export interface INativeInitInDatabase extends IFromNew {

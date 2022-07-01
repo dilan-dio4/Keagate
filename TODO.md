@@ -6,4 +6,4 @@
 * Admin CLI to create invoices, not just API
 * Testing package
 * Inline payment via JS SDK (like Stripe)
-* Wallet index counter on load
+* Fastify OAS

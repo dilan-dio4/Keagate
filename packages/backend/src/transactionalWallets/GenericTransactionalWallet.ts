@@ -19,6 +19,7 @@ export default abstract class GenericTransactionalWallet {
     protected updatedAt: Date;
     protected status: PaymentStatusType;
     protected id: string;
+    protected extraId?: string | number;
     protected ipnCallbackUrl?: string;
     protected invoiceCallbackUrl?: string;
     protected payoutTransactionHash?: string;
