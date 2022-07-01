@@ -1,15 +1,15 @@
 import { Connection, clusterApiUrl, PublicKey, Keypair, Transaction, SystemProgram, LAMPORTS_PER_SOL, sendAndConfirmTransaction } from '@solana/web3.js';
 import GenericNativeAdminWallet from '../GenericNativeAdminWallet';
 import base58 from 'bs58';
-import { AvailableCurrencies } from '@keagate/common/src';
+import { availableNativeCurrencies } from '@keagate/common/src';
 import config from '../../../config';
 import { NativeAdminConstructor } from '../../GenericAdminWallet';
-import { requestRetry } from '../../../utils';
 import sample from 'lodash.sample';
+import limiters from '../../../limiters';
 
 export default class AdminSolana extends GenericNativeAdminWallet {
     private connection: Connection;
-    public currency: AvailableCurrencies = 'SOL';
+    public currency: typeof availableNativeCurrencies[number] = 'SOL';
     static TRANSFER_FEE_LAMPORTS = 5000;
 
     constructor(constructor: NativeAdminConstructor) {
@@ -26,7 +26,7 @@ export default class AdminSolana extends GenericNativeAdminWallet {
     }
 
     async getBalance() {
-        const balance = await requestRetry<number>(() => this.connection.getBalance(new PublicKey(this.publicKey), 'confirmed'));
+        const balance = await limiters[this.currency].schedule(() => this.connection.getBalance(new PublicKey(this.publicKey), 'confirmed'));
 
         return {
             result: {
@@ -41,7 +41,7 @@ export default class AdminSolana extends GenericNativeAdminWallet {
             throw new Error('Invalid destination address');
         }
 
-        const latestBlockhash = await this.connection.getLatestBlockhash('confirmed');
+        const latestBlockhash = await limiters[this.currency].schedule(() => this.connection.getLatestBlockhash('confirmed'));
 
         const adminKeypair = Keypair.fromSecretKey(base58.decode(this.privateKey));
 
@@ -57,7 +57,7 @@ export default class AdminSolana extends GenericNativeAdminWallet {
         transaction.feePayer = adminKeypair.publicKey;
 
         try {
-            const signature = await requestRetry<string>(() => sendAndConfirmTransaction(this.connection, transaction, [adminKeypair]));
+            const signature = await limiters[this.currency].schedule(() => sendAndConfirmTransaction(this.connection, transaction, [adminKeypair]));
             return { result: signature };
         } catch (error) {
             throw new Error(error);

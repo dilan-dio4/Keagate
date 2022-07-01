@@ -1,15 +1,15 @@
 import GenericNativeAdminWallet from '../GenericNativeAdminWallet';
 import { ethers } from 'ethers';
 import { NativeAdminConstructor } from '../../GenericAdminWallet';
-import { AvailableCurrencies } from '@keagate/common/src';
+import { availableNativeCurrencies } from '@keagate/common/src';
 import config from '../../../config';
-import { requestRetry } from '../../../utils';
 import Big from 'big.js';
+import limiters from '../../../limiters';
 
 export default class Polygon extends GenericNativeAdminWallet {
     private provider: ethers.providers.JsonRpcProvider;
     private wallet: ethers.Wallet;
-    public currency: AvailableCurrencies = 'MATIC';
+    public currency: typeof availableNativeCurrencies[number] = 'MATIC';
 
     constructor(constructor: NativeAdminConstructor) {
         super(constructor);
@@ -26,7 +26,7 @@ export default class Polygon extends GenericNativeAdminWallet {
     }
 
     async getBalance() {
-        const balance = await this.wallet.getBalance();
+        const balance = await limiters[this.currency].schedule(() => this.wallet.getBalance());
         // https://github.com/ethjs/ethjs-unit/blob/35d870eae1c32c652da88837a71e252a63a83ebb/src/index.js#L38
         const confirmedBalance = Big(balance.toString()).div('1000000000000000000').toNumber()
         console.log("confirmedBalance", confirmedBalance)
@@ -42,7 +42,7 @@ export default class Polygon extends GenericNativeAdminWallet {
         if (!this.isValidAddress(destination)) {
             throw new Error('Invalid destination address');
         }
-        const gasPrice = await this.provider.getGasPrice();
+        const gasPrice = await limiters[this.currency].schedule(() => this.provider.getGasPrice());
 
         // https://docs.ethers.io/v4/cookbook-accounts.html
         const gasLimit = 21000;
@@ -54,7 +54,7 @@ export default class Polygon extends GenericNativeAdminWallet {
             gasPrice,
             gasLimit
         };
-        const txObj = await requestRetry<ethers.providers.TransactionResponse>(() => this.wallet.sendTransaction(tx));
+        const txObj = await limiters[this.currency].schedule(() => this.wallet.sendTransaction(tx));
         return { result: txObj.hash };
     }
 }

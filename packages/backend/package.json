@@ -21,6 +21,7 @@
     "bip32": "^3.0.1",
     "bip39": "^3.0.4",
     "bitcore-lib-ltc": "^8.25.30",
+    "bottleneck": "^2.19.5",
     "bs58": "^5.0.0",
     "coinlib-port": "github:dilan-dio4/coinlib-port",
     "config": "^3.3.7",
