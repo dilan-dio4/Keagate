@@ -37,18 +37,16 @@ const opts: RouteShorthandOptions = {
     preHandler: auth,
 };
 
-const String = Type.String();
-
 export default function createPaymentStatusRoute(server: FastifyInstance) {
     server.get<{
-        Reply: Static<typeof PaymentStatusResponse> | Static<typeof String>;
+        Reply: Static<typeof PaymentStatusResponse> | string;
         Querystring: Static<typeof PaymentStatusQueryString>;
     }>('/getPaymentStatus', opts, async (request, reply) => {
         const id = request.query.id;
         const { db } = await mongoGenerator();
         const selectedPayment = (await db.collection('payments').findOne({ _id: new ObjectId(id) })) as (Record<string, any> & { _id: ObjectId }) | null;
         if (!selectedPayment) {
-            return reply.status(300).send('No payment found');
+            return reply.status(300).send('No payment found with given id');
         }
         delete selectedPayment['privateKey'];
         selectedPayment.id = selectedPayment._id.toString();
