@@ -1,18 +1,14 @@
 import { availableCoinlibCurrencies, AvailableCurrencies, availableNativeCurrencies, ConcreteConstructor, currencies } from '@keagate/common/src';
-import { CoinPayments, NetworkType, SUPPORTED_NETWORK_SYMBOLS, AnyPayments } from 'coinlib-port';
+import {  AnyPayments } from 'coinlib-port';
 import { WithId } from 'mongodb';
 import GenericAdminWallet from './adminWallets/GenericAdminWallet';
-import AdminSolana from './adminWallets/native/Solana';
-import AdminPolygon from './adminWallets/native/Polygon';
 import config from './config';
 import { getExistingPayments } from './mongo';
 import TransactionalCoinlibWrapper from './transactionalWallets/coinlib/TransactionalCoinlibWrapper';
 import GenericTransactionalWallet from './transactionalWallets/GenericTransactionalWallet';
 import GenericNativeTransactionalWallet from './transactionalWallets/native/GenericNativeTransactionalWallet';
-import TransactionalSolana from './transactionalWallets/native/Solana';
-import TransactionalPolygon from './transactionalWallets/native/Polygon';
 import { CoinlibPayment, NativePayment } from './types';
-import { deadLogger } from './utils';
+import { getCoinlibCurrencyToClient, getNativeCurrencyToClient } from './currenciesToClients';
 
 class KeagateContext {
     public enabledNativeCurrencies: typeof availableNativeCurrencies[number][] = [];
@@ -24,22 +20,15 @@ class KeagateContext {
             Admin: ConcreteConstructor<typeof GenericAdminWallet>;
             Transactional: ConcreteConstructor<typeof GenericNativeTransactionalWallet>;
         }
-    > = {
-        SOL: {
-            Admin: AdminSolana,
-            Transactional: TransactionalSolana,
-        },
-        MATIC: {
-            Admin: AdminPolygon,
-            Transactional: TransactionalPolygon,
-        },
-    };
+    >;
+
     public activePayments: Record<string, GenericTransactionalWallet> = {};
 
     public async init() {
         // Preserve order
         this.initEnabledCurrencies();
-        await this.initCoinlibToCurrencyClient();
+        this.nativeCurrencyToClient = getNativeCurrencyToClient();
+        this.coinlibCurrencyToClient = await getCoinlibCurrencyToClient();
         await this.initActivePayments();
     }
 
@@ -53,21 +42,6 @@ class KeagateContext {
                     this.enabledCoinlibCurrencies.push(typedCurrency);
                 }
             }
-        }
-    }
-
-    private async initCoinlibToCurrencyClient() {
-        const coinPayments = new CoinPayments({ seed: config.getTyped('SEED'), network: NetworkType.Mainnet, logger: deadLogger });
-        // type coinlibToCurrenyType = {
-        //     [key in SUPPORTED_NETWORK_SYMBOLS[number]]: string;
-        // }
-        for (const _currency of SUPPORTED_NETWORK_SYMBOLS) {
-            if (!this.enabledCoinlibCurrencies.includes(_currency as any)) {
-                continue;
-            }
-            const currClient = coinPayments.forNetwork(_currency);
-            await currClient.init(); // TODO: Promise.all
-            this.coinlibCurrencyToClient[_currency] = currClient;
         }
     }
 
@@ -104,6 +78,7 @@ class KeagateContext {
                             onDie: (id) => delete this.activePayments[id],
                             walletIndex: _currActivePayment.walletIndex,
                             currency: currTxCurrency,
+                            coinlibPayment: this.coinlibCurrencyToClient[currTxCurrency]
                         },
                     );
                 } else {

@@ -12,7 +12,8 @@
     "dev": "npm-run-all build --parallel dev:*",
     "dev:backend": "cd packages/backend && npm run dev",
     "dev:invoice-client": "cd packages/invoice-client && npm run dev",
-    "prettier-format": "prettier --config prettier.config.js 'packages/*/src/**/*{.ts,.tsx,.js,.jsx}' --write"
+    "prettier-format": "prettier --config prettier.config.js 'packages/*/src/**/*{.ts,.tsx,.js,.jsx}' --write",
+    "find-circular-deps": "npx madge --circular --extensions ts,tsx packages/"
   },
   "author": "dilan-dio4",
   "license": "ISC",

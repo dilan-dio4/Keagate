@@ -53,6 +53,7 @@ export default function createPaymentRoute(server: FastifyInstance) {
                 onDie: (id) => delete context.activePayments[id],
                 currency: createCurrency,
                 walletIndex: walletIndexGenerator[createCurrency](),
+                coinlibPayment: context.coinlibCurrencyToClient[createCurrency]
             });
         } else {
             console.error(`No transactional wallet found/enabled for currency ${body.currency}`);

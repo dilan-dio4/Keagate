@@ -42,7 +42,7 @@ export async function requestRetry<T>(request: (_?: any) => Promise<T>, delayMs 
         attempts++;
 
         if (attempts >= retryLimit) {
-            throw new Error("Retry request exceeded maximum trys: " + JSON.stringify(lastError))
+            throw new Error("Retry request exceeded maximum attempts: " + JSON.stringify(lastError))
         }
 
         try {

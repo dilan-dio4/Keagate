@@ -6,7 +6,7 @@ import config from '../../../config';
 import Big from 'big.js';
 import limiters from '../../../limiters';
 
-export default class Polygon extends GenericNativeAdminWallet {
+export default class AdminPolygon extends GenericNativeAdminWallet {
     private provider: ethers.providers.JsonRpcProvider;
     private wallet: ethers.Wallet;
     public currency: typeof availableNativeCurrencies[number] = 'MATIC';

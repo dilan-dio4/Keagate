@@ -2,7 +2,6 @@ import { CoinlibPayment, IFromNew, MongoPayment } from '../../types';
 import config from '../../config';
 import { AnyPayments, BalanceResult, BaseUnsignedTransaction, BaseSignedTransaction, BaseBroadcastResult, UtxoInfo } from 'coinlib-port';
 import GenericTransactionalWallet, { CoinlibPaymentConstructor } from '../GenericTransactionalWallet';
-import context from '../../context';
 import { PaymentStatusType } from '@keagate/common/src';
 import { requestRetry } from '../../utils';
 import dayjs from 'dayjs';
@@ -16,7 +15,6 @@ export default class TransactionalCoinlibWrapper extends GenericTransactionalWal
     public async fromNew(obj: IFromNew, constructor: CoinlibPaymentConstructor) {
         // Instantiate --
         this.construct(constructor);
-        this.coinlibPayment = context.coinlibCurrencyToClient[constructor.currency];
         // --
 
         const { address, extraId: memo } = await this.coinlibPayment.getPayport(this.walletIndex);
@@ -33,7 +31,6 @@ export default class TransactionalCoinlibWrapper extends GenericTransactionalWal
         this.setFromObject(initObj);
         if (constructor) {
             // Direct instantiation --
-            this.coinlibPayment = context.coinlibCurrencyToClient[constructor.currency];
             this.construct(constructor);
             // --
         }
