@@ -4,6 +4,7 @@ import { ReactComponent as SolIcon } from 'cryptocurrency-icons/svg/color/sol.sv
 import { ReactComponent as LtcIcon } from 'cryptocurrency-icons/svg/color/ltc.svg';
 import { ReactComponent as DashIcon } from 'cryptocurrency-icons/svg/color/dash.svg';
 import { ReactComponent as MaticIcon } from 'cryptocurrency-icons/svg/color/matic.svg';
+import { ReactComponent as XrpIcon } from 'cryptocurrency-icons/svg/color/xrp.svg';
 
 import { BiTimer, BiCopy } from 'react-icons/bi';
 import { FiChevronUp, FiChevronDown } from 'react-icons/fi';
@@ -12,7 +13,6 @@ import dayjs from 'dayjs';
 import clsx from 'clsx';
 import React, { useState, useEffect } from 'react';
 import { copyToClipboard } from '../utils/utils';
-// import useAsyncEffect from "use-async-effect";
 import { AvailableCurrencies, currencies, fGet, PaymentStatusType } from '@keagate/common/src';
 import ThreeDotsOverlay from './ThreeDotsOverlay';
 
@@ -23,6 +23,7 @@ export default function Invoice() {
         SOL: <SolIcon width={50} height={50} />,
         BTC: <BtcIcon width={50} height={50} />,
         MATIC: <MaticIcon width={50} height={50} />,
+        XRP: <XrpIcon width={50} height={50} />,
     };
 
     const [isBlockchainInfoOpen, setIsBlockchainInfoOpen] = useState<boolean>(false);

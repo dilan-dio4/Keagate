@@ -2,7 +2,7 @@ import { Static, Type } from '@sinclair/typebox';
 import { FastifyInstance, RouteShorthandOptions } from 'fastify';
 import { MongoPayment } from '../types';
 import mongoGenerator from '../mongo/generator';
-import { ObjectId } from 'mongodb';
+import { ObjectId, WithId } from 'mongodb';
 import { decrypt } from '../utils';
 
 const InvoiceStatusResponse = Type.Object({
@@ -13,6 +13,7 @@ const InvoiceStatusResponse = Type.Object({
     status: Type.String(),
     currency: Type.String(),
     invoiceCallbackUrl: Type.Optional(Type.String({ format: 'uri' })),
+    memo: Type.Optional(Type.String()),
 });
 
 const InvoiceStatusQueryString = Type.Object({
@@ -37,7 +38,7 @@ export default function createInvoiceStatusRoute(server: FastifyInstance) {
             const invoiceId = request.query.invoiceId;
             const mongoId = decrypt(invoiceId);
             const { db } = await mongoGenerator();
-            const selectedPayment = (await db.collection('payments').findOne({ _id: new ObjectId(mongoId) })) as MongoPayment & { _id: ObjectId };
+            const selectedPayment = (await db.collection('payments').findOne({ _id: new ObjectId(mongoId) })) as WithId<MongoPayment>;
             if (!selectedPayment) {
                 reply.status(300).send(`No transaction found with given id`);
                 return;
@@ -51,6 +52,9 @@ export default function createInvoiceStatusRoute(server: FastifyInstance) {
                 amountPaid: selectedPayment.amountPaid,
                 currency: selectedPayment.currency,
                 invoiceCallbackUrl: selectedPayment.invoiceCallbackUrl,
+                ...({
+                    memo: (selectedPayment as any).memo
+                })
             });
         },
     );

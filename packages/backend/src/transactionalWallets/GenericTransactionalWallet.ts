@@ -39,33 +39,7 @@ export default abstract class GenericTransactionalWallet {
     public abstract fromManual(initObj: MongoPayment, constructor?: NativePaymentConstructor | CoinlibPaymentConstructor);
     // This always gets called from the three `from` constructors
 
-    public async checkTransaction(statusCallback: (status: PaymentStatusType) => any = (status: PaymentStatusType) => null) {
-        if (!this._initialized) {
-            statusCallback('WAITING');
-            return;
-        }
-        
-        const confirmedBalance = await this._getBalance();
-
-        // Follow this flow...
-        if (confirmedBalance >= this.amount * (1 - config.getTyped('TRANSACTION_SLIPPAGE_TOLERANCE')) && this.status !== 'CONFIRMED') {
-            await this._cashOut(confirmedBalance);
-            statusCallback('CONFIRMED');
-            this.updateStatus({ status: 'CONFIRMED', amountPaid: confirmedBalance });
-        } else if (dayjs().isAfter(dayjs(this.expiresAt))) {
-            statusCallback('EXPIRED');
-            this.updateStatus({ status: 'EXPIRED' });
-            if (confirmedBalance > 0) {
-                await this._cashOut(confirmedBalance);
-            }
-            this.onDie(this.id);
-        } else if (confirmedBalance > 0 && this.amountPaid !== confirmedBalance) {
-            statusCallback('PARTIALLY_PAID');
-            this.updateStatus({ status: 'PARTIALLY_PAID', amountPaid: confirmedBalance });
-        } else {
-            statusCallback('WAITING');
-        }
-    }
+    public abstract checkTransaction(statusCallback: (status: PaymentStatusType) => any): Promise<void>;
 
     protected construct(constructor: CoinlibPaymentConstructor | NativePaymentConstructor): void {
         this.setFromObject(constructor);

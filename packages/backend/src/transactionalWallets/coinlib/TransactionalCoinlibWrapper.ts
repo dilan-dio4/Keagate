@@ -1,21 +1,11 @@
 import { CoinlibPayment, IFromNew, MongoPayment } from '../../types';
 import config from '../../config';
-import { AnyPayments, BalanceResult, BaseUnsignedTransaction, BaseSignedTransaction, BaseBroadcastResult } from 'coinlib-port';
+import { AnyPayments, BalanceResult, BaseUnsignedTransaction, BaseSignedTransaction, BaseBroadcastResult, UtxoInfo } from 'coinlib-port';
 import GenericTransactionalWallet, { CoinlibPaymentConstructor } from '../GenericTransactionalWallet';
 import context from '../../context';
-import { availableCoinlibCurrencies } from '@keagate/common/src';
-import crypto from 'crypto';
+import { PaymentStatusType } from '@keagate/common/src';
 import { requestRetry } from '../../utils';
-
-function randU32Sync() {
-    return crypto.randomBytes(4).readUInt32BE(0);
-}
-
-export const walletIndexGenerator: Record<typeof availableCoinlibCurrencies[number], () => number> = {
-    LTC: randU32Sync,
-    BTC: randU32Sync,
-    DASH: randU32Sync,
-};
+import dayjs from 'dayjs';
 
 export default class TransactionalCoinlibWrapper extends GenericTransactionalWallet {
     protected type = 'coinlib' as const;
@@ -72,12 +62,49 @@ export default class TransactionalCoinlibWrapper extends GenericTransactionalWal
         };
     }
 
-    protected async _cashOut() {
-        const confirmedBalance = await this._getBalance();
+    public async checkTransaction(statusCallback: (status: PaymentStatusType) => any = (status: PaymentStatusType) => null) {
+        if (this.status === "CONFIRMED" || this.status === "SENDING") {
+            statusCallback(this.status);
+            return;
+        }
 
+        if (!this._initialized) {
+            statusCallback('WAITING');
+            return;
+        }
+
+        const { confirmedBalance: confirmedBalanceString, sweepable } = await requestRetry<BalanceResult>(() => this.coinlibPayment.getBalance(this.walletIndex));
+        const confirmedBalance = +confirmedBalanceString;
+
+        // Follow this flow...
+        if (confirmedBalance >= this.amount * (1 - config.getTyped('TRANSACTION_SLIPPAGE_TOLERANCE')) && sweepable) {
+            this.status = "SENDING";
+            await this._cashOut();
+            statusCallback('CONFIRMED');
+            this.updateStatus({ status: 'CONFIRMED', amountPaid: confirmedBalance });
+        } else if (dayjs().isAfter(dayjs(this.expiresAt))) {
+            statusCallback('EXPIRED');
+            this.updateStatus({ status: 'EXPIRED' });
+            if (confirmedBalance > 0) {
+                await this._cashOut();
+            }
+            this.onDie(this.id);
+        } else if (confirmedBalance > 0 && this.amountPaid !== confirmedBalance) {
+            statusCallback('PARTIALLY_PAID');
+            this.updateStatus({ status: 'PARTIALLY_PAID', amountPaid: confirmedBalance });
+        } else {
+            statusCallback('WAITING');
+        }
+    }
+
+    protected async _cashOut() {
         try {
+            const utxos = await requestRetry<UtxoInfo[]>(() => this.coinlibPayment.getUtxos(this.walletIndex));
+
             const createTx = await requestRetry<BaseUnsignedTransaction>(() =>
-                this.coinlibPayment.createTransaction(this.walletIndex, config.getTyped(this.currency).ADMIN_PUBLIC_KEY, '' + confirmedBalance),
+                this.coinlibPayment.createSweepTransaction(this.walletIndex, config.getTyped(this.currency).ADMIN_PUBLIC_KEY, {
+                    availableUtxos: utxos,
+                })
             );
             const signedTx = await requestRetry<BaseSignedTransaction>(() => this.coinlibPayment.signTransaction(createTx));
             const { id: txHash } = await requestRetry<BaseBroadcastResult>(() => this.coinlibPayment.broadcastTransaction(signedTx));

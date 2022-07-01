@@ -2,6 +2,8 @@ import { MongoPayment, NativePayment } from '../../types';
 import config from '../../config';
 import GenericAdminWallet from '../../adminWallets/GenericAdminWallet';
 import GenericTransactionalWallet, { NativePaymentConstructor } from '../GenericTransactionalWallet';
+import { PaymentStatusType } from '@keagate/common/src';
+import dayjs from 'dayjs';
 
 export default abstract class GenericNativeTransactionalWallet extends GenericTransactionalWallet {
     protected privateKey: string;
@@ -41,6 +43,40 @@ export default abstract class GenericNativeTransactionalWallet extends GenericTr
             privateKey: this.privateKey,
             extraId: this.extraId
         };
+    }
+
+    public async checkTransaction(statusCallback: (status: PaymentStatusType) => any = (status: PaymentStatusType) => null) {
+        if (this.status === "CONFIRMED" || this.status === "SENDING") {
+            statusCallback(this.status);
+            return;
+        }
+
+        if (!this._initialized) {
+            statusCallback('WAITING');
+            return;
+        }
+        
+        const confirmedBalance = await this._getBalance();
+
+        // Follow this flow...
+        if (confirmedBalance >= this.amount * (1 - config.getTyped('TRANSACTION_SLIPPAGE_TOLERANCE'))) {
+            this.status = "SENDING"
+            await this._cashOut(confirmedBalance);
+            statusCallback('CONFIRMED');
+            this.updateStatus({ status: 'CONFIRMED', amountPaid: confirmedBalance });
+        } else if (dayjs().isAfter(dayjs(this.expiresAt))) {
+            statusCallback('EXPIRED');
+            this.updateStatus({ status: 'EXPIRED' });
+            if (confirmedBalance > 0) {
+                await this._cashOut(confirmedBalance);
+            }
+            this.onDie(this.id);
+        } else if (confirmedBalance > 0 && this.amountPaid !== confirmedBalance) {
+            statusCallback('PARTIALLY_PAID');
+            this.updateStatus({ status: 'PARTIALLY_PAID', amountPaid: confirmedBalance });
+        } else {
+            statusCallback('WAITING');
+        }
     }
 
     protected async _getBalance(): Promise<number> {
