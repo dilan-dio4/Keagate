@@ -2,6 +2,7 @@ import GenericAdminWallet, { CoinlibAdminConstructor } from '../GenericAdminWall
 import { AnyPayments, CoinPayments, NetworkType, BaseUnsignedTransaction, BaseSignedTransaction, BaseBroadcastResult, BalanceResult } from 'coinlib-port';
 import config from '../../config';
 import { delay, requestRetry, deadLogger } from '../../utils';
+import { minimumWalletBalances } from './trxLimits';
 
 export default class AdminCoinlibWrapper extends GenericAdminWallet {
     private coinlibMask: AnyPayments<any>;
@@ -24,7 +25,7 @@ export default class AdminCoinlibWrapper extends GenericAdminWallet {
             await delay(1000);
         }
 
-        const createTx = await requestRetry<BaseUnsignedTransaction>(() => this.coinlibMask.createTransaction(0, destination, '' + amount));
+        const createTx = await requestRetry<BaseUnsignedTransaction>(() => this.coinlibMask.createTransaction(0, destination, '' + (amount - minimumWalletBalances[this.currency])));
         const signedTx = await requestRetry<BaseSignedTransaction>(() => this.coinlibMask.signTransaction(createTx));
         const { id: txHash } = await requestRetry<BaseBroadcastResult>(() => this.coinlibMask.broadcastTransaction(signedTx));
         return { result: txHash };

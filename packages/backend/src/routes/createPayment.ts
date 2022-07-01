@@ -4,10 +4,9 @@ import auth from '../middlewares/auth';
 import GenericTransactionalWallet from '../transactionalWallets/GenericTransactionalWallet';
 import { encrypt } from '../utils';
 import { AvailableCurrencies } from '@keagate/common/src';
-import config from '../config';
-import idsToProviders from '@keagate/api-providers/src';
 import TransactionalCoinlibWrapper, { walletIndexGenerator } from '../transactionalWallets/coinlib/TransactionalCoinlibWrapper';
 import context from '../context';
+import { currencyDusts } from '../adminWallets/coinlib/trxLimits';
 
 const CreatePaymentBody = Type.Object({
     currency: Type.String(),
@@ -35,13 +34,14 @@ const opts: RouteShorthandOptions = {
         body: CreatePaymentBody,
         response: {
             200: CreatePaymentResponse,
+            300: Type.String()
         },
     },
     preHandler: auth,
 };
 
 export default function createPaymentRoute(server: FastifyInstance) {
-    server.post<{ Body: Static<typeof CreatePaymentBody>; Reply: Static<typeof CreatePaymentResponse> }>('/createPayment', opts, async (request, reply) => {
+    server.post<{ Body: Static<typeof CreatePaymentBody>; Reply: Static<typeof CreatePaymentResponse> | string }>('/createPayment', opts, async (request, reply) => {
         const { body } = request;
 
         const createCurrency = body.currency.toUpperCase() as AvailableCurrencies;
@@ -57,6 +57,10 @@ export default function createPaymentRoute(server: FastifyInstance) {
                 adminWalletClass: context.nativeCurrencyToClient[createCurrency].Admin,
             });
         } else if (context.enabledCoinlibCurrencies.includes(createCurrency as any)) {
+            if (currencyDusts[createCurrency] >= body.amount) {
+                reply.status(300).send(`Transaction amount is lower than the minimum for ${createCurrency}: ${currencyDusts[createCurrency]} dust`);
+                return;
+            }
             transactionalWallet = await new TransactionalCoinlibWrapper().fromNew(transactionalWalletNewObj, {
                 onDie: (id) => delete context.activePayments[id],
                 currency: createCurrency,
