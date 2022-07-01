@@ -7,7 +7,7 @@
     },
     
 
-    "KEAGATE_API_KEY": "",
+    "KEAGATE_API_KEY": "API-KEY",
     "IP_WHITELIST": [],
 
     "TRANSACTION_TIMEOUT": 1000000,

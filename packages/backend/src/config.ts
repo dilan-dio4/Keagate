@@ -18,7 +18,7 @@ type MyCurrencyConfig = Partial<
 >;
 
 interface MyConfig extends MyCurrencyConfig {
-    KEAGATE_API_KEY?: string;
+    KEAGATE_API_KEY: string;
     IP_WHITELIST: string[];
 
     SEED: string;

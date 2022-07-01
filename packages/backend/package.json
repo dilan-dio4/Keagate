@@ -14,6 +14,7 @@
   "dependencies": {
     "@blockfrost/blockfrost-js": "^4.1.0",
     "@fastify/static": "^6.4.0",
+    "@fastify/swagger": "^7.4.1",
     "@keagate/api-providers": "file:packages/api-providers",
     "@keagate/common": "file:packages/common",
     "@sinclair/typebox": "^0.23.5",

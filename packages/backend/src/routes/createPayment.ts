@@ -7,7 +7,7 @@ import TransactionalCoinlibWrapper from '../transactionalWallets/coinlib/Transac
 import { walletIndexGenerator } from '../transactionalWallets/coinlib/trxLimits';
 import context from '../context';
 import { currencyDusts } from '../transactionalWallets/coinlib/trxLimits';
-import { cleanDetails, MongoTypeForRequest } from './types';
+import { cleanDetails, MongoTypeForRequest, AdminRouteHeaders } from './types';
 import { IFromNew } from '../types';
 
 const CreatePaymentBody = Type.Object({
@@ -25,6 +25,7 @@ const opts: RouteShorthandOptions = {
             200: MongoTypeForRequest,
             300: Type.String()
         },
+        headers: AdminRouteHeaders
     },
     preHandler: auth,
 };

@@ -3,7 +3,7 @@ import { FastifyInstance, RouteShorthandOptions } from 'fastify';
 import auth from '../middlewares/auth';
 import mongoGenerator from '../mongo/generator';
 import { WithId } from 'mongodb';
-import { MongoTypeForRequest, cleanDetails } from './types';
+import { MongoTypeForRequest, cleanDetails, AdminRouteHeaders } from './types';
 import { ForRequest, MongoPayment } from '../types';
 
 const PaymentsByExtraIdResponse = Type.Array(MongoTypeForRequest);
@@ -19,6 +19,7 @@ const opts: RouteShorthandOptions = {
             200: PaymentsByExtraIdResponse,
         },
         querystring: PaymentsByExtraIdQueryString,
+        headers: AdminRouteHeaders
     },
     preHandler: auth,
 };

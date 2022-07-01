@@ -46,3 +46,7 @@ export function cleanDetails(details: MongoPayment | WithId<Omit<MongoPayment, "
         } as any)
     }
 }
+
+export const AdminRouteHeaders = Type.Object({
+    KEAGATE_API_KEY: Type.String()
+})

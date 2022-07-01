@@ -3,7 +3,7 @@ import { FastifyInstance, RouteShorthandOptions } from 'fastify';
 import auth from '../middlewares/auth';
 import mongoGenerator from '../mongo/generator';
 import { ObjectId, WithId } from 'mongodb';
-import { MongoTypeForRequest, cleanDetails } from './types';
+import { MongoTypeForRequest, cleanDetails, AdminRouteHeaders } from './types';
 
 const PaymentStatusQueryString = Type.Object({
     id: Type.String(),
@@ -16,6 +16,7 @@ const opts: RouteShorthandOptions = {
             200: MongoTypeForRequest,
         },
         querystring: PaymentStatusQueryString,
+        headers: AdminRouteHeaders
     },
     preHandler: auth,
 };

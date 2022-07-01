@@ -3,7 +3,7 @@ import { FastifyInstance, RouteShorthandOptions } from 'fastify';
 import { MongoPayment, ForRequest } from '../types';
 import auth from '../middlewares/auth';
 import context from '../context';
-import { MongoTypeForRequest, cleanDetails } from './types';
+import { MongoTypeForRequest, cleanDetails, AdminRouteHeaders } from './types';
 
 const ActivePaymentsResponse = Type.Array(MongoTypeForRequest);
 
@@ -12,6 +12,7 @@ const opts: RouteShorthandOptions = {
         response: {
             200: ActivePaymentsResponse,
         },
+        headers: AdminRouteHeaders,
     },
     preHandler: auth,
 };
