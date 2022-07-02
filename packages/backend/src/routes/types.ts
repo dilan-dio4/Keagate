@@ -3,8 +3,12 @@ import { WithId } from 'mongodb';
 import { ForRequest, MongoPayment } from '../types';
 import { encrypt } from '../utils';
 
+export function StringEnum<T extends string[]>(values: [...T]) {
+    return Type.Unsafe<T[number]>({ enum: values })
+}
+
 export const MongoTypeForRequest = Type.Object({
-    publicKey: Type.String({ 
+    publicKey: Type.String({
         description: `Destination address of the payment wallet for the client to send their assets to. 
         This wallet is controlled programmatically and will automatically deposit to your admin wallet as defined in \`/config/local.json\`.
         For most currencies this address is generated uniquely upon newly created payments, with the exception of some currencies like XRP 
@@ -40,12 +44,12 @@ export const MongoTypeForRequest = Type.Object({
         this value in the *extraId* parameter. The e-commerce store doesn't have to now manage Keagate's assigned *id*, since this *extraId* will be passed in the ipnCallback
         and can be used to find payments via \`/getPaymentsByExtraId\`.`
     })),
-    ipnCallbackUrl: Type.Optional(Type.String({ 
+    ipnCallbackUrl: Type.Optional(Type.String({
         format: 'uri',
         description: `Optional callback URL that will be invoked from Keagate when the status of a payment is updated. The request made by Keagate will
         be a POST request with the body being a JSON object of this same schema.`
     })),
-    invoiceCallbackUrl: Type.Optional(Type.String({ 
+    invoiceCallbackUrl: Type.Optional(Type.String({
         format: 'uri',
         description: `Optional URL that payees will be directed to when their payment finalizes within the invoice interface. A query string parameter will
         be appended called *status* with the status of the payment.`
