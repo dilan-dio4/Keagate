@@ -40,6 +40,7 @@ export default function Invoice() {
         invoiceCallbackUrl?: string;
     }
     const [invoiceObject, setInvoiceObject] = useState<IInvoiceObject>();
+    const [isNoPaymentFound, setIsNoPaymentFound] = useState<boolean>(false);
 
     useEffect(() => {
         const params = window.location.pathname.split('/');

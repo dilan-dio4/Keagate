@@ -7,7 +7,7 @@ import TransactionalCoinlibWrapper from '../transactionalWallets/coinlib/Transac
 import { walletIndexGenerator } from '../transactionalWallets/coinlib/trxLimits';
 import context from '../context';
 import { currencyDusts } from '../transactionalWallets/coinlib/trxLimits';
-import { cleanDetails, MongoTypeForRequest, AdminRouteHeaders } from './types';
+import { cleanDetails, MongoTypeForRequest, AdminRouteHeaders, ErrorResponse } from './types';
 import { IFromNew } from '../types';
 
 const CreatePaymentBody = Type.Object({
@@ -23,7 +23,7 @@ const opts: RouteShorthandOptions = {
         body: CreatePaymentBody,
         response: {
             200: MongoTypeForRequest,
-            300: Type.String()
+            300: ErrorResponse
         },
         headers: AdminRouteHeaders
     },
@@ -31,7 +31,7 @@ const opts: RouteShorthandOptions = {
 };
 
 export default async function createPaymentRoute(server: FastifyInstance) {
-    server.post<{ Body: Static<typeof CreatePaymentBody>; Reply: Static<typeof MongoTypeForRequest> | string }>('/createPayment', opts, async (request, reply) => {
+    server.post<{ Body: Static<typeof CreatePaymentBody>; Reply: Static<typeof MongoTypeForRequest> | Static<typeof ErrorResponse> }>('/createPayment', opts, async (request, reply) => {
         const { body } = request;
 
         const createCurrency = body.currency.toUpperCase() as AvailableCurrencies;
@@ -49,7 +49,7 @@ export default async function createPaymentRoute(server: FastifyInstance) {
             });
         } else if (context.enabledCoinlibCurrencies.includes(createCurrency as any)) {
             if (currencyDusts[createCurrency] >= body.amount) {
-                reply.status(300).send(`Transaction amount is lower than the minimum for ${createCurrency}: ${currencyDusts[createCurrency]} dust`);
+                reply.status(300).send({ error: `Transaction amount is lower than the minimum for ${createCurrency}: ${currencyDusts[createCurrency]} dust` });
                 return;
             }
             transactionalWallet = await new TransactionalCoinlibWrapper().fromNew(transactionalWalletNewObj, {
