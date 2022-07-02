@@ -2,10 +2,11 @@ import { Type } from '@sinclair/typebox';
 import { WithId } from 'mongodb';
 import { ForRequest, MongoPayment } from '../types';
 import { encrypt } from '../utils';
+import { paymentStatuses } from '@keagate/common/src';
 
-export function StringEnum<T extends string[]>(values: [...T]) {
-    return Type.Unsafe<T[number]>({ enum: values });
-}
+// function StringEnum<T extends string[]>(values: [...T], options?: UnsafeOptions) {
+//     return Type.Unsafe<T[number]>({ enum: values, ...options });
+// }
 
 export const MongoTypeForRequest = Type.Object({
     publicKey: Type.String({
@@ -33,7 +34,7 @@ export const MongoTypeForRequest = Type.Object({
         description: `An ISO 8601 timestamp detailing when a payment last received a status update.`,
     }),
     status: Type.String({
-        description: `The current status of a payment`,
+        description: `The current status of a payment. Can be one of: ${JSON.stringify(paymentStatuses)}`,
     }),
     id: Type.String({
         description: `Internal id of a payment, also serves as Mongo's _id of a payment`,
