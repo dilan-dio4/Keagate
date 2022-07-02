@@ -10,13 +10,10 @@ import { currencyDusts } from '../transactionalWallets/coinlib/trxLimits';
 import { cleanDetails, MongoTypeForRequest, AdminRouteHeaders, ErrorResponse } from './types';
 import { IFromNew } from '../types';
 
-const CreatePaymentBody = Type.Object({
-    currency: Type.String(),
-    amount: Type.Number({ minimum: 0 }),
-    ipnCallbackUrl: Type.Optional(Type.String({ format: 'uri' })),
-    invoiceCallbackUrl: Type.Optional(Type.String({ format: 'uri' })),
-    extraId: Type.Optional(Type.String()),
-});
+const CreatePaymentBody = Type.Pick(
+    MongoTypeForRequest,
+    ['currency', 'amount', 'ipnCallbackUrl', 'invoiceCallbackUrl', 'extraId']
+)
 
 const opts: RouteShorthandOptions = {
     schema: {

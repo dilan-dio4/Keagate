@@ -6,7 +6,9 @@ import { ObjectId, WithId } from 'mongodb';
 import { MongoTypeForRequest, cleanDetails, AdminRouteHeaders, ErrorResponse } from './types';
 
 const PaymentStatusQueryString = Type.Object({
-    id: Type.String(),
+    id: Type.String({
+        description: `The id of an existing payment`
+    }),
 });
 
 const opts: RouteShorthandOptions = {

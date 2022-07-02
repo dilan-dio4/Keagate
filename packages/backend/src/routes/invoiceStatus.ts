@@ -4,21 +4,17 @@ import { MongoPayment } from '../types';
 import mongoGenerator from '../mongo/generator';
 import { ObjectId, WithId } from 'mongodb';
 import { decrypt } from '../utils';
-import { ErrorResponse } from './types';
+import { ErrorResponse, MongoTypeForRequest } from './types';
 
-const InvoiceStatusResponse = Type.Object({
-    publicKey: Type.String(),
-    amount: Type.Number(),
-    amountPaid: Type.Number(),
-    expiresAt: Type.String(),
-    status: Type.String(),
-    currency: Type.String(),
-    invoiceCallbackUrl: Type.Optional(Type.String({ format: 'uri' })),
-    memo: Type.Optional(Type.String()),
-});
+const InvoiceStatusResponse = Type.Pick(
+    MongoTypeForRequest,
+    ['publicKey', 'amount', 'amountPaid', 'expiresAt', 'status', 'currency', 'invoiceCallbackUrl', 'memo']
+);
 
 const InvoiceStatusQueryString = Type.Object({
-    invoiceId: Type.String(),
+    invoiceId: Type.String({
+        description: `The encrypted identifier given as the second part of the *invoiceUrl* path. This *invoiceUrl* is found in most of the administrative Keagate routes.`
+    }),
 });
 
 const opts: RouteShorthandOptions = {

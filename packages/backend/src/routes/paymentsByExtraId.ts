@@ -9,7 +9,9 @@ import { ForRequest, MongoPayment } from '../types';
 const PaymentsByExtraIdResponse = Type.Array(MongoTypeForRequest);
 
 const PaymentsByExtraIdQueryString = Type.Object({
-    extraId: Type.String(),
+    extraId: Type.String({
+        description: `The extraId of an existing payment`
+    }),
 });
 
 const opts: RouteShorthandOptions = {
