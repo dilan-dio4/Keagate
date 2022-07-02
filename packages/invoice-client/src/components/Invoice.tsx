@@ -4,7 +4,8 @@ import { ReactComponent as SolIcon } from 'cryptocurrency-icons/svg/color/sol.sv
 import { ReactComponent as LtcIcon } from 'cryptocurrency-icons/svg/color/ltc.svg';
 import { ReactComponent as DashIcon } from 'cryptocurrency-icons/svg/color/dash.svg';
 import { ReactComponent as MaticIcon } from 'cryptocurrency-icons/svg/color/matic.svg';
-import { ReactComponent as XrpIcon } from 'cryptocurrency-icons/svg/color/xrp.svg';
+// import { ReactComponent as XrpIcon } from 'cryptocurrency-icons/svg/color/xrp.svg';
+import { ReactComponent as TrxIcon } from 'cryptocurrency-icons/svg/color/trx.svg';
 
 import { BiTimer, BiCopy, BiErrorAlt } from 'react-icons/bi';
 import { FiChevronUp, FiChevronDown } from 'react-icons/fi';
@@ -23,7 +24,8 @@ export default function Invoice() {
         SOL: <SolIcon width={50} height={50} />,
         BTC: <BtcIcon width={50} height={50} />,
         MATIC: <MaticIcon width={50} height={50} />,
-        XRP: <XrpIcon width={50} height={50} />,
+        TRX: <TrxIcon  width={50} height={50} />,
+        // XRP: <XrpIcon width={50} height={50} />,
     };
 
     const [isBlockchainInfoOpen, setIsBlockchainInfoOpen] = useState<boolean>(false);
@@ -38,6 +40,7 @@ export default function Invoice() {
         publicKey: string;
         status: PaymentStatusType;
         invoiceCallbackUrl?: string;
+        memo?: string;
     }
     const [invoiceObject, setInvoiceObject] = useState<IInvoiceObject>();
     const [paymentMajorError, setPaymentMajorError] = useState<string>('');

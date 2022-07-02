@@ -70,11 +70,13 @@ export default class TransactionalCoinlibWrapper extends GenericTransactionalWal
             statusCallback('WAITING');
             return;
         }
+        console.log("confirmedBalance 1", this.id, this.walletIndex)
 
         const { confirmedBalance: confirmedBalanceString, sweepable } = await requestRetry<BalanceResult>(() =>
             this.coinlibPayment.getBalance(this.walletIndex),
         );
         const confirmedBalance = +confirmedBalanceString;
+        console.log("confirmedBalance", confirmedBalance, this.id)
 
         // Follow this flow...
         if (confirmedBalance >= this.amount * (1 - config.getTyped('TRANSACTION_SLIPPAGE_TOLERANCE')) && sweepable) {
