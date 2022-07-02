@@ -2,13 +2,14 @@ import { Static, Type } from '@sinclair/typebox';
 import { FastifyInstance, RouteShorthandOptions } from 'fastify';
 import auth from '../middlewares/auth';
 import GenericTransactionalWallet from '../transactionalWallets/GenericTransactionalWallet';
-import { AvailableCurrencies } from '@keagate/common/src';
+import { availableCoinlibCurrencies, AvailableCurrencies, availableNativeCurrencies } from '@keagate/common/src';
 import TransactionalCoinlibWrapper from '../transactionalWallets/coinlib/TransactionalCoinlibWrapper';
 import { walletIndexGenerator } from '../transactionalWallets/coinlib/trxLimits';
 import context from '../context';
 import { currencyDusts } from '../transactionalWallets/coinlib/trxLimits';
 import { cleanDetails, MongoTypeForRequest, AdminRouteHeaders, ErrorResponse } from './types';
 import { IFromNew } from '../types';
+import { arrayIncludes } from '../utils';
 
 const CreatePaymentBody = Type.Object({
     currency: Type.String(),
@@ -50,12 +51,12 @@ export default async function createPaymentRoute(server: FastifyInstance) {
             ipnCallbackUrl: body.ipnCallbackUrl,
             extraId: body.extraId
         };
-        if (context.enabledNativeCurrencies.includes(createCurrency as any)) {
+        if (arrayIncludes<typeof availableNativeCurrencies[number]>(context.enabledNativeCurrencies, createCurrency)) {
             transactionalWallet = await new context.nativeCurrencyToClient[createCurrency].Transactional().fromNew(transactionalWalletNewObj, {
                 onDie: (id) => delete context.activePayments[id],
                 adminWalletClass: context.nativeCurrencyToClient[createCurrency].Admin,
             });
-        } else if (context.enabledCoinlibCurrencies.includes(createCurrency as any)) {
+        } else if (arrayIncludes<typeof availableCoinlibCurrencies[number]>(context.enabledCoinlibCurrencies, createCurrency)) {
             if (currencyDusts[createCurrency] >= body.amount) {
                 reply.status(300).send({ error: `Transaction amount is lower than the minimum for ${createCurrency}: ${currencyDusts[createCurrency]} dust` });
                 return;

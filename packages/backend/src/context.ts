@@ -9,6 +9,7 @@ import GenericTransactionalWallet from './transactionalWallets/GenericTransactio
 import GenericNativeTransactionalWallet from './transactionalWallets/native/GenericNativeTransactionalWallet';
 import { CoinlibPayment, NativePayment } from './types';
 import { getCoinlibCurrencyToClient, getNativeCurrencyToClient } from './currenciesToClients';
+import { arrayIncludes } from './utils';
 
 class KeagateContext {
     public enabledNativeCurrencies: typeof availableNativeCurrencies[number][] = [];
@@ -52,10 +53,10 @@ class KeagateContext {
             const currTxCurrency = _currActivePayment.currency as AvailableCurrencies;
 
             if (_currActivePayment.type === 'native') {
-                if (this.enabledNativeCurrencies.includes(currTxCurrency as any)) {
+                if (arrayIncludes<typeof availableNativeCurrencies[number]>(this.enabledNativeCurrencies, currTxCurrency)) {
                     this.activePayments[_currActivePayment._id.toString()] = new this.nativeCurrencyToClient[currTxCurrency].Transactional().fromManual(
                         {
-                            ...(_currActivePayment as any),
+                            ..._currActivePayment,
                             id: _currActivePayment._id.toString(),
                         },
                         {
@@ -68,10 +69,10 @@ class KeagateContext {
                     continue;
                 }
             } else if (_currActivePayment.type === 'coinlib') {
-                if (this.enabledCoinlibCurrencies.includes(currTxCurrency as any)) {
+                if (arrayIncludes<typeof availableCoinlibCurrencies[number]>(this.enabledCoinlibCurrencies, currTxCurrency)) {
                     this.activePayments[_currActivePayment._id.toString()] = new TransactionalCoinlibWrapper().fromManual(
                         {
-                            ...(_currActivePayment as any),
+                            ..._currActivePayment,
                             id: _currActivePayment._id.toString(),
                         },
                         {
