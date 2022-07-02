@@ -18,11 +18,11 @@ const opts: RouteShorthandOptions = {
         headers: AdminRouteHeaders,
         tags: ['payment'],
         description: 'Retrieve an array of all active payments',
-        // security:[
-        //     {
-        //         apiKey: []
-        //     }
-        // ]
+        security:[
+            {
+                ApiKey: []
+            }
+        ]
     },
     preHandler: auth,
 };

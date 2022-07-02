@@ -21,12 +21,24 @@ export default fastifyPlugin(async function createInvoiceClientRoute(server: Fas
             ],
             servers: [{
                 url: 'https://YOUR_SERVER'
-            }]
+            }],
+            security: [
+                
+            ],
+            components: {
+                securitySchemes: {
+                    ApiKey: {
+                        type: "apiKey",
+                        name: "keagate-api-key",
+                        in: "header"
+                    }
+                }
+            }
         },
         uiConfig: {
             docExpansion: 'full',
             deepLinking: false
         },
-        exposeRoute: true
+        exposeRoute: true,
     });
 })

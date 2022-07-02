@@ -15,7 +15,6 @@ const PaymentsByExtraIdQueryString = Type.Object({
 const opts: RouteShorthandOptions = {
     schema: {
         response: {
-            300: Type.String(),
             200: PaymentsByExtraIdResponse,
         },
         querystring: PaymentsByExtraIdQueryString,
