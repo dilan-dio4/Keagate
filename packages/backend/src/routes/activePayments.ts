@@ -16,8 +16,9 @@ const opts: RouteShorthandOptions = {
             },
         },
         headers: AdminRouteHeaders,
-        tags: ['payment'],
-        description: 'Retrieve an array of all active payments',
+        tags: ['Payment'],
+        description: 'Fetch an array of all active payments. Payments that have been completed or expired will not appear here.',
+        summary: 'Fetch an array of all active payments',
         security:[
             {
                 ApiKey: []

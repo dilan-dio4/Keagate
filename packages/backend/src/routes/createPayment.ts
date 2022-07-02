@@ -25,7 +25,15 @@ const opts: RouteShorthandOptions = {
             200: MongoTypeForRequest,
             300: ErrorResponse
         },
-        headers: AdminRouteHeaders
+        headers: AdminRouteHeaders,
+        tags: ['Payment'],
+        description: 'Create a new payment.',
+        summary: 'Create a new payment',
+        security:[
+            {
+                ApiKey: []
+            }
+        ]
     },
     preHandler: auth,
 };

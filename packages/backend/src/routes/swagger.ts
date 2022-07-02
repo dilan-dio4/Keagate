@@ -16,8 +16,8 @@ export default fastifyPlugin(async function createInvoiceClientRoute(server: Fas
                 description: "Find more info here"
             },
             tags: [
-                { name: 'payment', 'description': 'Payment lifecycle related administrative routes' },
-                { name: 'Invoice', 'description': 'Publicly available routes that are used in the invoice UI, can also be safely called from client device since these do not return sensitive information' }
+                { name: 'Payment', 'description': 'Payment lifecycle administrative routes. These routes require a valid `keagate-api-key` (set in local.json) and should never be directly invoked from your clients machine.' },
+                { name: 'Invoice', 'description': 'Publicly available routes that can be safely called from your clients\' devices. These do not return sensitive information. Internally, these routes are used in the invoice UI.' }
             ],
             servers: [{
                 url: 'https://YOUR_SERVER'
@@ -36,7 +36,7 @@ export default fastifyPlugin(async function createInvoiceClientRoute(server: Fas
             }
         },
         uiConfig: {
-            docExpansion: 'full',
+            // docExpansion: 'full',
             deepLinking: false
         },
         exposeRoute: true,

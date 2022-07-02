@@ -18,7 +18,15 @@ const opts: RouteShorthandOptions = {
             200: PaymentsByExtraIdResponse,
         },
         querystring: PaymentsByExtraIdQueryString,
-        headers: AdminRouteHeaders
+        headers: AdminRouteHeaders,
+        tags: ['Payment'],
+        description: 'Fetch an array of all payments by *extraId*. All payments by this query will appear here.',
+        summary: 'Fetch an array of all payments by extraId',
+        security:[
+            {
+                ApiKey: []
+            }
+        ]
     },
     preHandler: auth,
 };

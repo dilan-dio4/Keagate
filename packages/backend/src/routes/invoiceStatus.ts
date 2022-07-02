@@ -28,8 +28,10 @@ const opts: RouteShorthandOptions = {
             300: ErrorResponse,
         },
         querystring: InvoiceStatusQueryString,
-        tags: ['payment'],
-        description: 'Retrieve an array of all active payments',
+        tags: ['Invoice'],
+        description: `Retrieve the status and associated data of an invoice. This is essentially the same as \`/paymentStatus\` except it doesn't 
+        return any sensitive payment information and can be safely invoked from clients' machines to build custom payment interfaces`,
+        summary: 'Retrieve the status and associated data of an invoice',
     },
 };
 

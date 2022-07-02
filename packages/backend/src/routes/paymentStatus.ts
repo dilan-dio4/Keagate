@@ -16,7 +16,15 @@ const opts: RouteShorthandOptions = {
             200: MongoTypeForRequest,
         },
         querystring: PaymentStatusQueryString,
-        headers: AdminRouteHeaders
+        headers: AdminRouteHeaders,
+        tags: ['Payment'],
+        description: 'Retrieve the status and associated data of a payment.',
+        summary: 'Retrieve the status and associated data of a payment',
+        security:[
+            {
+                ApiKey: []
+            }
+        ]
     },
     preHandler: auth,
 };
