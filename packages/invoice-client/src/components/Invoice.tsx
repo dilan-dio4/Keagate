@@ -6,6 +6,9 @@ import { ReactComponent as DashIcon } from 'cryptocurrency-icons/svg/color/dash.
 import { ReactComponent as MaticIcon } from 'cryptocurrency-icons/svg/color/matic.svg';
 // import { ReactComponent as XrpIcon } from 'cryptocurrency-icons/svg/color/xrp.svg';
 import { ReactComponent as TrxIcon } from 'cryptocurrency-icons/svg/color/trx.svg';
+import { ReactComponent as EthIcon } from 'cryptocurrency-icons/svg/color/eth.svg';
+import { ReactComponent as XlmIcon } from 'cryptocurrency-icons/svg/color/xlm.svg';
+import { ReactComponent as DogeIcon } from 'cryptocurrency-icons/svg/color/doge.svg';
 
 import { BiTimer, BiCopy, BiErrorAlt } from 'react-icons/bi';
 import { FiChevronUp, FiChevronDown } from 'react-icons/fi';
@@ -24,8 +27,10 @@ export default function Invoice() {
         SOL: <SolIcon width={50} height={50} />,
         BTC: <BtcIcon width={50} height={50} />,
         MATIC: <MaticIcon width={50} height={50} />,
-        TRX: <TrxIcon  width={50} height={50} />,
-        // XRP: <XrpIcon width={50} height={50} />,
+        TRX: <TrxIcon width={50} height={50} />,
+        DOGE: <DogeIcon width={50} height={50} />,
+        ETH: <EthIcon width={50} height={50} />,
+        XLM: <XlmIcon width={50} height={50} />,
     };
 
     const [isBlockchainInfoOpen, setIsBlockchainInfoOpen] = useState<boolean>(false);

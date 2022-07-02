@@ -1,4 +1,4 @@
-export const availableCoinlibCurrencies = ['DASH', 'LTC', 'BTC', 'TRX'] as const;
+export const availableCoinlibCurrencies = ['DASH', 'LTC', 'BTC', 'TRX', 'ETH', 'DOGE', 'XLM'] as const;
 export const availableNativeCurrencies = ['SOL', 'MATIC'] as const;
 
 export type AvailableCurrencies = typeof availableCoinlibCurrencies[number] | typeof availableNativeCurrencies[number];
@@ -42,4 +42,17 @@ export const currencies: Record<AvailableCurrencies, { name: string; explorer: s
         explorer: 'https://polygonscan.com/',
         networkName: 'Polygon PoS Mainnet',
     },
+    DOGE: {
+        name: 'Dogecoin',
+        explorer: 'https://dogechain.info/',
+    },
+    ETH: {
+        name: 'Ethereum',
+        explorer: 'https://etherscan.io/',
+        networkName: 'Ethereum Mainnet'
+    },
+    XLM: {
+        name: 'Stellar',
+        explorer: 'https://stellarchain.io/'
+    }
 };
