@@ -12,7 +12,7 @@ export default fastifyPlugin(async function createInvoiceClientRoute(server: Fas
                 description: '',
             },
             externalDocs: {
-                url: 'keagate.io',
+                url: 'https://keagate.io',
                 description: 'Find more info here',
             },
             tags: [
