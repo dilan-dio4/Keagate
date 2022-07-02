@@ -1,7 +1,7 @@
 import context from './context';
 import GenericTransactionalWallet from './transactionalWallets/GenericTransactionalWallet';
 import dayjs, { Dayjs } from 'dayjs';
-import { PaymentStatusType } from '@keagate/common/src';
+import { PaymentStatusType, availableNativeCurrencies } from '@keagate/common/src';
 import { delay } from './utils';
 import config from './config';
 
@@ -31,14 +31,19 @@ class ActivityLoop {
 
         this.lastBatchStart = dayjs();
 
-        const txsByCohort: Record<'native' | 'coinlib', GenericTransactionalWallet[]> = {
-            native: [],
+        const txsByCohort: Record<typeof availableNativeCurrencies[number] | 'coinlib', GenericTransactionalWallet[]> = {
             coinlib: [],
+            MATIC: [],
+            SOL: []
         };
 
         for (const aTrx of Object.values(context.activePayments)) {
-            const type = aTrx.getDetails().type;
-            txsByCohort[type].push(aTrx);
+            const { type, currency } = aTrx.getDetails();
+            if (type === "coinlib") {
+                txsByCohort[type].push(aTrx);
+            } else {
+                txsByCohort[currency].push(aTrx);
+            }
         }
 
         await Promise.all(Object.values(txsByCohort).map((cohort) => this.runTxsCohort(cohort)));
