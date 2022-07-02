@@ -31,7 +31,7 @@ const server = fastify({
 
 async function main() {
     await context.init();
-    server.register(createSwaggerRoute)
+    server.register(createSwaggerRoute);
     // Initialize the admin wallet routes for native currencies
     for (const _currency of context.enabledNativeCurrencies) {
         const coinName = currencies[_currency].name as typeof availableNativeCurrencies[number];

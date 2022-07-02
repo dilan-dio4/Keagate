@@ -40,7 +40,7 @@ export default function Invoice() {
         invoiceCallbackUrl?: string;
     }
     const [invoiceObject, setInvoiceObject] = useState<IInvoiceObject>();
-    const [paymentMajorError, setPaymentMajorError] = useState<string>("");
+    const [paymentMajorError, setPaymentMajorError] = useState<string>('');
 
     useEffect(() => {
         const params = window.location.pathname.split('/');
@@ -84,9 +84,9 @@ export default function Invoice() {
         return (
             <div className='flex justify-center items-center flex-col h-[100vh] pb-10'>
                 <BiErrorAlt className='text-red-600' size={54} />
-                <p className="text-red-600 font-semibold text-lg mt-2 tracking-tight">{paymentMajorError}</p>
+                <p className='text-red-600 font-semibold text-lg mt-2 tracking-tight'>{paymentMajorError}</p>
             </div>
-        )
+        );
     }
 
     if (!invoiceObject || !currency) {

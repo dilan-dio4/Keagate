@@ -1,5 +1,12 @@
-import { availableCoinlibCurrencies, AvailableCurrencies, availableNativeCurrencies, ConcreteConstructor, currencies, arrayIncludes } from '@keagate/common/src';
-import {  AnyPayments } from 'coinlib-port';
+import {
+    availableCoinlibCurrencies,
+    AvailableCurrencies,
+    availableNativeCurrencies,
+    ConcreteConstructor,
+    currencies,
+    arrayIncludes,
+} from '@keagate/common/src';
+import { AnyPayments } from 'coinlib-port';
 import { WithId } from 'mongodb';
 import GenericAdminWallet from './adminWallets/GenericAdminWallet';
 import config from './config';
@@ -78,7 +85,7 @@ class KeagateContext {
                             onDie: (id) => delete this.activePayments[id],
                             walletIndex: _currActivePayment.walletIndex,
                             currency: currTxCurrency,
-                            coinlibPayment: this.coinlibCurrencyToClient[currTxCurrency]
+                            coinlibPayment: this.coinlibCurrencyToClient[currTxCurrency],
                         },
                     );
                 } else {

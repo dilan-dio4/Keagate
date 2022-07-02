@@ -7,7 +7,7 @@ import { MongoTypeForRequest, cleanDetails, AdminRouteHeaders, ErrorResponse } f
 
 const PaymentStatusQueryString = Type.Object({
     id: Type.String({
-        description: `The id of an existing payment`
+        description: `The id of an existing payment`,
     }),
 });
 
@@ -22,11 +22,11 @@ const opts: RouteShorthandOptions = {
         tags: ['Payment'],
         description: 'Retrieve the status and associated data of a payment.',
         summary: 'Retrieve the status and associated data of a payment',
-        security:[
+        security: [
             {
-                ApiKey: []
-            }
-        ]
+                ApiKey: [],
+            },
+        ],
     },
     preHandler: auth,
 };

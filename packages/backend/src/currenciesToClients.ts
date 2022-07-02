@@ -1,13 +1,13 @@
-import { availableCoinlibCurrencies, availableNativeCurrencies, ConcreteConstructor } from "@keagate/common/src";
-import { AnyPayments, CoinPayments, NetworkType, SUPPORTED_NETWORK_SYMBOLS } from "coinlib-port";
-import config from "./config";
-import GenericAdminWallet from "./adminWallets/GenericAdminWallet";
-import AdminPolygon from "./adminWallets/native/Polygon";
-import AdminSolana from "./adminWallets/native/Solana";
-import GenericNativeTransactionalWallet from "./transactionalWallets/native/GenericNativeTransactionalWallet";
-import TransactionalPolygon from "./transactionalWallets/native/Polygon";
-import TransactionalSolana from "./transactionalWallets/native/Solana";
-import { deadLogger } from "./utils";
+import { availableCoinlibCurrencies, availableNativeCurrencies, ConcreteConstructor } from '@keagate/common/src';
+import { AnyPayments, CoinPayments, NetworkType, SUPPORTED_NETWORK_SYMBOLS } from 'coinlib-port';
+import config from './config';
+import GenericAdminWallet from './adminWallets/GenericAdminWallet';
+import AdminPolygon from './adminWallets/native/Polygon';
+import AdminSolana from './adminWallets/native/Solana';
+import GenericNativeTransactionalWallet from './transactionalWallets/native/GenericNativeTransactionalWallet';
+import TransactionalPolygon from './transactionalWallets/native/Polygon';
+import TransactionalSolana from './transactionalWallets/native/Solana';
+import { deadLogger } from './utils';
 
 export const getNativeCurrencyToClient = (): Record<
     typeof availableNativeCurrencies[number],
@@ -25,7 +25,6 @@ export const getNativeCurrencyToClient = (): Record<
         Transactional: TransactionalPolygon,
     },
 });
-
 
 export async function getCoinlibCurrencyToClient(): Promise<Record<typeof availableCoinlibCurrencies[number], AnyPayments<any>>> {
     const coinPayments = new CoinPayments({ seed: config.getTyped('SEED'), network: NetworkType.Mainnet, logger: deadLogger });

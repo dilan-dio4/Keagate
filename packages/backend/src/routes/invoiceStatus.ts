@@ -6,14 +6,20 @@ import { ObjectId, WithId } from 'mongodb';
 import { decrypt } from '../utils';
 import { ErrorResponse, MongoTypeForRequest } from './types';
 
-const InvoiceStatusResponse = Type.Pick(
-    MongoTypeForRequest,
-    ['publicKey', 'amount', 'amountPaid', 'expiresAt', 'status', 'currency', 'invoiceCallbackUrl', 'memo']
-);
+const InvoiceStatusResponse = Type.Pick(MongoTypeForRequest, [
+    'publicKey',
+    'amount',
+    'amountPaid',
+    'expiresAt',
+    'status',
+    'currency',
+    'invoiceCallbackUrl',
+    'memo',
+]);
 
 const InvoiceStatusQueryString = Type.Object({
     invoiceId: Type.String({
-        description: `The encrypted identifier given as the second part of the *invoiceUrl* path. This *invoiceUrl* is found in most of the administrative Keagate routes.`
+        description: `The encrypted identifier given as the second part of the *invoiceUrl* path. This *invoiceUrl* is found in most of the administrative Keagate routes.`,
     }),
 });
 
@@ -53,7 +59,7 @@ export default async function createInvoiceStatusRoute(server: FastifyInstance) 
                 amountPaid: selectedPayment.amountPaid,
                 currency: selectedPayment.currency,
                 invoiceCallbackUrl: selectedPayment.invoiceCallbackUrl,
-                memo: "memo" in selectedPayment ? selectedPayment.memo : undefined
+                memo: 'memo' in selectedPayment ? selectedPayment.memo : undefined,
             });
         },
     );

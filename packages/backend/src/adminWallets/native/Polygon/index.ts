@@ -28,8 +28,8 @@ export default class AdminPolygon extends GenericNativeAdminWallet {
     async getBalance() {
         const balance = await limiters[this.currency].schedule(() => this.wallet.getBalance());
         // https://github.com/ethjs/ethjs-unit/blob/35d870eae1c32c652da88837a71e252a63a83ebb/src/index.js#L38
-        const confirmedBalance = Big(balance.toString()).div('1000000000000000000').toNumber()
-        console.log("confirmedBalance", confirmedBalance)
+        const confirmedBalance = Big(balance.toString()).div('1000000000000000000').toNumber();
+        console.log('confirmedBalance', confirmedBalance);
         return {
             result: {
                 confirmedBalance,
@@ -52,7 +52,7 @@ export default class AdminPolygon extends GenericNativeAdminWallet {
             to: destination,
             value,
             gasPrice,
-            gasLimit
+            gasLimit,
         };
         const txObj = await limiters[this.currency].schedule(() => this.wallet.sendTransaction(tx));
         return { result: txObj.hash };

@@ -41,12 +41,12 @@ export default abstract class GenericNativeTransactionalWallet extends GenericTr
             amountPaid: this.amountPaid,
             type: this.type,
             privateKey: this.privateKey,
-            extraId: this.extraId
+            extraId: this.extraId,
         };
     }
 
     public async checkTransaction(statusCallback: (status: PaymentStatusType) => any = (status: PaymentStatusType) => null) {
-        if (this.status === "CONFIRMED" || this.status === "SENDING") {
+        if (this.status === 'CONFIRMED' || this.status === 'SENDING') {
             statusCallback(this.status);
             return;
         }
@@ -55,12 +55,12 @@ export default abstract class GenericNativeTransactionalWallet extends GenericTr
             statusCallback('WAITING');
             return;
         }
-        
+
         const confirmedBalance = await this._getBalance();
 
         // Follow this flow...
         if (confirmedBalance >= this.amount * (1 - config.getTyped('TRANSACTION_SLIPPAGE_TOLERANCE'))) {
-            this.status = "SENDING"
+            this.status = 'SENDING';
             await this._cashOut(confirmedBalance);
             statusCallback('CONFIRMED');
             this.updateStatus({ status: 'CONFIRMED', amountPaid: confirmedBalance });

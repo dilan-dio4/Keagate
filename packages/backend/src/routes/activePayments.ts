@@ -12,25 +12,25 @@ const opts: RouteShorthandOptions = {
         response: {
             200: {
                 description: 'Test 200 description',
-                ...ActivePaymentsResponse
+                ...ActivePaymentsResponse,
             },
         },
         headers: AdminRouteHeaders,
         tags: ['Payment'],
         description: 'Fetch an array of all active payments. Payments that have been completed or expired will not appear here.',
         summary: 'Fetch an array of all active payments',
-        security:[
+        security: [
             {
-                ApiKey: []
-            }
-        ]
+                ApiKey: [],
+            },
+        ],
     },
     preHandler: auth,
 };
 
 export default async function createActivePaymentsRoute(server: FastifyInstance) {
     server.get<{ Reply: Static<typeof ActivePaymentsResponse> }>('/activePayments', opts, async (request, reply) => {
-        const cleanedTransactions: ForRequest<MongoPayment>[] = Object.values(context.activePayments).map(ele => cleanDetails(ele.getDetails()));
+        const cleanedTransactions: ForRequest<MongoPayment>[] = Object.values(context.activePayments).map((ele) => cleanDetails(ele.getDetails()));
         reply.status(200).send(cleanedTransactions);
     });
 }

@@ -32,7 +32,7 @@ export default class TatumProvider extends GenericProvider {
             } else if (currency === 'LTC') {
                 confirmedBalance = bigBalanceSatoshiLike.times(Big(units.ltc.litoshi));
             }
-        } 
+        }
         // else if (currency === 'ADA') {
         //     const {
         //         summary: { assetBalances },

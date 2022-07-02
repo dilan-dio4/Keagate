@@ -20,4 +20,4 @@ export default fastifyPlugin(async function createInvoiceClientRoute(server: Fas
     server.get('/invoice/:currency/:invoiceId', opts, (request, reply) => {
         reply.sendFile('index.html');
     });
-})
+});

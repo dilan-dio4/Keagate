@@ -1,4 +1,4 @@
-import { availableCoinlibCurrencies } from "@keagate/common/src";
+import { availableCoinlibCurrencies } from '@keagate/common/src';
 import crypto from 'crypto';
 
 // In pure unit
@@ -6,8 +6,8 @@ export const currencyDusts: Record<typeof availableCoinlibCurrencies[number], nu
     BTC: 0.00000546,
     DASH: 0, // TODO
     LTC: 0.00000546,
-    XRP: 0
-}
+    XRP: 0,
+};
 
 function randU32Sync() {
     return crypto.randomBytes(4).readUInt32BE(0);

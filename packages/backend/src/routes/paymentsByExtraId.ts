@@ -10,7 +10,7 @@ const PaymentsByExtraIdResponse = Type.Array(MongoTypeForRequest);
 
 const PaymentsByExtraIdQueryString = Type.Object({
     extraId: Type.String({
-        description: `The extraId of an existing payment`
+        description: `The extraId of an existing payment`,
     }),
 });
 
@@ -24,11 +24,11 @@ const opts: RouteShorthandOptions = {
         tags: ['Payment'],
         description: 'Fetch an array of all payments by *extraId*. All payments by this query will appear here.',
         summary: 'Fetch an array of all payments by extraId',
-        security:[
+        security: [
             {
-                ApiKey: []
-            }
-        ]
+                ApiKey: [],
+            },
+        ],
     },
     preHandler: auth,
 };
@@ -40,8 +40,8 @@ export default async function createPaymentStatusRoute(server: FastifyInstance) 
     }>('/getPaymentsByExtraId', opts, async (request, reply) => {
         const extraId = request.query.extraId;
         const { db } = await mongoGenerator();
-        const selectedPayments = (await db.collection('payments').find({ extraId }).toArray()) as (WithId<MongoPayment>)[];
-        const cleanedTransactions: ForRequest<MongoPayment>[] = selectedPayments.map(ele => cleanDetails(ele));
+        const selectedPayments = (await db.collection('payments').find({ extraId }).toArray()) as WithId<MongoPayment>[];
+        const cleanedTransactions: ForRequest<MongoPayment>[] = selectedPayments.map((ele) => cleanDetails(ele));
         reply.status(200).send(cleanedTransactions);
     });
 }

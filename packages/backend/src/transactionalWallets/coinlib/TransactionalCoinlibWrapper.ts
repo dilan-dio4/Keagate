@@ -23,7 +23,7 @@ export default class TransactionalCoinlibWrapper extends GenericTransactionalWal
             ...obj,
             publicKey: address,
             walletIndex: this.walletIndex,
-            memo
+            memo,
         });
         return this.fromManual(mongoPayment);
     }
@@ -56,12 +56,12 @@ export default class TransactionalCoinlibWrapper extends GenericTransactionalWal
             type: this.type,
             walletIndex: this.walletIndex,
             extraId: this.extraId,
-            memo: this.memo
+            memo: this.memo,
         };
     }
 
     public async checkTransaction(statusCallback: (status: PaymentStatusType) => any = (status: PaymentStatusType) => null) {
-        if (this.status === "CONFIRMED" || this.status === "SENDING") {
+        if (this.status === 'CONFIRMED' || this.status === 'SENDING') {
             statusCallback(this.status);
             return;
         }
@@ -71,12 +71,14 @@ export default class TransactionalCoinlibWrapper extends GenericTransactionalWal
             return;
         }
 
-        const { confirmedBalance: confirmedBalanceString, sweepable } = await requestRetry<BalanceResult>(() => this.coinlibPayment.getBalance(this.walletIndex));
+        const { confirmedBalance: confirmedBalanceString, sweepable } = await requestRetry<BalanceResult>(() =>
+            this.coinlibPayment.getBalance(this.walletIndex),
+        );
         const confirmedBalance = +confirmedBalanceString;
 
         // Follow this flow...
         if (confirmedBalance >= this.amount * (1 - config.getTyped('TRANSACTION_SLIPPAGE_TOLERANCE')) && sweepable) {
-            this.status = "SENDING";
+            this.status = 'SENDING';
             await this._cashOut();
             statusCallback('CONFIRMED');
             this.updateStatus({ status: 'CONFIRMED', amountPaid: confirmedBalance });
@@ -102,7 +104,7 @@ export default class TransactionalCoinlibWrapper extends GenericTransactionalWal
             const createTx = await requestRetry<BaseUnsignedTransaction>(() =>
                 this.coinlibPayment.createSweepTransaction(this.walletIndex, config.getTyped(this.currency).ADMIN_PUBLIC_KEY, {
                     availableUtxos: utxos,
-                })
+                }),
             );
             const signedTx = await requestRetry<BaseSignedTransaction>(() => this.coinlibPayment.signTransaction(createTx));
             const { id: txHash } = await requestRetry<BaseBroadcastResult>(() => this.coinlibPayment.broadcastTransaction(signedTx));
