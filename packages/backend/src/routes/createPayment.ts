@@ -2,14 +2,13 @@ import { Static, Type } from '@sinclair/typebox';
 import { FastifyInstance, RouteShorthandOptions } from 'fastify';
 import auth from '../middlewares/auth';
 import GenericTransactionalWallet from '../transactionalWallets/GenericTransactionalWallet';
-import { availableCoinlibCurrencies, AvailableCurrencies, availableNativeCurrencies } from '@keagate/common/src';
+import { availableCoinlibCurrencies, AvailableCurrencies, availableNativeCurrencies, arrayIncludes } from '@keagate/common/src';
 import TransactionalCoinlibWrapper from '../transactionalWallets/coinlib/TransactionalCoinlibWrapper';
 import { walletIndexGenerator } from '../transactionalWallets/coinlib/trxLimits';
 import context from '../context';
 import { currencyDusts } from '../transactionalWallets/coinlib/trxLimits';
 import { cleanDetails, MongoTypeForRequest, AdminRouteHeaders, ErrorResponse } from './types';
 import { IFromNew } from '../types';
-import { arrayIncludes } from '../utils';
 
 const CreatePaymentBody = Type.Object({
     currency: Type.String(),

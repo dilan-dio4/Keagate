@@ -17,7 +17,7 @@
     "@fastify/swagger": "^7.4.1",
     "@keagate/api-providers": "file:packages/api-providers",
     "@keagate/common": "file:packages/common",
-    "@sinclair/typebox": "^0.23.5",
+    "@sinclair/typebox": "^0.24.7",
     "@solana/web3.js": "^1.44.0",
     "bip32": "^3.0.1",
     "bip39": "^3.0.4",

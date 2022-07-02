@@ -1,4 +1,4 @@
-import { availableCoinlibCurrencies, AvailableCurrencies, availableNativeCurrencies, ConcreteConstructor, currencies } from '@keagate/common/src';
+import { availableCoinlibCurrencies, AvailableCurrencies, availableNativeCurrencies, ConcreteConstructor, currencies, arrayIncludes } from '@keagate/common/src';
 import {  AnyPayments } from 'coinlib-port';
 import { WithId } from 'mongodb';
 import GenericAdminWallet from './adminWallets/GenericAdminWallet';
@@ -9,7 +9,6 @@ import GenericTransactionalWallet from './transactionalWallets/GenericTransactio
 import GenericNativeTransactionalWallet from './transactionalWallets/native/GenericNativeTransactionalWallet';
 import { CoinlibPayment, NativePayment } from './types';
 import { getCoinlibCurrencyToClient, getNativeCurrencyToClient } from './currenciesToClients';
-import { arrayIncludes } from './utils';
 
 class KeagateContext {
     public enabledNativeCurrencies: typeof availableNativeCurrencies[number][] = [];

@@ -68,7 +68,3 @@ export const deadLogger = {
     debug: (...args: any[]) => null,
     trace: (...args: any[]) => null,
 };
-
-export function arrayIncludes<T>(arr: T[], ele: any): ele is T {
-    return arr.includes(ele);
-}
