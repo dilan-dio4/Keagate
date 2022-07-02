@@ -6,7 +6,7 @@ import { ReactComponent as DashIcon } from 'cryptocurrency-icons/svg/color/dash.
 import { ReactComponent as MaticIcon } from 'cryptocurrency-icons/svg/color/matic.svg';
 import { ReactComponent as XrpIcon } from 'cryptocurrency-icons/svg/color/xrp.svg';
 
-import { BiTimer, BiCopy } from 'react-icons/bi';
+import { BiTimer, BiCopy, BiErrorAlt } from 'react-icons/bi';
 import { FiChevronUp, FiChevronDown } from 'react-icons/fi';
 import { HiInformationCircle } from 'react-icons/hi';
 import dayjs from 'dayjs';
@@ -40,7 +40,7 @@ export default function Invoice() {
         invoiceCallbackUrl?: string;
     }
     const [invoiceObject, setInvoiceObject] = useState<IInvoiceObject>();
-    const [isNoPaymentFound, setIsNoPaymentFound] = useState<boolean>(false);
+    const [paymentMajorError, setPaymentMajorError] = useState<string>("");
 
     useEffect(() => {
         const params = window.location.pathname.split('/');
@@ -53,6 +53,12 @@ export default function Invoice() {
         let interval: NodeJS.Timer;
         async function runner() {
             const _invoiceObj = (await fGet(`/getInvoiceStatus?invoiceId=${_invoiceId}`)) as IInvoiceObject;
+            if ('error' in _invoiceObj) {
+                setPaymentMajorError(_invoiceObj['error']);
+                clearInterval(interval);
+                return;
+            }
+
             setInvoiceObject(_invoiceObj);
             document.title = `Payment ${_invoiceObj.status.toLowerCase().replace('_', ' ')}`;
             if (
@@ -73,6 +79,15 @@ export default function Invoice() {
         interval = setInterval(runner, 6000);
         return () => clearInterval(interval);
     }, []);
+
+    if (paymentMajorError) {
+        return (
+            <div className='flex justify-center items-center flex-col h-[100vh] pb-10'>
+                <BiErrorAlt className='text-red-600' size={54} />
+                <p className="text-red-600 font-semibold text-lg mt-2 tracking-tight">{paymentMajorError}</p>
+            </div>
+        )
+    }
 
     if (!invoiceObject || !currency) {
         return <ThreeDotsOverlay showDots flashDots />;
