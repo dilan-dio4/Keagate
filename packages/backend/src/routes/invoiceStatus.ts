@@ -4,6 +4,7 @@ import { MongoPayment } from '../types';
 import mongoGenerator from '../mongo/generator';
 import { ObjectId, WithId } from 'mongodb';
 import { decrypt } from '../utils';
+import { ErrorResponse } from './types';
 
 const InvoiceStatusResponse = Type.Object({
     publicKey: Type.String(),
@@ -24,7 +25,7 @@ const opts: RouteShorthandOptions = {
     schema: {
         response: {
             200: InvoiceStatusResponse,
-            300: Type.String(),
+            300: ErrorResponse,
         },
         querystring: InvoiceStatusQueryString,
         tags: ['payment'],
@@ -33,7 +34,7 @@ const opts: RouteShorthandOptions = {
 };
 
 export default async function createInvoiceStatusRoute(server: FastifyInstance) {
-    server.get<{ Reply: Static<typeof InvoiceStatusResponse>; Querystring: Static<typeof InvoiceStatusQueryString> }>(
+    server.get<{ Reply: Static<typeof InvoiceStatusResponse> | Static<typeof ErrorResponse>; Querystring: Static<typeof InvoiceStatusQueryString> }>(
         '/getInvoiceStatus',
         opts,
         async (request, reply) => {
@@ -42,7 +43,7 @@ export default async function createInvoiceStatusRoute(server: FastifyInstance) 
             const { db } = await mongoGenerator();
             const selectedPayment = (await db.collection('payments').findOne({ _id: new ObjectId(mongoId) })) as WithId<MongoPayment>;
             if (!selectedPayment) {
-                reply.status(300).send(`No transaction found with given id` as any);
+                reply.status(300).send({ error: `No transaction found with given id` });
                 return;
             }
 
