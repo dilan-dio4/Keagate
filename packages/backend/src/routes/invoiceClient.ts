@@ -12,8 +12,8 @@ export default fastifyPlugin(async function createInvoiceClientRoute(server: Fas
     const opts: RouteShorthandOptions = {
         schema: {
             tags: ['Invoice'],
-            description: `Route for Keagate's builtin invoice interface.`,
-            summary: `Route for Keagate's builtin invoice interface`,
+            description: `Route for Keagate's built-in invoice interface.`,
+            summary: `Route for Keagate's built-in invoice interface`,
         },
     };
 

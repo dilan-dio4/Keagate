@@ -84,6 +84,8 @@ export const MongoTypeForRequest = Type.Object({
         as the memo or description of their transaction.`,
         }),
     ),
+}, {
+    description: `Successful response`
 });
 
 export function cleanDetails(details: MongoPayment | WithId<Omit<MongoPayment, 'id'>>): ForRequest<MongoPayment> {
@@ -123,4 +125,6 @@ export const ErrorResponse = Type.Object({
             description: `Error message string`,
         }),
     ),
+}, {
+    description: `Error response with message.`
 });

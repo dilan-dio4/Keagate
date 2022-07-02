@@ -15,7 +15,9 @@ const InvoiceStatusResponse = Type.Pick(MongoTypeForRequest, [
     'currency',
     'invoiceCallbackUrl',
     'memo',
-]);
+], {
+    description: `Successful response of invoice status.`
+});
 
 const InvoiceStatusQueryString = Type.Object({
     invoiceId: Type.String({

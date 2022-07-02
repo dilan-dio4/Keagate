@@ -7,7 +7,7 @@ export default fastifyPlugin(async function createInvoiceClientRoute(server: Fas
         routePrefix: '/docs',
         openapi: {
             info: {
-                title: 'Keagate – A High-performance crypto payment gateway',
+                title: 'Keagate – A high-performance crypto payment gateway',
                 version: '0.1.0',
                 description: '',
             },
@@ -19,12 +19,12 @@ export default fastifyPlugin(async function createInvoiceClientRoute(server: Fas
                 {
                     name: 'Payment',
                     description:
-                        'Payment lifecycle administrative routes. These routes require a valid `keagate-api-key` (set in local.json) and should never be directly invoked from your clients machine.',
+                        "Payment lifecycle administrative routes. These routes require a valid `keagate-api-key` (set in local.json) and should never be directly invoked from your payees' machine.",
                 },
                 {
                     name: 'Invoice',
                     description:
-                        "Publicly available routes that can be safely called from your clients' devices. These do not return sensitive information. Internally, these routes are used in the invoice UI.",
+                        "Publicly available routes that can be safely called from your payees' devices. These do not return sensitive information. Internally, these routes are used in the built-in invoice UI.",
                 },
             ],
             servers: [
