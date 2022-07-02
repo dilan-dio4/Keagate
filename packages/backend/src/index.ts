@@ -7,6 +7,7 @@ import createPaymentRoute from './routes/createPayment';
 import createActivePaymentsRoute from './routes/activePayments';
 import createPaymentStatusRoute from './routes/paymentStatus';
 import createInvoiceClientRoute from './routes/invoiceClient';
+import createSwaggerRoute from './routes/swagger';
 import createInvoiceStatusRoute from './routes/invoiceStatus';
 import createPaymentsByExtraIdRoute from './routes/paymentsByExtraId';
 import context from './context';
@@ -30,7 +31,7 @@ const server = fastify({
 
 async function main() {
     await context.init();
-
+    server.register(createSwaggerRoute)
     // Initialize the admin wallet routes for native currencies
     for (const _currency of context.enabledNativeCurrencies) {
         const coinName = currencies[_currency].name as typeof availableNativeCurrencies[number];
@@ -84,16 +85,18 @@ async function main() {
     }
 
     // Create other routes for API and invoice client
-    createInvoiceClientRoute(server);
-    createInvoiceStatusRoute(server);
-    createPaymentRoute(server);
-    createActivePaymentsRoute(server);
-    createPaymentStatusRoute(server);
-    createPaymentsByExtraIdRoute(server);
-    
+    server.register(createInvoiceClientRoute);
+    server.register(createInvoiceStatusRoute);
+    server.register(createPaymentRoute);
+    server.register(createActivePaymentsRoute);
+    server.register(createPaymentStatusRoute);
+    server.register(createPaymentsByExtraIdRoute);
+
     // Start the processing intervals
     activityLoop.start();
 
+    await server.ready();
+    server.swagger();
     server.listen({ port: 8081 }, (err, address) => {
         if (err) {
             console.error(err);

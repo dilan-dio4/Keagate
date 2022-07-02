@@ -27,10 +27,12 @@ const opts: RouteShorthandOptions = {
             300: Type.String(),
         },
         querystring: InvoiceStatusQueryString,
+        tags: ['payment'],
+        description: 'Retrieve an array of all active payments',
     },
 };
 
-export default function createInvoiceStatusRoute(server: FastifyInstance) {
+export default async function createInvoiceStatusRoute(server: FastifyInstance) {
     server.get<{ Reply: Static<typeof InvoiceStatusResponse>; Querystring: Static<typeof InvoiceStatusQueryString> }>(
         '/getInvoiceStatus',
         opts,

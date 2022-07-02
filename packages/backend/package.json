@@ -31,6 +31,7 @@
     "ed25519-hd-key": "^1.2.0",
     "ethers": "^5.6.9",
     "fastify": "^4.0.1",
+    "fastify-plugin": "^3.0.1",
     "find-up": "^6.3.0",
     "lodash.sample": "^4.2.1",
     "mongodb": "^4.7.0",

@@ -24,7 +24,7 @@ const opts: RouteShorthandOptions = {
     preHandler: auth,
 };
 
-export default function createPaymentStatusRoute(server: FastifyInstance) {
+export default async function createPaymentStatusRoute(server: FastifyInstance) {
     server.get<{
         Reply: Static<typeof PaymentsByExtraIdResponse> | string;
         Querystring: Static<typeof PaymentsByExtraIdQueryString>;

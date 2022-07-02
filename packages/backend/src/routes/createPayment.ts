@@ -30,7 +30,7 @@ const opts: RouteShorthandOptions = {
     preHandler: auth,
 };
 
-export default function createPaymentRoute(server: FastifyInstance) {
+export default async function createPaymentRoute(server: FastifyInstance) {
     server.post<{ Body: Static<typeof CreatePaymentBody>; Reply: Static<typeof MongoTypeForRequest> | string }>('/createPayment', opts, async (request, reply) => {
         const { body } = request;
 
