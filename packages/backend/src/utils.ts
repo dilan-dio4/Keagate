@@ -48,7 +48,7 @@ export async function requestRetry<T>(request: (_?: any) => Promise<T>, delayMs 
         try {
             result = await request();
         } catch (error) {
-            console.debug(JSON.stringify(error, null, 2));
+            console.error(error)
             result = undefined;
             lastError = error;
         }

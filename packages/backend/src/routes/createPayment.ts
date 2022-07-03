@@ -47,13 +47,13 @@ export default async function createPaymentRoute(server: FastifyInstance) {
                 ipnCallbackUrl: body.ipnCallbackUrl,
                 extraId: body.extraId,
             };
-            if (arrayIncludes<typeof availableNativeCurrencies[number]>(context.enabledNativeCurrencies, createCurrency)) {
+            if (arrayIncludes(context.enabledNativeCurrencies, createCurrency)) {
                 transactionalWallet = await new context.nativeCurrencyToClient[createCurrency].Transactional().fromNew(transactionalWalletNewObj, {
                     onDie: (id) => delete context.activePayments[id],
                     adminWalletClass: context.nativeCurrencyToClient[createCurrency].Admin,
                 });
-            } else if (arrayIncludes<typeof availableCoinlibCurrencies[number]>(context.enabledCoinlibCurrencies, createCurrency)) {
-                if (currencyDusts[createCurrency] >= body.amount) {
+            } else if (arrayIncludes(context.enabledCoinlibCurrencies, createCurrency)) {
+                if (createCurrency in currencyDusts && currencyDusts[createCurrency] >= body.amount) {
                     reply
                         .status(300)
                         .send({ error: `Transaction amount is lower than the minimum for ${createCurrency}: ${currencyDusts[createCurrency]} dust` });

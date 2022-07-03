@@ -59,7 +59,7 @@ class KeagateContext {
             const currTxCurrency = _currActivePayment.currency as AvailableCurrencies;
 
             if (_currActivePayment.type === 'native') {
-                if (arrayIncludes<typeof availableNativeCurrencies[number]>(this.enabledNativeCurrencies, currTxCurrency)) {
+                if (arrayIncludes(this.enabledNativeCurrencies, currTxCurrency)) {
                     this.activePayments[_currActivePayment._id.toString()] = new this.nativeCurrencyToClient[currTxCurrency].Transactional().fromManual(
                         {
                             ..._currActivePayment,
@@ -75,7 +75,7 @@ class KeagateContext {
                     continue;
                 }
             } else if (_currActivePayment.type === 'coinlib') {
-                if (arrayIncludes<typeof availableCoinlibCurrencies[number]>(this.enabledCoinlibCurrencies, currTxCurrency)) {
+                if (arrayIncludes(this.enabledCoinlibCurrencies, currTxCurrency)) {
                     this.activePayments[_currActivePayment._id.toString()] = new TransactionalCoinlibWrapper().fromManual(
                         {
                             ..._currActivePayment,

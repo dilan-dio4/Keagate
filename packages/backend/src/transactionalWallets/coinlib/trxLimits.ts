@@ -2,21 +2,27 @@ import { availableCoinlibCurrencies } from '@keagate/common/src';
 import crypto from 'crypto';
 
 // In pure unit
-export const currencyDusts: Record<typeof availableCoinlibCurrencies[number], number> = {
+export const currencyDusts: Partial<Record<typeof availableCoinlibCurrencies[number], number>> = {
     BTC: 0.00000546,
-    DASH: 0, // TODO
     LTC: 0.00000546,
-    TRX: 0
+    DOGE: 1,
+    ETH: 0.00000001,
 };
+
+// In pure unit
+export const minWalletBalances: Partial<Record<typeof availableCoinlibCurrencies[number], number>> = {
+}
 
 function randU32Sync() {
     return crypto.randomBytes(4).readUInt32BE(0);
 }
 
+const safeRand = () => Math.round(randU32Sync() / 1000);
+
 export const walletIndexGenerator: Record<typeof availableCoinlibCurrencies[number], () => number> = {
-    LTC: randU32Sync,
-    BTC: randU32Sync,
-    DASH: randU32Sync,
-    TRX: () => Math.round(randU32Sync() / 1000),
-    // XRP: () => randU32Sync() / 10000,
+    LTC: safeRand,
+    BTC: safeRand,
+    DASH: safeRand,
+    DOGE: safeRand,
+    ETH: safeRand,
 };
