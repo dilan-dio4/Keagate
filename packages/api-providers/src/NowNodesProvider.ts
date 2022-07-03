@@ -6,7 +6,7 @@ import Big from 'big.js';
 // https://documenter.getpostman.com/view/13630829/TVmFkLwy#cebd6a63-13bc-4ba1-81f7-360c88871b90
 
 export default class NowNodesProvider extends GenericProvider {
-    public supportedCurrencies: AvailableCurrencies[] = ['DASH', 'LTC', 'BTC'];
+    public supportedCurrencies: AvailableCurrencies[] = ['LTC', 'BTC'];
 
     constructor(public apiKey: string, public currenciesToRpcUrls: Partial<Record<AvailableCurrencies, string>>) {
         super();
@@ -22,7 +22,7 @@ export default class NowNodesProvider extends GenericProvider {
         });
         const bigBalanceSatoshiLike = Big(balance);
         let confirmedBalance: Big;
-        if (currency === 'DASH') {
+        if (currency as any === 'DASH') {
             confirmedBalance = bigBalanceSatoshiLike.times(Big(units.dash.duff));
         } else if (currency === 'LTC') {
             confirmedBalance = bigBalanceSatoshiLike.times(Big(units.ltc.litoshi));

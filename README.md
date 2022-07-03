@@ -1,7 +1,11 @@
 <br />
 
+<!-- http://ipa-reader.xyz/?text=ki%3Age%C9%AAt&voice=Joey --->
+
 <h2 align="center">
-⛩️ Keagate – A High-Performance Cryptocurrency Payment Gateway
+
+Keagate *(&#107;&#105;&colon;&#103;&#101;&#618;&#116;)* – A High-Performance Cryptocurrency Payment Gateway
+
 </h2>
 
 <h4 align="center">
@@ -28,11 +32,9 @@
 
 ## About The Project
 
-Keagate is a self-hosted, high-performance cryptocurrency payment gateway. Payments can administer via the API or with the built-in invoicing client (image below).
+Keagate is a self-hosted, high-performance cryptocurrency payment gateway. Payments can administered with the [API]() for flexibility or with the built-in invoicing client (*image below*).
 
-**Currently support currencies: Solana, Cardano, Litecoin, and Dash.** (Bitcoin, Ripple coming next)
-
-Todo: all trezor compatible chains falls to coinlib, others are built custom here.
+**Currently support currencies: Bitcoin, Ethereum, Dogecoin, Solana, Litecoin, Polygon, and Dash.**
 
 <p align="left">
   <img src="assets/invoice-frame.png" width="650" alt="Invoice Preview">
@@ -41,14 +43,13 @@ Todo: all trezor compatible chains falls to coinlib, others are built custom her
 ### Purpose
 
 * No KYC
-* No fees (besides network) or middleman
-* Private
-* Self-hosted
-* Easily extensible for new currencies
-* Highly performant
+* No fees, middleman, or escrow
+* Self-hosted/Private
+* Easily extensible
+* Lightweight and highly performant
 * No IP Blocking
 
-Funds go directly to your wallet via the one-time addresses that are created for each payment.
+Funds go directly to your wallet via a one-time addresses that is created for each payment.
 
 ## Getting Started
 
@@ -60,23 +61,6 @@ Funds go directly to your wallet via the one-time addresses that are created for
 ### Installation
 
 TODO Create Dockerfile (Nginx, Mongo no external, Node, Npm)
-
-### API Providers
-
-In order to check wallet balances and broadcast transactions, Keagate needs to interact with particular blockchain APIs. There's a variety of providers out there that support different sets of blockchains. This packages bundles up connectors to popular providers with a simple, unified API.
-
-Existing connectors can be seen in the [packages/api-providers](packages/api-providers/src/) folder. All of the one available in this package provide generous free tiers. Simply pass your API keys with the configuration below.
-
-Currently available API providers:
-
-| Name  | Available chains |
-|-----------------|--------------|
-| NowNodes | dash, ltc, btc |
-| Tatum | ltc, btc, ada, and xrp |
-
-It's very easy to add a provider, see [TatumProvider.ts](packages/api-providers/src/TatumProvider.ts) as an example.
-
-Make sure that one of the available API providers cover each currency you plan on using.
 
 ## Usage
 
@@ -191,5 +175,30 @@ The invoice client is a statically built React package (via Vite). This static b
 Editing the react package will automatically build to `dist`, so just refresh the page to see the changes.
 
 The source code in invoice client is pretty straight-forward, so anyone familiar with React (& TailwindCSS) should have an easy time making their desired alterations.
+
+</details>
+
+<details>
+
+<summary>
+
+### API Providers
+
+</summary>
+
+In order to check wallet balances and broadcast transactions, Keagate needs to interact with particular blockchain APIs. There's a variety of providers out there that support different sets of blockchains. This packages bundles up connectors to popular providers with a simple, unified API.
+
+Existing connectors can be seen in the [packages/api-providers](packages/api-providers/src/) folder. All of the one available in this package provide generous free tiers. Simply pass your API keys with the configuration below.
+
+Currently available API providers:
+
+| Name  | Available chains |
+|-----------------|--------------|
+| NowNodes | dash, ltc, btc |
+| Tatum | ltc, btc, ada, and xrp |
+
+It's very easy to add a provider, see [TatumProvider.ts](packages/api-providers/src/TatumProvider.ts) as an example.
+
+Make sure that one of the available API providers cover each currency you plan on using.
 
 </details>

@@ -22,7 +22,6 @@ const safeRand = () => Math.round(randU32Sync() / 1000);
 export const walletIndexGenerator: Record<typeof availableCoinlibCurrencies[number], () => number> = {
     LTC: safeRand,
     BTC: safeRand,
-    DASH: safeRand,
     DOGE: safeRand,
     ETH: safeRand,
 };

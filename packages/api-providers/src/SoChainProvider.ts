@@ -4,7 +4,7 @@ import { AvailableCurrencies, fGet } from '@keagate/common/src';
 // https://documenter.getpostman.com/view/13630829/TVmFkLwy#cebd6a63-13bc-4ba1-81f7-360c88871b90
 
 export default class SoChainProvider extends GenericProvider {
-    public supportedCurrencies: AvailableCurrencies[] = ['DASH', 'LTC', 'BTC'];
+    public supportedCurrencies: AvailableCurrencies[] = ['LTC', 'BTC'];
 
     async getBalance(currency: AvailableCurrencies, address: string): Promise<{ result: { confirmedBalance: number; unconfirmedBalance?: number } }> {
         if (!this.supportedCurrencies.includes(currency)) {

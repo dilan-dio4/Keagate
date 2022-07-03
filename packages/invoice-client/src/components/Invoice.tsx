@@ -2,7 +2,7 @@ import { Spinner, Alert } from 'flowbite-react';
 import { ReactComponent as BtcIcon } from 'cryptocurrency-icons/svg/color/btc.svg';
 import { ReactComponent as SolIcon } from 'cryptocurrency-icons/svg/color/sol.svg';
 import { ReactComponent as LtcIcon } from 'cryptocurrency-icons/svg/color/ltc.svg';
-import { ReactComponent as DashIcon } from 'cryptocurrency-icons/svg/color/dash.svg';
+// import { ReactComponent as DashIcon } from 'cryptocurrency-icons/svg/color/dash.svg';
 import { ReactComponent as MaticIcon } from 'cryptocurrency-icons/svg/color/matic.svg';
 // import { ReactComponent as XrpIcon } from 'cryptocurrency-icons/svg/color/xrp.svg';
 // import { ReactComponent as TrxIcon } from 'cryptocurrency-icons/svg/color/trx.svg';
@@ -22,7 +22,6 @@ import ThreeDotsOverlay from './ThreeDotsOverlay';
 
 export default function Invoice() {
     const currencyToIcon: Record<AvailableCurrencies, React.ReactChild> = {
-        DASH: <DashIcon width={50} height={50} />,
         LTC: <LtcIcon width={50} height={50} />,
         SOL: <SolIcon width={50} height={50} />,
         BTC: <BtcIcon width={50} height={50} />,

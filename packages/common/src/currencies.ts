@@ -1,4 +1,4 @@
-export const availableCoinlibCurrencies = ['DASH', 'LTC', 'BTC', 'ETH', 'DOGE'] as const;
+export const availableCoinlibCurrencies = ['LTC', 'BTC', 'ETH', 'DOGE'] as const;
 export const availableNativeCurrencies = ['SOL', 'MATIC'] as const;
 
 export type AvailableCurrencies = typeof availableCoinlibCurrencies[number] | typeof availableNativeCurrencies[number];
@@ -13,11 +13,11 @@ export const currencies: Record<AvailableCurrencies, { name: string; explorer: s
         name: 'Solana',
         explorer: 'https://explorer.solana.com/',
     },
-    DASH: {
-        networkName: 'Dash Mainnet',
-        name: 'Dash',
-        explorer: 'https://explorer.dash.org/insight/',
-    },
+    // DASH: {
+    //     networkName: 'Dash Mainnet',
+    //     name: 'Dash',
+    //     explorer: 'https://explorer.dash.org/insight/',
+    // },
     BTC: {
         networkName: 'Bitcoin Network Mainnet',
         name: 'Bitcoin',
