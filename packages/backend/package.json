@@ -5,11 +5,12 @@
   "main": "build/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "prebuild": "shx rm tsconfig.package.tsbuildinfo",
     "build": "tsc -p ./tsconfig.package.json",
     "dev": "ts-node-dev --project ./tsconfig.package.json --respawn src/index.ts",
     "run": "npm run build && pm2 restart build/index.js --name \"Keagate\" --time && pm2 save",
     "prepack": "tsc --project tsconfig.build.json",
-    "clean": "shx rm -rf build package-lock.json node_modules"
+    "clean": "shx rm -rf build package-lock.json node_modules tsconfig.package.tsbuildinfo"
   },
   "dependencies": {
     "@blockfrost/blockfrost-js": "^4.1.0",
