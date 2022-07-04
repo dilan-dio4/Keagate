@@ -6,7 +6,7 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "tsc --build ./tsconfig.project.json",
+    "build": "npm run prebuild -ws && tsc --build ./tsconfig.project.json",
     "run": "npm run build && pm2 restart build/index.js --name \"Keagate\" --time && pm2 save",
     "clean": "npm run clean -ws",
     "dev": "npm-run-all build --parallel dev:*",
