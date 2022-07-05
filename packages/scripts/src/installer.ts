@@ -1,8 +1,6 @@
 import { program } from 'commander';
-import commandExists from 'command-exists';
 import logger, { LoggingLevels } from './DelegateLogger';
-import spawnAsync from '@expo/spawn-async';
-import prompts from 'prompts';
+import setupMongo from './setup/setupMongo';
 
 program
     .name('Keagate installer')
@@ -21,7 +19,7 @@ async function main() {
     }
 
     logger.setLogLevel(logLevel);
-
+    await setupMongo();
 
     process.exit();
 }

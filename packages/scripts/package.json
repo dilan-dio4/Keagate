@@ -14,10 +14,13 @@
     "command-exists": "^1.2.9",
     "commander": "^9.3.0",
     "cross-fetch": "^3.1.5",
+    "kleur": "^4.1.5",
+    "mongodb": "^4.7.0",
     "prompts": "^2.4.2"
   },
   "devDependencies": {
     "@types/command-exists": "^1.2.0",
+    "@types/node": "^18.0.1",
     "@types/prompts": "^2.0.14"
   }
 }

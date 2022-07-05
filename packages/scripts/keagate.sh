@@ -5,7 +5,7 @@ set -e
 OS="$(uname -s)"
 INSTALL_DIR="$HOME"
 FOLDER_NAME="Keagate"
-REPO_LOCATION="https://github.com/dilan-dio4/Keagate"
+REPO_LOCATION="https://github.com/dilan-dio4/$FOLDER_NAME"
 INSTALLER_ARGS=""
 
 # @file Interaction
@@ -174,11 +174,11 @@ if [ -d "$FOLDER_NAME" ]; then
     interaction::prompt_yes_no "Folder $FOLDER_NAME/ already exists in $INSTALL_DIR. Would you like me to overwrite this? (This will preserve \`config/local.json\`)" "yes"
     should_remove_stale_folder=$?
     if (($should_remove_stale_folder == 0)); then
-        cp -f $FOLDER_NAME/config/local.json ./local.json >/dev/null 2>&1
+        cp -f $FOLDER_NAME/config/local.json ./local.json >/dev/null 2>&1 || true
         rm -rf $FOLDER_NAME
         git clone $REPO_LOCATION
-        cp -f ./local.json $FOLDER_NAME/config/local.json >/dev/null 2>&1
-        rm -f ./local.json
+        cp -f ./local.json $FOLDER_NAME/config/local.json >/dev/null 2>&1 || true
+        rm -f ./local.json || true
     fi
 else
     git clone $REPO_LOCATION
@@ -186,6 +186,6 @@ fi
 
 cd $FOLDER_NAME
 npm i
-npm i -g pm2
+npm i -g pm2 m >/dev/null 2>&1
 npm run build
-node packages/scripts/dist/installer.js $INSTALLER_ARGS
+node packages/scripts/build/installer.js $INSTALLER_ARGS
