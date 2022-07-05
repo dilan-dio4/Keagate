@@ -16,6 +16,28 @@ INSTALLER_ARGS=""
 #     ...do dangerous stuff
 # fi
 
+# Parse Flags
+for i in "$@"; do
+    case $i in
+    -q | --quiet)
+        QUIET="true"
+        INSTALLER_ARGS+="$key "
+        shift # past argument
+        # shift # past value
+        ;;
+    -v | --verbose)
+        VERBOSE="true"
+        INSTALLER_ARGS+="$key "
+        shift # past argument
+        # shift # past value
+        ;;
+    *)
+        keagate_echo "Unrecognized argument $key"
+        exit 1
+        ;;
+    esac
+done
+
 keagate_has() {
     type "$1" >/dev/null 2>&1
 }
@@ -24,30 +46,10 @@ keagate_echo() {
     command printf %s\\n "$*" 2>/dev/null
 }
 
-# Parse Flags
-parse_args() {
-    while [[ $# -gt 0 ]]; do
-        key="$1"
-
-        case $key in
-        -q | --quiet)
-            QUIET="true"
-            INSTALLER_ARGS+="$key "
-            shift # past argument
-            # shift # past value
-            ;;
-        -v | --verbose)
-            VERBOSE="true"
-            INSTALLER_ARGS+="$key "
-            shift # past argument
-            # shift # past value
-            ;;
-        *)
-            keagate_echo "Unrecognized argument $key"
-            exit 1
-            ;;
-        esac
-    done
+keagate_debug() {
+    if [ -n "$VERBOSE" ]; then
+        command printf %s\\n "$*" 2>/dev/null
+    fi
 }
 
 update_node() {
@@ -65,15 +67,13 @@ install_node() {
     update_node
 }
 
-parse_args "$@"
-
 if keagate_has "node" && keagate_has "npm"; then
-    $VERBOSE && keagate_echo "Node and NPM detected. Checking versions..."
+    keagate_debug "Node and NPM detected. Checking versions..."
     installed_node_version=$(node --version | cut -c 2-3)
-    $VERBOSE && keagate_echo "Installed node version: $installed_node_version"
+    keagate_debug "Installed node version: $installed_node_version"
     if (("$installed_node_version" < "14")); then
-        read -p "Your existing node version ($installed_node_version) is too low for Keagate. Would you like me to automatically upgrade Node and NPM? (You can revert back with \`nvm install $installed_node_version && nvm use $installed_node_version\`) [Y/n]" -n 1 -r
-        echo    # (optional) move to a new line
+        read -p "Your existing node version ($installed_node_version) is too low for Keagate. Would you like me to automatically upgrade Node and NPM? (You can revert back with \`nvm install $installed_node_version && nvm use $installed_node_version\`) [Y/n] " -n 1 -r
+        echo # (optional) move to a new line
         if [[ $REPLY =~ ^[Yy]$ ]]; then
             update_node
         else
@@ -88,9 +88,9 @@ fi
 cd $INSTALL_DIR
 
 if [ -d "$FOLDER_NAME" ]; then
-    $VERBOSE && keagate_echo "Found an existing $FOLDER_NAME/. Asking for permission to override..."
-    read -p "Folder $FOLDER_NAME/ already exists in $INSTALL_DIR. Would you like me to overwrite this? (This will preserve \`config/local.json\`) [Y/n]" -n 1 -r
-    echo    # (optional) move to a new line
+    keagate_debug "Found an existing $FOLDER_NAME/. Asking for permission to override..."
+    read -p "Folder $FOLDER_NAME/ already exists in $INSTALL_DIR. Would you like me to overwrite this? (This will preserve \`config/local.json\`) [Y/n] " -n 1 -r
+    echo # (optional) move to a new line
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         cp -f $FOLDER_NAME/config/local.json ./local.json >/dev/null 2>&1 || true
         rm -rf $FOLDER_NAME
