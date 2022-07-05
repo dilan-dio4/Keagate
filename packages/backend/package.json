@@ -20,6 +20,7 @@
     "@keagate/common": "workspace:^1.0.0",
     "@sinclair/typebox": "^0.24.7",
     "@solana/web3.js": "^1.44.0",
+    "big.js": "^6.2.0",
     "bip32": "^3.0.1",
     "bip39": "^3.0.4",
     "bitcore-lib-ltc": "^8.25.30",
