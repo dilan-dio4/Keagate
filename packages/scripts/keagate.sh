@@ -88,6 +88,7 @@ fi
 cd $INSTALL_DIR
 
 if [ -d "$FOLDER_NAME" ]; then
+    $VERBOSE && keagate_echo "Found an existing $FOLDER_NAME/. Asking for permission to override..."
     read -p "Folder $FOLDER_NAME/ already exists in $INSTALL_DIR. Would you like me to overwrite this? (This will preserve \`config/local.json\`) [Y/n]" -n 1 -r
     echo    # (optional) move to a new line
     if [[ $REPLY =~ ^[Yy]$ ]]; then
