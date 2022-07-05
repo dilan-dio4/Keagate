@@ -3,7 +3,7 @@
   "scripts": {
     "pureDev": "vite",
     "dev": "tsc --project tsconfig.package.json && vite build --watch",
-    "prebuild": "shx rm -rf dist tsconfig.package.tsbuildinfo",
+    "prebuild": "shx rm -f tsconfig.package.tsbuildinfo",
     "build": "vite build",
     "clean": "shx rm -rf build dist package-lock.json node_modules tsconfig.package.tsbuildinfo"
   },

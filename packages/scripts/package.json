@@ -5,12 +5,19 @@
   "main": "build/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prebuild": "shx rm tsconfig.package.tsbuildinfo",
+    "prebuild": "shx rm -f tsconfig.package.tsbuildinfo",
     "build": "tsc --build ./tsconfig.package.json",
     "clean": "shx rm -rf build package-lock.json node_modules tsconfig.package.tsbuildinfo"
   },
   "dependencies": {
+    "@expo/spawn-async": "^1.6.0",
+    "command-exists": "^1.2.9",
     "commander": "^9.3.0",
-    "cross-fetch": "^3.1.5"
+    "cross-fetch": "^3.1.5",
+    "prompts": "^2.4.2"
+  },
+  "devDependencies": {
+    "@types/command-exists": "^1.2.0",
+    "@types/prompts": "^2.0.14"
   }
 }
