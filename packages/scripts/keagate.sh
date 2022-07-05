@@ -147,6 +147,8 @@ install_node() {
     export NVM_DIR="$HOME/.nvm"
     [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
     [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
+    nvm install 16
+    nvm use 16
     update_node
 }
 
@@ -157,7 +159,7 @@ if keagate_has "node" && keagate_has "npm"; then
     installed_node_version=$(node --version | cut -c 2-3)
     $VERBOSE && keagate_echo "Installed node version: $installed_node_version"
     if (("$installed_node_version" < "14")); then
-        interaction::prompt_yes_no "Your existing node version ($installed_node_version) is too low for Keagate. Would you like me to automatically upgrade Node and NPM? (You can revert back with \`n $installed_node_version\`)" "yes"
+        interaction::prompt_yes_no "Your existing node version ($installed_node_version) is too low for Keagate. Would you like me to automatically upgrade Node and NPM? (You can revert back with \`nvm install $installed_node_version && nvm use $installed_node_version\`)" "yes"
         should_upgrade_node=$?
         if (($should_upgrade_node == 0)); then
             update_node
