@@ -12,6 +12,9 @@
         },
         {
             "path": "./packages/api-providers/tsconfig.package.json",
+        },
+        {
+            "path": "./packages/scripts/tsconfig.package.json",
         }
     ]
 }

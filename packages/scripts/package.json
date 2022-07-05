@@ -1,0 +1,16 @@
+{
+  "name": "@keagate/scripts",
+  "version": "1.0.0",
+  "description": "\"# keagate\"",
+  "main": "build/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prebuild": "shx rm tsconfig.package.tsbuildinfo",
+    "build": "tsc --build ./tsconfig.package.json",
+    "clean": "shx rm -rf build package-lock.json node_modules tsconfig.package.tsbuildinfo"
+  },
+  "dependencies": {
+    "commander": "^9.3.0",
+    "cross-fetch": "^3.1.5"
+  }
+}
