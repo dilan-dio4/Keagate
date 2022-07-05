@@ -60,7 +60,10 @@ Funds go directly to your wallet via a one-time addresses that is created for ea
 
 ### Installation
 
-TODO Create Dockerfile (Nginx, Mongo no external, Node, Npm)
+
+```
+curl https://raw.githubusercontent.com/dilan-dio4/Keagate/main/packages/scripts/keagate.sh | bash
+```
 
 ## Usage
 

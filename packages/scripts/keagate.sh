@@ -143,6 +143,8 @@ update_node() {
 }
 
 install_node() {
+    mkdir $HOME/.n
+    export N_PREFIX=$HOME/.n
     curl -L https://raw.githubusercontent.com/tj/n/master/bin/n -o n
     bash n lts
     update_node
