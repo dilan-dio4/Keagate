@@ -40,6 +40,7 @@ yarn-error.log*
 .netlify
 
 **/package-lock.json
+**/pnpm-lock.yaml
 **/node_modules
 **/.env
 **/local.settings.json

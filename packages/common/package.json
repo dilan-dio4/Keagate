@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "prebuild": "shx rm -f tsconfig.package.tsbuildinfo",
     "build": "tsc --build ./tsconfig.package.json",
-    "clean": "shx rm -rf build package-lock.json node_modules tsconfig.package.tsbuildinfo"
+    "clean": "shx rm -rf build pnpm-lock.yaml node_modules tsconfig.package.tsbuildinfo"
   },
   "dependencies": {
     "cross-fetch": "^3.1.5"

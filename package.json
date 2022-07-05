@@ -6,21 +6,21 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "npm run prebuild -ws && tsc --build ./tsconfig.project.json",
-    "run": "npm run build && pm2 restart build/index.js --name \"Keagate\" --time && pm2 save",
-    "clean": "npm run clean -ws",
+    "build": "pnpm --filter \"*\" prebuild && pnpm --filter \"*\" build",
+    "run": "pnpm run build && pm2 restart build/index.js --name \"Keagate\" --time && pm2 save",
+    "clean": "pnpm --filter \"*\" clean && shx rm -rf pnpm-lock.yaml node_modules",
     "dev": "npm-run-all build --parallel dev:*",
-    "dev:backend": "cd packages/backend && npm run dev",
-    "dev:invoice-client": "cd packages/invoice-client && npm run dev",
+    "dev:backend": "cd packages/backend && pnpm run dev",
+    "dev:invoice-client": "cd packages/invoice-client && pnpm run dev",
     "prettier-format": "prettier --config prettier.config.js 'packages/*/src/**/*{.ts,.tsx,.js,.jsx}' --write",
-    "find-circular-deps": "npx madge --circular --extensions ts,tsx packages/"
+    "find-circular-deps": "pnpx madge --circular --extensions ts,tsx packages/"
   },
   "author": "dilan-dio4",
   "license": "ISC",
   "devDependencies": {
     "@types/big.js": "^6.1.3",
     "@types/multicoin-address-validator": "^0.5.0",
-    "@types/node": "^14.14.25",
+    "@types/node": "^18.0.1",
     "@typescript-eslint/eslint-plugin": "^4.14.2",
     "@typescript-eslint/parser": "^4.14.2",
     "eslint": "^7.19.0",
@@ -31,6 +31,7 @@
     "typescript": "^4.7.4"
   },
   "dependencies": {
+    "@keagate/invoice-client": "workspace:*",
     "big.js": "^6.2.0"
   }
 }

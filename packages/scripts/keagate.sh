@@ -52,11 +52,6 @@ keagate_debug() {
     fi
 }
 
-update_node() {
-    npm i -g n
-    n 16
-}
-
 install_node() {
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
     export NVM_DIR="$HOME/.nvm"
@@ -64,7 +59,6 @@ install_node() {
     [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
     nvm install 16
     nvm use 16
-    update_node
 }
 
 if keagate_has "node" && keagate_has "npm"; then
@@ -75,7 +69,7 @@ if keagate_has "node" && keagate_has "npm"; then
         read -p "Your existing node version ($installed_node_version) is too low for Keagate. Would you like me to automatically upgrade Node and NPM? (You can revert back with \`nvm install $installed_node_version && nvm use $installed_node_version\`) [Y/n] " -n 1 -r
         echo # (optional) move to a new line
         if [[ $REPLY =~ ^[Yy]$ ]]; then
-            update_node
+            install_node
         else
             keagate_echo "Please manually upgrade Node to at least version 14, then run this script again."
             exit 0
@@ -103,7 +97,9 @@ else
 fi
 
 cd $FOLDER_NAME
-npm i
-npm i -g pm2 m >/dev/null 2>&1
-npm run build
+npm i -g pnpm
+pnpm setup
+pnpm i -g pm2 m typescript >/dev/null 2>&1
+pnpm i
+pnpm run build
 node packages/scripts/build/installer.js $INSTALLER_ARGS

@@ -53,7 +53,6 @@ async function main() {
             console.error(`No admin wallet found for currency ${_currency}`);
             continue;
         }
-
         // Get the balance of and send a transaction from the admin wallet
         server.get(`/get${coinName}Balance`, { preHandler: auth }, (request, reply) => currentClient.getBalance());
         server.post<{ Body: Record<string, any> }>(`/send${coinName}Transaction`, { preHandler: auth }, (request, reply) =>
