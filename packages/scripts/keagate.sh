@@ -76,6 +76,10 @@ install_node() {
     print_complete
 }
 
+clean_stdin() {
+    while read -e -t 0.1; do : ; done
+}
+
 # https://stackoverflow.com/a/42876846
 # if [[ "$EUID" = 0 ]]; then
 #     keagate_debug "Privilege check: already root"
@@ -124,11 +128,11 @@ fi
 sudo chmod 666 /var/run/docker.sock
 
 if keagate_has "node" && keagate_has "npm"; then
-    keagate_echo "Node and NPM detected. Checking versions..."
+    print_complete "Node and NPM detected"
     installed_node_version=$(node --version | cut -c 2-3)
     keagate_echo "Installed node version: $installed_node_version"
     if (("$installed_node_version" < "14")); then
-        echo
+        clean_stdin
         read -p "Your existing Node version ($installed_node_version) is too low for Keagate. Would you like me to automatically upgrade Node and NPM? (You can revert back with \`nvm install $installed_node_version && nvm use $installed_node_version\`) [Y/n] " -n 1 -r
         echo # (optional) move to a new line
         if [[ $REPLY =~ ^[Yy]$ ]]; then
@@ -147,11 +151,12 @@ cd $INSTALL_DIR
 
 if [ -d "$FOLDER_NAME" ]; then
     keagate_debug "Found an existing $FOLDER_NAME/. Asking for permission to override..."
-    echo
+    clean_stdin
     read -p "Folder $FOLDER_NAME/ already exists in $INSTALL_DIR. Would you like me to overwrite this? (This will preserve \`config/local.json\`) [Y/n] " -n 1 -r
     echo # (optional) move to a new line
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         keagate_debug "Caching existing local.json to a temporary file..."
+        sudo chown -R $(whoami): $FOLDER_NAME .*
         cp -f $FOLDER_NAME/config/local.json ./local.json || true
         rm -rf $FOLDER_NAME
         echo "Cloning Keagate repo..."
@@ -187,7 +192,7 @@ echo "Building Keagate..."
 pnpm run build >/dev/null 2>&1
 print_complete
 
-echo -e '\0033\0143'
+clean_stdin
 node packages/scripts/build/configure.js $NODE_ARGS
 
 pm2 start packages/backend/build/index.js --name "Keagate" --time
