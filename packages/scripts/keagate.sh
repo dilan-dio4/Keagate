@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# set -e
+set -uo pipefail
 
 # OS="$(uname -s)"
-# if [ -n "$SUDO_USER" ]; then
-#     HOME="$(getent passwd $SUDO_USER | cut -d: -f6)"
-# fi
+if [ -n "$SUDO_USER" ]; then
+    HOME="$(getent passwd $SUDO_USER | cut -d: -f6)"
+fi
 
 INSTALL_DIR="$HOME"
 FOLDER_NAME="Keagate"
@@ -21,62 +21,6 @@ NODE_ARGS=""
 # fi
 
 # https://github.com/DevelopersToolbox/bash-spinner
-
-draw_spinner() {
-    # shellcheck disable=SC1003
-    local -a marks=('/' '-' '\' '|')
-    local i=0
-
-    delay=${SPINNER_DELAY:-0.25}
-    message=${1:-}
-
-    while :; do
-        printf '%s\r' "${marks[i++ % ${#marks[@]}]} $message"
-        sleep "${delay}"
-    done
-}
-
-start_spinner() {
-    message=${1:-}              # Set optional message
-    draw_spinner "${message}" & # Start the Spinner:
-    SPIN_PID=$!                 # Make a note of its Process ID (PID):
-    declare -g SPIN_PID
-    trap stop_spinner $(seq 0 15)
-}
-
-draw_spinner_eval() {
-    # shellcheck disable=SC1003
-    local -a marks=('/' '-' '\' '|')
-    local i=0
-    delay=${SPINNER_DELAY:-0.25}
-    message=${1:-}
-    while :; do
-        message=$(eval "$1")
-        printf '%s\r' "${marks[i++ % ${#marks[@]}]} $message"
-        sleep "${delay}"
-        printf '\033[2K'
-    done
-}
-
-start_spinner_eval() {
-    command=${1} # Set the command
-    if [[ -z "${command}" ]]; then
-        echo "You MUST supply a command"
-        exit
-    fi
-    draw_spinner_eval "${command}" & # Start the Spinner:
-    SPIN_PID=$!                      # Make a note of its Process ID (PID):
-    declare -g SPIN_PID
-    trap stop_spinner $(seq 0 15)
-}
-
-stop_spinner() {
-    if [[ "${SPIN_PID}" -gt 0 ]]; then
-        kill -9 $SPIN_PID >/dev/null 2>&1
-    fi
-    SPIN_PID=0
-    printf '\033[2K'
-}
 
 # Parse Flags
 for i in "$@"; do
@@ -114,18 +58,22 @@ keagate_debug() {
     fi
 }
 
+print_complete() {
+    echo -e "\033[1;32m\xE2\x9C\x94 Complete"
+}
+
 install_node() {
-    # start_spinner "Installing Node and NPM via nvm"
+    keagate_echo "Installing Node and NPM via nvm..."
     curl -s -o nvm.sh https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh
     chmod +x ./nvm.sh
     export NVM_DIR="$HOME/.nvm"
-    ./nvm.sh
+    ./nvm.sh >/dev/null 2>&1
     rm ./nvm.sh
     [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
     [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
-    nvm install 16
-    nvm use 16
-    # stop_spinner
+    nvm install 16 >/dev/null 2>&1
+    nvm use 16 >/dev/null 2>&1
+    print_complete
 }
 
 # https://stackoverflow.com/a/42876846
@@ -143,24 +91,23 @@ install_node() {
 # fi
 
 if ! keagate_has "docker"; then
-    keagate_debug "\`Docker\` command not found. Installing..."
+    keagate_echo "\`Docker\` command not found. Installing..."
     # Install Docker - used for Mongo and Nginx
     curl -fsSL https://get.docker.com -o get-docker.sh
-    # start_spinner "Installing Docker"
-    sudo sh get-docker.sh
+    sudo sh get-docker.sh >/dev/null 2>&1
     rm get-docker.sh
-    # stop_spinner
+    print_complete
 fi
 
 # Fix permissions issue on certain ports from `docker run`
 sudo chmod 666 /var/run/docker.sock
 
 if keagate_has "node" && keagate_has "npm"; then
-    keagate_debug "Node and NPM detected. Checking versions..."
+    keagate_echo "Node and NPM detected. Checking versions..."
     installed_node_version=$(node --version | cut -c 2-3)
-    keagate_debug "Installed node version: $installed_node_version"
+    keagate_echo "Installed node version: $installed_node_version"
     if (("$installed_node_version" < "14")); then
-        echo -e '\0033\0143'
+        echo
         read -p "Your existing node version ($installed_node_version) is too low for Keagate. Would you like me to automatically upgrade Node and NPM? (You can revert back with \`nvm install $installed_node_version && nvm use $installed_node_version\`) [Y/n] " -n 1 -r
         echo # (optional) move to a new line
         if [[ $REPLY =~ ^[Yy]$ ]]; then
@@ -171,6 +118,7 @@ if keagate_has "node" && keagate_has "npm"; then
         fi
     fi
 else
+    keagate_echo "Node and NPM not detected on this machine."
     install_node
 fi
 
@@ -178,44 +126,44 @@ cd $INSTALL_DIR
 
 if [ -d "$FOLDER_NAME" ]; then
     keagate_debug "Found an existing $FOLDER_NAME/. Asking for permission to override..."
-    echo -e '\0033\0143'
+    echo
     read -p "Folder $FOLDER_NAME/ already exists in $INSTALL_DIR. Would you like me to overwrite this? (This will preserve \`config/local.json\`) [Y/n] " -n 1 -r
     echo # (optional) move to a new line
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         keagate_debug "Caching existing local.json to a temporary file..."
         cp -f $FOLDER_NAME/config/local.json ./local.json || true
         rm -rf $FOLDER_NAME
-        # start_spinner "Cloning Keagate repo"
-        git clone $REPO_LOCATION
+        echo "Cloning Keagate repo..."
+        git clone $REPO_LOCATION >/dev/null 2>&1
         cp -f ./local.json $FOLDER_NAME/config/local.json || true
         rm -f ./local.json || true
     fi
 else
-    # start_spinner "Cloning Keagate repo"
-    git clone $REPO_LOCATION
+    echo "Cloning Keagate repo..."
+    git clone $REPO_LOCATION >/dev/null 2>&1
 fi
 
-# stop_spinner
+print_complete
 
 cd $FOLDER_NAME
 
 # >/dev/null 2>&1
 
-# start_spinner "Installing and configuring pnpm"
-npm i -g pnpm
+echo "Installing and configuring pnpm..."
+npm i -g pnpm >/dev/null 2>&1
 export PNPM_HOME="$HOME/.local/share/pnpm"
 export PATH="$PNPM_HOME:$PATH"
-pnpm setup
-# stop_spinner
+pnpm setup >/dev/null 2>&1
+print_complete
 
-# start_spinner "Installing Keagate depencencies"
+echo "Installing Keagate dependencies..."
 pnpm i --silent -g pm2
 pnpm i --silent
-# stop_spinner
+print_complete
 
-# start_spinner "Building Keagate"
-pnpm run build
-# stop_spinner
+echo "Building Keagate..."
+pnpm run build >/dev/null 2>&1
+print_complete
 
 echo -e '\0033\0143'
 node packages/scripts/build/configure.js $NODE_ARGS
