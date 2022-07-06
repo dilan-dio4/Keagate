@@ -6,7 +6,7 @@ set -e
 INSTALL_DIR="$HOME"
 FOLDER_NAME="Keagate"
 REPO_LOCATION="https://github.com/dilan-dio4/$FOLDER_NAME"
-INSTALLER_ARGS=""
+NODE_ARGS=""
 
 # yes/no script
 # read -p "Are you sure? " -n 1 -r
@@ -109,13 +109,13 @@ for i in "$@"; do
     case $i in
     -q | --quiet)
         QUIET="true"
-        INSTALLER_ARGS+="$key "
+        NODE_ARGS+="$key "
         shift # past argument
         # shift # past value
         ;;
     -v | --verbose)
         VERBOSE="true"
-        INSTALLER_ARGS+="$key "
+        NODE_ARGS+="$key "
         shift # past argument
         # shift # past value
         ;;
@@ -203,7 +203,6 @@ stop_spinner
 
 cd $FOLDER_NAME
 
-# Init
 start_spinner "Installing and configuring pnpm"
 npm i -g pnpm >/dev/null 2>&1
 export PNPM_HOME="$HOME/.local/share/pnpm"
@@ -220,4 +219,6 @@ start_spinner "Building Keagate"
 pnpm run build >/dev/null 2>&1
 stop_spinner
 
-node packages/scripts/build/installer.js $INSTALLER_ARGS
+node packages/scripts/build/configure.js $NODE_ARGS
+
+pnpm run start >/dev/null 2>&1

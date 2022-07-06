@@ -8,10 +8,11 @@ import setupWallets from './setupWallets';
 import { existsSync, writeFileSync } from 'fs';
 import path from 'path';
 import opts, { setOpts } from './opts';
+import spawnAsync from '@expo/spawn-async';
 
 program
-    .name('Keagate installer')
-    .description('CLI for installing keagate')
+    .name('Keagate configure')
+    .description('CLI for configuring keagate')
     .option('-q, --quiet', 'Install quietly without asking for configuration. Sensible defaults will be applied')
     .option('-v, --verbose', 'Verbose logging')
     .option('-d --dryrun', 'Dry run. No downloading of programs or editing of your file system will occur.')
@@ -54,6 +55,7 @@ async function main() {
         } else {
             writeFileSync(path.join(__dirname, '..', '..', '..', 'config/', 'local.json'), prettyConfig);
         }
+        spawnAsync('pnpm', ['run', ''])
     }
 
     process.exit();

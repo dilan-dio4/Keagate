@@ -31,7 +31,7 @@ export default async function setupWallets(): Promise<Partial<MyConfig>> {
                 inactive: 'no'
             },
             {
-                type: prev => prev ? "text" : null,
+                type: prev => prev ? "password" : null,
                 name: "privateKey",
                 message:`What's your ${currencyName} private key?`,
             }
