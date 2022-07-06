@@ -8,6 +8,7 @@ function randomSeedGenerator(length: number) {
 export default async function setupSeeds(): Promise<Partial<MyConfig>> {
     return {
         INVOICE_ENC_KEY: randomSeedGenerator(16),
-        SEED: randomSeedGenerator(32)
+        SEED: randomSeedGenerator(32),
+        KEAGATE_API_KEY: randomSeedGenerator(32),
     };
 }

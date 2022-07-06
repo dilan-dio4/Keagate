@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -uo pipefail
-
 # OS="$(uname -s)"
 if [ -n "$SUDO_USER" ]; then
     HOME="$(getent passwd $SUDO_USER | cut -d: -f6)"
@@ -59,7 +57,7 @@ keagate_debug() {
 }
 
 print_complete() {
-    echo -e "\033[1;32m\xE2\x9C\x94 Complete"
+    echo -e "\033[1;32m \xE2\x9C\x94 Complete\033[0m"
 }
 
 install_node() {
@@ -168,4 +166,5 @@ print_complete
 echo -e '\0033\0143'
 node packages/scripts/build/configure.js $NODE_ARGS
 
-# pnpm run start
+pm2 start packages/backend/build/index.js --name "Keagate" --time
+pm2 save

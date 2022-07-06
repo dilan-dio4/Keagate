@@ -7,7 +7,7 @@
   ],
   "scripts": {
     "build": "pnpm --filter \"*\" prebuild && tsc --build ./tsconfig.project.json",
-    "start": "pm2 restart packages/backend/build/index.js --name \"Keagate\" --time && pm2 save",
+    "start": "pm2 start packages/backend/build/index.js --name \"Keagate\" --time && pm2 save",
     "clean": "pnpm --filter \"*\" clean && shx rm -rf pnpm-lock.yaml node_modules",
     "dev": "npm-run-all build --parallel dev:*",
     "dev:backend": "cd packages/backend && pnpm run dev",
