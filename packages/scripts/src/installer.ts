@@ -1,6 +1,7 @@
 import { program } from 'commander';
 import logger, { LoggingLevels } from './DelegateLogger';
-import setupMongo from './setup/setupMongo';
+import setupMongo from './setupMongo';
+import setupNginx from './setupNginx';
 
 program
     .name('Keagate installer')
@@ -20,7 +21,8 @@ async function main() {
 
     logger.setLogLevel(logLevel);
     await setupMongo();
-
+    await setupNginx();
+    
     process.exit();
 }
 

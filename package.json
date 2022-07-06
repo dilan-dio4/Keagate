@@ -6,7 +6,7 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "pnpm --filter \"*\" prebuild && pnpm --filter \"*\" build",
+    "build": "pnpm --filter \"*\" prebuild && tsc --build ./tsconfig.project.json",
     "run": "pnpm run build && pm2 restart build/index.js --name \"Keagate\" --time && pm2 save",
     "clean": "pnpm --filter \"*\" clean && shx rm -rf pnpm-lock.yaml node_modules",
     "dev": "npm-run-all build --parallel dev:*",

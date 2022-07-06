@@ -1,25 +1,12 @@
 import { MongoClient } from 'mongodb';
 import prompts from 'prompts';
 import spawnAsync from '@expo/spawn-async';
-import logger from '../DelegateLogger';
+import logger from './DelegateLogger';
 import kleur from 'kleur';
 import { MyConfig } from '@keagate/common/src';
 
 async function installMongo(): Promise<string> {
-    const mInstaller = spawnAsync('m', ['stable']);
-    mInstaller.child.stdout.on('data', () => {
-        mInstaller.child.stdin.write('y\n');
-    });
-    
-    await mInstaller;
-
-    const mToolsInstaller = spawnAsync('m', ['tools', 'stable']);
-    mToolsInstaller.child.stdout.on('data', () => {
-        mToolsInstaller.child.stdin.write('y\n');
-    });
-
-    await mToolsInstaller;
-
+    await spawnAsync('docker', "run -d -p 27017:27017 --name keagate-mongo mongo:latest".split(" "));
     const defaultMongoConnectionString = "mongodb://localhost:27017";
     return defaultMongoConnectionString;
 }

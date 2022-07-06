@@ -2,7 +2,7 @@
 
 set -e
 
-OS="$(uname -s)"
+# OS="$(uname -s)"
 INSTALL_DIR="$HOME"
 FOLDER_NAME="Keagate"
 REPO_LOCATION="https://github.com/dilan-dio4/$FOLDER_NAME"
@@ -52,6 +52,8 @@ keagate_debug() {
     fi
 }
 
+is_user_root() { [ "$(id -u)" -eq 0 ]; }
+
 install_node() {
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
     export NVM_DIR="$HOME/.nvm"
@@ -60,6 +62,15 @@ install_node() {
     nvm install 16
     nvm use 16
 }
+
+# Install Docker - used for Mongo and Nginx
+curl -fsSL https://get.docker.com -o get-docker.sh
+if ! is_user_root; then
+    read -s -p "Password: " password
+    echo "$password\n" | sudo -S sh get-docker.sh
+else
+    sh get-docker.sh
+fi
 
 if keagate_has "node" && keagate_has "npm"; then
     keagate_debug "Node and NPM detected. Checking versions..."
@@ -97,9 +108,13 @@ else
 fi
 
 cd $FOLDER_NAME
+
+# Init
 npm i -g pnpm
+export PNPM_HOME="$HOME/.local/share/pnpm"
+export PATH="$PNPM_HOME:$PATH"
 pnpm setup
-pnpm i -g pm2 m typescript >/dev/null 2>&1
+pnpm i -g pm2 >/dev/null 2>&1
 pnpm i
 pnpm run build
 node packages/scripts/build/installer.js $INSTALLER_ARGS
