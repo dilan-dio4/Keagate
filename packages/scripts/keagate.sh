@@ -194,6 +194,7 @@ else
     start_spinner "Cloning Keagate repo"
     git clone $REPO_LOCATION >/dev/null 2>&1
 fi
+
 stop_spinner
 
 cd $FOLDER_NAME
