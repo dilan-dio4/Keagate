@@ -1,4 +1,4 @@
-import { availableCoinlibCurrencies } from '@keagate/common/src';
+import { availableCoinlibCurrencies } from '@keagate/common';
 import crypto from 'crypto';
 
 // In pure unit

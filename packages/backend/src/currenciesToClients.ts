@@ -1,4 +1,4 @@
-import { availableCoinlibCurrencies, availableNativeCurrencies, ConcreteConstructor } from '@keagate/common/src';
+import { availableCoinlibCurrencies, availableNativeCurrencies, ConcreteConstructor } from '@keagate/common';
 import { AnyPayments, CoinPayments, NetworkType, SUPPORTED_NETWORK_SYMBOLS } from 'coinlib-port';
 import config from './config';
 import GenericAdminWallet from './adminWallets/GenericAdminWallet';

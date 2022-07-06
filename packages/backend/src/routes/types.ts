@@ -2,7 +2,7 @@ import { Type } from '@sinclair/typebox';
 import { WithId } from 'mongodb';
 import { ForRequest, MongoPayment } from '../types';
 import { encrypt } from '../utils';
-import { paymentStatuses } from '@keagate/common/src';
+import { paymentStatuses } from '@keagate/common';
 
 // function StringEnum<T extends string[]>(values: [...T], options?: UnsafeOptions) {
 //     return Type.Unsafe<T[number]>({ enum: values, ...options });

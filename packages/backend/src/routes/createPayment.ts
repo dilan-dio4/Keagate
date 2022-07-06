@@ -2,7 +2,7 @@ import { Static, Type } from '@sinclair/typebox';
 import { FastifyInstance, RouteShorthandOptions } from 'fastify';
 import auth from '../middlewares/auth';
 import GenericTransactionalWallet from '../transactionalWallets/GenericTransactionalWallet';
-import { AvailableCurrencies, arrayIncludes } from '@keagate/common/src';
+import { AvailableCurrencies, arrayIncludes } from '@keagate/common';
 import TransactionalCoinlibWrapper from '../transactionalWallets/coinlib/TransactionalCoinlibWrapper';
 import { walletIndexGenerator } from '../transactionalWallets/coinlib/trxLimits';
 import context from '../context';

@@ -17,7 +17,7 @@ import dayjs from 'dayjs';
 import clsx from 'clsx';
 import React, { useState, useEffect } from 'react';
 import { copyToClipboard } from '../utils/utils';
-import { AvailableCurrencies, currencies, fGet, PaymentStatusType } from '@keagate/common/src';
+import { AvailableCurrencies, currencies, fGet, PaymentStatusType } from '@keagate/common';
 import ThreeDotsOverlay from './ThreeDotsOverlay';
 
 export default function Invoice() {

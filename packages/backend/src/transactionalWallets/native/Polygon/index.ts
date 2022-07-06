@@ -1,6 +1,6 @@
 import { NativePaymentConstructor } from '../../GenericTransactionalWallet';
 import GenericTransactionalWallet from '../GenericNativeTransactionalWallet';
-import { AvailableCurrencies } from '@keagate/common/src';
+import { AvailableCurrencies } from '@keagate/common';
 import { IFromNew } from '../../../types';
 import { ethers } from 'ethers';
 

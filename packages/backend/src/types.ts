@@ -1,4 +1,4 @@
-import { AvailableCurrencies, PaymentStatusType } from '@keagate/common/src';
+import { AvailableCurrencies, PaymentStatusType } from '@keagate/common';
 
 // Inherited from all payment types
 interface PaymentRoot {

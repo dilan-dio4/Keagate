@@ -1,7 +1,7 @@
 import { NativePaymentConstructor } from '../../GenericTransactionalWallet';
 import GenericTransactionalWallet from '../GenericNativeTransactionalWallet';
 import { Keypair } from '@solana/web3.js';
-import { AvailableCurrencies } from '@keagate/common/src';
+import { AvailableCurrencies } from '@keagate/common';
 import base58 from 'bs58';
 import { IFromNew } from '../../../types';
 

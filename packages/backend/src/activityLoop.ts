@@ -1,7 +1,7 @@
 import context from './context';
 import GenericTransactionalWallet from './transactionalWallets/GenericTransactionalWallet';
 import dayjs, { Dayjs } from 'dayjs';
-import { PaymentStatusType, availableNativeCurrencies } from '@keagate/common/src';
+import { PaymentStatusType, availableNativeCurrencies } from '@keagate/common';
 import { delay } from './utils';
 import config from './config';
 

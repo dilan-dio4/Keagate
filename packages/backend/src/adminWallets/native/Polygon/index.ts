@@ -1,7 +1,7 @@
 import GenericNativeAdminWallet from '../GenericNativeAdminWallet';
 import { ethers } from 'ethers';
 import { NativeAdminConstructor } from '../../GenericAdminWallet';
-import { availableNativeCurrencies } from '@keagate/common/src';
+import { availableNativeCurrencies } from '@keagate/common';
 import config from '../../../config';
 import Big from 'big.js';
 import limiters from '../../../limiters';

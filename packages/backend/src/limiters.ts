@@ -1,4 +1,4 @@
-import { availableNativeCurrencies } from '@keagate/common/src';
+import { availableNativeCurrencies } from '@keagate/common';
 import Bottleneck from 'bottleneck';
 
 interface ILimiterDetails {

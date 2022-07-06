@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import { ObjectId } from 'mongodb';
-import { AvailableCurrencies, ConcreteConstructor, PaymentStatusType } from '@keagate/common/src';
+import { AvailableCurrencies, ConcreteConstructor, PaymentStatusType } from '@keagate/common';
 import mongoGenerator from '../mongo/generator';
 import { MongoPayment, IFromNew, INativeInitInDatabase, ICoinlibInitInDatabase } from '../types';
 import config from '../config';

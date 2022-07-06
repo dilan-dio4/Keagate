@@ -5,7 +5,7 @@ import {
     ConcreteConstructor,
     currencies,
     arrayIncludes,
-} from '@keagate/common/src';
+} from '@keagate/common';
 import { AnyPayments } from 'coinlib-port';
 import { WithId } from 'mongodb';
 import GenericAdminWallet from './adminWallets/GenericAdminWallet';

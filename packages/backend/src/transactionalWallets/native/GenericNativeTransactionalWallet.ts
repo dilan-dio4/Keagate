@@ -2,7 +2,7 @@ import { MongoPayment, NativePayment } from '../../types';
 import config from '../../config';
 import GenericAdminWallet from '../../adminWallets/GenericAdminWallet';
 import GenericTransactionalWallet, { NativePaymentConstructor } from '../GenericTransactionalWallet';
-import { PaymentStatusType } from '@keagate/common/src';
+import { PaymentStatusType } from '@keagate/common';
 import dayjs from 'dayjs';
 
 export default abstract class GenericNativeTransactionalWallet extends GenericTransactionalWallet {

@@ -1,5 +1,5 @@
 import GenericProvider from './GenericProvider';
-import { AvailableCurrencies, fGet, fPost, currencies } from '@keagate/common/src';
+import { AvailableCurrencies, fGet, fPost, currencies } from '@keagate/common';
 import units from './units';
 import Big from 'big.js';
 

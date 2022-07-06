@@ -2,7 +2,7 @@ import { CoinlibPayment, IFromNew, MongoPayment } from '../../types';
 import config from '../../config';
 import { AnyPayments, BalanceResult, BaseUnsignedTransaction, BaseSignedTransaction, BaseBroadcastResult, UtxoInfo } from 'coinlib-port';
 import GenericTransactionalWallet, { CoinlibPaymentConstructor } from '../GenericTransactionalWallet';
-import { PaymentStatusType } from '@keagate/common/src';
+import { PaymentStatusType } from '@keagate/common';
 import { requestRetry } from '../../utils';
 import dayjs from 'dayjs';
 import { minWalletBalances } from './trxLimits';

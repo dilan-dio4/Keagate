@@ -1,6 +1,6 @@
 import config from './config';
 import fastify from 'fastify';
-import { currencies, availableCoinlibCurrencies, availableNativeCurrencies } from '@keagate/common/src';
+import { currencies, availableCoinlibCurrencies, availableNativeCurrencies } from '@keagate/common';
 import GenericAdminWallet from './adminWallets/GenericAdminWallet';
 import auth from './middlewares/auth';
 import createPaymentRoute from './routes/createPayment';

@@ -1,7 +1,7 @@
 import { Connection, clusterApiUrl, PublicKey, Keypair, Transaction, SystemProgram, LAMPORTS_PER_SOL, sendAndConfirmTransaction } from '@solana/web3.js';
 import GenericNativeAdminWallet from '../GenericNativeAdminWallet';
 import base58 from 'bs58';
-import { availableNativeCurrencies } from '@keagate/common/src';
+import { availableNativeCurrencies } from '@keagate/common';
 import config from '../../../config';
 import { NativeAdminConstructor } from '../../GenericAdminWallet';
 import sample from 'lodash.sample';
