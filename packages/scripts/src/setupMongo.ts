@@ -9,7 +9,16 @@ import opts from './opts';
 const DEFAULT_MONGO_CONN_STR = "mongodb://localhost:27017";
 
 async function installMongo(): Promise<string> {
-    await spawnAsync('docker', "run -d -p 27017:27017 --name keagate-mongo mongo:4.4".split(" "));
+    try {
+        await spawnAsync('docker', "run -d -p 27017:27017 --name keagate-mongo mongo:4.4".split(" "));
+    } catch (error) {
+        console.log("error", error)
+        if (error.startsWith('docker: Error response from daemon: Conflict. The container name "/keagate-mongo" is already in use by container')) {
+            return DEFAULT_MONGO_CONN_STR;
+        } else {
+            throw new Error(error)
+        }
+    }
     return DEFAULT_MONGO_CONN_STR;
 }
 
