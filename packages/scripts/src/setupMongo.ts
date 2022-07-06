@@ -6,7 +6,7 @@ import kleur from 'kleur';
 import { MyConfig } from '@keagate/common/src';
 
 async function installMongo(): Promise<string> {
-    await spawnAsync('docker', "run -d -p 27017:27017 --name keagate-mongo mongo:latest".split(" "));
+    await spawnAsync('docker', "run -d -p 27017:27017 --name keagate-mongo mongo:4.4".split(" "));
     const defaultMongoConnectionString = "mongodb://localhost:27017";
     return defaultMongoConnectionString;
 }

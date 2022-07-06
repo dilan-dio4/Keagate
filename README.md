@@ -60,10 +60,19 @@ Funds go directly to your wallet via a one-time addresses that is created for ea
 
 ### Installation
 
+One-liner:
 
 ```
-curl -o- https://raw.githubusercontent.com/dilan-dio4/Keagate/main/packages/scripts/keagate.sh | bash
+curl -o- https://raw.githubusercontent.com/dilan-dio4/Keagate/main/packages/scripts/keagate.sh | sudo bash
 ```
+
+Alternate:
+```
+curl -o keagate.sh https://raw.githubusercontent.com/dilan-dio4/Keagate/main/packages/scripts/keagate.sh
+chmod +x keagate.sh
+sudo ./keagate.sh
+```
+
 
 ## Usage
 
