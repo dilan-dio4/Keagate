@@ -144,7 +144,7 @@ install_node() {
     start_spinner "Installing Node and NPM via nvm"
     curl -s -o nvm.sh https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh
     chmod +x ./nvm.sh
-    ./nvm.sh 2>/dev/null
+    ./nvm.sh >/dev/null 2>&1
     rm ./nvm.sh
     export NVM_DIR="$HOME/.nvm"
     [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
@@ -221,4 +221,4 @@ stop_spinner
 
 node packages/scripts/build/configure.js $NODE_ARGS
 
-pnpm run start >/dev/null 2>&1
+# pnpm run start >/dev/null 2>&1
