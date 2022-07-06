@@ -16,6 +16,76 @@ INSTALLER_ARGS=""
 #     ...do dangerous stuff
 # fi
 
+function _spinner() {
+    # $1 start/stop
+    #
+    # on start: $2 display message
+    # on stop : $2 process exit status
+    #           $3 spinner function pid (supplied from stop_spinner)
+
+    local on_success="DONE"
+    local on_fail="FAIL"
+    local white="\e[1;37m"
+    local green="\e[1;32m"
+    local red="\e[1;31m"
+    local nc="\e[0m"
+
+    case $1 in
+    start)
+        # calculate the column where spinner and status msg will be displayed
+        let column=$(tput cols)-${#2}-8
+        # display message and position the cursor in $column column
+        echo -ne ${2}
+        printf "%${column}s"
+
+        # start spinner
+        i=1
+        sp='\|/-'
+        delay=${SPINNER_DELAY:-0.15}
+
+        while :; do
+            printf "\b${sp:i++%${#sp}:1}"
+            sleep $delay
+        done
+        ;;
+    stop)
+        if [[ -z ${3} ]]; then
+            echo "spinner is not running.."
+            exit 1
+        fi
+
+        kill $3 >/dev/null 2>&1
+
+        # inform the user uppon success or failure
+        echo -en "\b["
+        if [[ $2 -eq 0 ]]; then
+            echo -en "${green}${on_success}${nc}"
+        else
+            echo -en "${red}${on_fail}${nc}"
+        fi
+        echo -e "]"
+        ;;
+    *)
+        echo "invalid argument, try {start/stop}"
+        exit 1
+        ;;
+    esac
+}
+
+function start_spinner {
+    # $1 : msg to display
+    _spinner "start" "${1}" &
+    # set global spinner pid
+    _sp_pid=$!
+    disown
+}
+
+function stop_spinner {
+    # $1 : command exit status
+    _spinner "stop" $1 $_sp_pid
+    unset _sp_pid
+}
+
 # Parse Flags
 for i in "$@"; do
     case $i in
@@ -55,22 +125,31 @@ keagate_debug() {
 is_user_root() { [ "$(id -u)" -eq 0 ]; }
 
 install_node() {
+    start_spinner "Installing Node and NPM via nvm"
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
     export NVM_DIR="$HOME/.nvm"
     [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
     [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
-    nvm install 16
-    nvm use 16
+    nvm install 16 >/dev/null 2>&1
+    nvm use 16 >/dev/null 2>&1
+    stop_spinner 0
 }
 
 # Install Docker - used for Mongo and Nginx
+start_spinner "Downloading docker"
+stop_spinner 0
 curl -fsSL https://get.docker.com -o get-docker.sh
 if ! is_user_root; then
+    keagate_debug "Script is not running as root, needs password..."
     read -s -p "Password: " password
-    echo "$password\n" | sudo -S sh get-docker.sh
+    echo
+    start_spinner "Installing docker"
+    echo "$password\n" | sudo -S sh get-docker.sh >/dev/null 2>&1
 else
-    sh get-docker.sh
+    start_spinner "Installing docker"
+    sh get-docker.sh >/dev/null 2>&1
 fi
+stop_spinner 0
 
 if keagate_has "node" && keagate_has "npm"; then
     keagate_debug "Node and NPM detected. Checking versions..."
@@ -99,22 +178,35 @@ if [ -d "$FOLDER_NAME" ]; then
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         cp -f $FOLDER_NAME/config/local.json ./local.json >/dev/null 2>&1 || true
         rm -rf $FOLDER_NAME
-        git clone $REPO_LOCATION
+        start_spinner "Cloning Keagate repo"
+        git clone $REPO_LOCATION >/dev/null 2>&1
         cp -f ./local.json $FOLDER_NAME/config/local.json >/dev/null 2>&1 || true
         rm -f ./local.json || true
     fi
 else
+    start_spinner "Cloning Keagate repo"
     git clone $REPO_LOCATION
 fi
+stop_spinner 0
+
 
 cd $FOLDER_NAME
 
 # Init
-npm i -g pnpm
+start_spinner "Installing and configuring pnpm"
+npm i --silent -g pnpm
 export PNPM_HOME="$HOME/.local/share/pnpm"
 export PATH="$PNPM_HOME:$PATH"
 pnpm setup
-pnpm i -g pm2 >/dev/null 2>&1
-pnpm i
-pnpm run build
+stop_spinner 0
+
+start_spinner "Installing Keagate depencencies"
+pnpm i --silent -g pm2
+pnpm i --silent
+stop_spinner 0
+
+start_spinner "Building Keagate"
+pnpm run build >/dev/null 2>&1
+stop_spinner 0
+
 node packages/scripts/build/installer.js $INSTALLER_ARGS
