@@ -73,6 +73,8 @@ chmod +x keagate.sh
 sudo ./keagate.sh
 ```
 
+This should work on most popular flavors of Linux. Tested on Ubuntu 18+, Debian 10+.ls
+
 
 ## Usage
 

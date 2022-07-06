@@ -12,9 +12,23 @@ async function installMongo(): Promise<string> {
     try {
         await spawnAsync('docker', "run -d -p 27017:27017 --name keagate-mongo mongo:4.4".split(" "));
     } catch (error) {
-        console.log("error", error)
-        if (error.message?.startsWith('docker: Error response from daemon: Conflict. The container name "/keagate-mongo" is already in use by container')) {
-            return DEFAULT_MONGO_CONN_STR;
+        if (error.output && error.output[1].startsWith("docker: Error response from daemon: Conflict. The container name")) {
+            const { shouldOverwriteMongo } = await prompts({
+                type: "toggle",
+                name: "shouldOverwriteMongo",
+                message: `Detected an existing Keagate mongo instance. Would you like to overwrite this?`,
+                initial: false,
+                active: 'yes',
+                inactive: 'no'
+            })
+            
+            if (shouldOverwriteMongo) {
+                await spawnAsync('docker', "stop keagate-mongo".split(" "));
+                await spawnAsync('docker', "rm keagate-mongo".split(" "));
+                return installMongo();        
+            } else {
+                return DEFAULT_MONGO_CONN_STR;
+            }
         } else {
             throw new Error(error)
         }
@@ -63,7 +77,7 @@ async function mongoFromConnectionString(mongoConnectionString: string): Promise
 
             const mongoConnectionWithoutAuth = mongoConnectionString.replace(/\/\/.*@/, '//');
             const connectionStringParts = mongoConnectionWithoutAuth.split('//');
-            const newConnectionString = connectionStringParts.shift() + '//' +  `${mongoUsername}:${mongoPassword}@` + connectionStringParts.join('//')
+            const newConnectionString = connectionStringParts.shift() + '//' + `${mongoUsername}:${mongoPassword}@` + connectionStringParts.join('//')
             logger.log(2, `Trying new auth connection string as ${newConnectionString}`);
             return mongoFromConnectionString(newConnectionString)
         } else {

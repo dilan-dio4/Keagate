@@ -18,6 +18,8 @@ NODE_ARGS=""
 #     ...do dangerous stuff
 # fi
 
+# sudo chmod 777 -R .local
+
 # https://github.com/DevelopersToolbox/bash-spinner
 
 # Parse Flags
@@ -57,7 +59,7 @@ keagate_debug() {
 }
 
 print_complete() {
-    echo -e "\033[1;32m \xE2\x9C\x94 Complete\033[0m"
+    echo -e "\033[1;32m \xE2\x9C\x94 ${1:-"Complete"}\033[0m"
 }
 
 install_node() {
@@ -88,13 +90,34 @@ install_node() {
 #     fi
 # fi
 
+if ! keagate_has "git"; then
+    keagate_echo "git command not found. Installing..."
+    if keagate_has "apt"; then
+        sudo apt -y install git-all
+    elif keagate_has "dnf"; then
+        sudo dnf -y install git-all
+    else
+        echo "Could not install git from bash. Please install git, then run this script again. (For more information: https://git-scm.com/download/linux)"
+        exit 1
+    fi
+    print_complete
+else
+    print_complete "git detected"
+fi
+
 if ! keagate_has "docker"; then
-    keagate_echo "\`Docker\` command not found. Installing..."
+    keagate_echo "Docker command not found. Installing..."
     # Install Docker - used for Mongo and Nginx
     curl -fsSL https://get.docker.com -o get-docker.sh
     sudo sh get-docker.sh >/dev/null 2>&1
     rm get-docker.sh
+    if ! keagate_has "docker"; then
+        echo "Could not install Docker from bash. Please install Docker, then run this script again. (For more information: https://docs.docker.com/desktop/linux/install/)"
+        exit 1
+    fi
     print_complete
+else
+    print_complete "Docker detected"
 fi
 
 # Fix permissions issue on certain ports from `docker run`
@@ -106,7 +129,7 @@ if keagate_has "node" && keagate_has "npm"; then
     keagate_echo "Installed node version: $installed_node_version"
     if (("$installed_node_version" < "14")); then
         echo
-        read -p "Your existing node version ($installed_node_version) is too low for Keagate. Would you like me to automatically upgrade Node and NPM? (You can revert back with \`nvm install $installed_node_version && nvm use $installed_node_version\`) [Y/n] " -n 1 -r
+        read -p "Your existing Node version ($installed_node_version) is too low for Keagate. Would you like me to automatically upgrade Node and NPM? (You can revert back with \`nvm install $installed_node_version && nvm use $installed_node_version\`) [Y/n] " -n 1 -r
         echo # (optional) move to a new line
         if [[ $REPLY =~ ^[Yy]$ ]]; then
             install_node
@@ -141,6 +164,7 @@ else
     git clone $REPO_LOCATION >/dev/null 2>&1
 fi
 
+sudo chown -R $(whoami): $FOLDER_NAME .*
 print_complete
 
 cd $FOLDER_NAME
