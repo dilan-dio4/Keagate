@@ -1,1 +1,2 @@
-export * from './installer'
+export default null;
+// Just for entry point
