@@ -142,7 +142,10 @@ keagate_debug() {
 
 install_node() {
     start_spinner "Installing Node and NPM via nvm"
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash 2>/dev/null
+    curl -s -o nvm.sh https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh
+    chmod +x ./nvm.sh
+    ./nvm.sh 2>/dev/null
+    rm ./nvm.sh
     export NVM_DIR="$HOME/.nvm"
     [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
     [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
@@ -153,8 +156,9 @@ install_node() {
 
 # Install Docker - used for Mongo and Nginx
 curl -fsSL https://get.docker.com -o get-docker.sh
-start_spinner "Installing docker"
+start_spinner "Installing Docker"
 sudo sh get-docker.sh >/dev/null 2>&1
+rm get-docker.sh
 sudo chmod 666 /var/run/docker.sock
 stop_spinner
 
@@ -216,4 +220,4 @@ start_spinner "Building Keagate"
 pnpm run build >/dev/null 2>&1
 stop_spinner
 
-sudo node packages/scripts/build/installer.js $INSTALLER_ARGS
+node packages/scripts/build/installer.js $INSTALLER_ARGS
