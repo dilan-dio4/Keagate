@@ -3,12 +3,14 @@ import prompts from 'prompts';
 import spawnAsync from '@expo/spawn-async';
 import logger from './DelegateLogger';
 import kleur from 'kleur';
-import { MyConfig } from '@keagate/common/src';
+import { MyConfig } from '@keagate/common';
+import opts from './opts';
+
+const DEFAULT_MONGO_CONN_STR = "mongodb://localhost:27017";
 
 async function installMongo(): Promise<string> {
     await spawnAsync('docker', "run -d -p 27017:27017 --name keagate-mongo mongo:4.4".split(" "));
-    const defaultMongoConnectionString = "mongodb://localhost:27017";
-    return defaultMongoConnectionString;
+    return DEFAULT_MONGO_CONN_STR;
 }
 
 async function mongoFromConnectionString(mongoConnectionString: string): Promise<Partial<MyConfig>> {
@@ -83,8 +85,12 @@ export default async function setupMongo(): Promise<Partial<MyConfig>> {
         })
         return mongoFromConnectionString(mongoConnectionString);
     } else if (mongoConfig === "INSTALL") {
-        const mongoUrl = await installMongo();
-        return mongoFromConnectionString(mongoUrl);
+        if (opts().dryrun) {
+            return { MONGO_CONNECTION_STRING: DEFAULT_MONGO_CONN_STR };
+        } else {
+            const mongoUrl = await installMongo();
+            return mongoFromConnectionString(mongoUrl);
+        }
     } else {
         return setupMongo();
     }

@@ -1,4 +1,4 @@
-import { MyConfig } from '@keagate/common/src';
+import { MyConfig } from '@keagate/common';
 import crypto from 'crypto';
 
 function randomSeedGenerator(length: number) {
@@ -7,7 +7,7 @@ function randomSeedGenerator(length: number) {
 
 export default async function setupSeeds(): Promise<Partial<MyConfig>> {
     return {
-        INVOICE_ENC_KEY: randomSeedGenerator(32),
+        INVOICE_ENC_KEY: randomSeedGenerator(16),
         SEED: randomSeedGenerator(32)
     };
 }
