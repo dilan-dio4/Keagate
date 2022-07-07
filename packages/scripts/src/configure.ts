@@ -52,17 +52,24 @@ async function main() {
         if (existsSync(path.join(__dirname, '..', '..', '..', 'config/', 'local.json'))) {
             // prettier-ignore
             logger.log(
+                `\n\n ` +
                 `A ${kleur.italic(`config/local.json`)} already exists. To preserve the integrity ` +
                 `of your previous configuration. This new configuration will be ` +
                 `written to ${kleur.italic(`config/local2.json`)}. ${kleur.bold(`Manually merge`)} ` +
-                `the new configuration into ${kleur.italic(`config/local.json`)} as needed.`
+                `the new configuration into ${kleur.italic(`config/local.json`)} as needed. ` +
+                `\n\n `
             );
             writeFileSync(path.join(__dirname, '..', '..', '..', 'config/', 'local2.json'), prettyConfig);
         } else {
             writeFileSync(path.join(__dirname, '..', '..', '..', 'config/', 'local.json'), prettyConfig);
         }
-        await spawnAsync('pm2', ['stop', 'Keagate']);
-        await spawnAsync('pm2', ['del', 'Keagate']);
+        try {
+            await spawnAsync('pm2', ['stop', 'Keagate']);
+            await spawnAsync('pm2', ['del', 'Keagate']);
+        } catch (error) {
+            logger.debug("Removing old process errored because it doesn't exist yet")
+        }
+
         const startSpawn = spawnAsync('pm2', ['start', 'packages/backend/build/index.js', '--name', 'Keagate', '--time'], {
             cwd: path.join(__dirname, '..', '..', '..'),
         });
