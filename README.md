@@ -23,6 +23,8 @@ Keagate *(&#107;&#105;&colon;&#103;&#101;&#618;&#116;)* – A High-Performance 
 * [Getting Started](#getting-started)
   * [Prerequisites](#prerequisites)
   * [Installation](#installation)
+    * [One-liner](#one-liner)
+    * [Manual](#manual-installation)
 * [Usage](#usage)
 * [Development](#development)
   * [Adding a currency](#adding-a-currency)
