@@ -70,11 +70,12 @@ async function mongoFromConnectionString(mongoConnectionString: string): Promise
                     type: 'text',
                     name: 'mongoUsername',
                     message: `Enter MongoDB username ` + kleur.italic(`(e.g. admin)`),
+                    validate: val => val.length > 0 ? true : "An input is required. Please try again."
                 },
                 {
                     type: 'password',
                     name: 'mongoPassword',
-                    message: (prev) => `Enter ${prev}'s password`,
+                    message: (prev) => `Enter ${prev}'s password`
                 },
             ]);
 
@@ -108,6 +109,7 @@ export default async function setupMongo(): Promise<Partial<MyConfig>> {
             type: 'text',
             name: 'mongoConnectionString',
             message: `Enter a MongoDB connection string ` + kleur.italic('(e.g mongodb://admin:password@localhost:27017)'),
+            validate: val => val.length > 0 ? true : "An input is required. Please try again."
         });
         return mongoFromConnectionString(mongoConnectionString);
     } else if (mongoConfig === 'INSTALL') {

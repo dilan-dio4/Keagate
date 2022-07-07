@@ -6,6 +6,7 @@ function randomSeedGenerator(length: number) {
 }
 
 export default async function setupSeeds(): Promise<Partial<MyConfig>> {
+    // TODO IP whitelist?
     return {
         INVOICE_ENC_KEY: randomSeedGenerator(16),
         SEED: randomSeedGenerator(32),

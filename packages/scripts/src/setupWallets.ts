@@ -21,6 +21,7 @@ export default async function setupWallets(): Promise<Partial<MyConfig>> {
                 type: 'text',
                 name: 'publicKey',
                 message: `What's your ${currencyName} public key (where Keagate will send to)?`,
+                validate: val => val.length > 0 ? true : "An input is required. Please try again."
             },
             {
                 type: 'toggle',
@@ -34,6 +35,7 @@ export default async function setupWallets(): Promise<Partial<MyConfig>> {
                 type: (prev) => (prev ? 'password' : null),
                 name: 'privateKey',
                 message: `What's your ${currencyName} private key?`,
+                validate: val => val.length > 0 ? true : "An input is required. Please try again."
             },
         ]);
         keagateConfig[currency] = {
