@@ -218,9 +218,8 @@
     pnpm run build >/dev/null 2>&1
     print_complete
 
-    read -t 1 -n 10000 discard 
-    node packages/scripts/build/configure.js "$NODE_ARGS"
-
+    # sh -c 'node packages/scripts/build/configure.js "$NODE_ARGS"'
+    exec packages/scripts/postinstall.sh
     # pm2 stop Keagate || true
     # pm2 del Keagate || true
     # pm2 start packages/backend/build/index.js --name "Keagate" --time
