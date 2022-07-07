@@ -56,8 +56,7 @@ async function main() {
                 `A ${kleur.italic(`config/local.json`)} already exists. To preserve the integrity ` +
                 `of your previous configuration. This new configuration will be ` +
                 `written to ${kleur.italic(`config/local2.json`)}. ${kleur.bold(`Manually merge`)} ` +
-                `the new configuration into ${kleur.italic(`config/local.json`)} as needed. ` +
-                `\n\n `
+                `the new configuration into ${kleur.italic(`config/local.json`)} as needed. `
             );
             writeFileSync(path.join(__dirname, '..', '..', '..', 'config/', 'local2.json'), prettyConfig);
         } else {
@@ -85,7 +84,7 @@ async function main() {
         `Keagate is successfully running on this machine. If you're using a cloud provider like ` +
         `AWS or Azure, please be sure to ${kleur.bold(`enable public access via HTTP(S)`)}. ` +
         `Then, you can locate your API documentation at ${kleur.underline(config.HOST + '/docs')} ` +
-        `and OpenAPI schema with '${kleur.italic(`curl localhost/docs/yaml`)}'. ` +
+        `and OpenAPI schema with '${kleur.italic(`curl localhost:8081/docs/yaml`)}'. ` +
         `Most of the API routes require a ${kleur.bold(`KEAGATE_API_KEY`)} header. Your has ` +
         `been randomly generated as: "${config.KEAGATE_API_KEY}". You can always find and edit ` +
         `this value [and many others] in ${kleur.italic(`config/local.json`)}. ` +

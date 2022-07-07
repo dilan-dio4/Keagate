@@ -35,10 +35,10 @@ export const MongoTypeForRequest = Type.Object(
             description: `An ISO 8601 timestamp detailing when a payment last received a status update.`,
         }),
         status: Type.String({
-            description: `The current status of a payment. Can be one of: ${JSON.stringify(paymentStatuses)}`,
+            description: `The current status of a payment. Can be one of: ${JSON.stringify(paymentStatuses)}.`,
         }),
         id: Type.String({
-            description: `The internal id of a payment, also serves as Mongo's _id for the given record`,
+            description: `The internal id of a payment, also serves as Mongo's _id for the given record.`,
         }),
         extraId: Type.Optional(
             Type.String({
@@ -72,7 +72,7 @@ export const MongoTypeForRequest = Type.Object(
         is not required. Note that this is only a path and must be appended to your public domain that Keagate is running on.`,
         }),
         currency: Type.String({
-            description: `The shorthand name of the selected payment's corresponding currency`,
+            description: `The shorthand name of the selected payment's corresponding currency.`,
         }),
         walletIndex: Type.Optional(
             Type.Number({

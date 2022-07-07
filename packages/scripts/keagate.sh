@@ -149,8 +149,6 @@
     # Fix permissions issue on certain ports from `docker run`
     sudo chmod 666 /var/run/docker.sock
 
-    VERBOSE="true"
-
     if keagate_has "node" && keagate_has "npm"; then
         print_complete "Node and NPM detected"
         installed_node_version=$(node --version | cut -c 2-3)
