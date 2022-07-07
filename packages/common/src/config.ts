@@ -5,7 +5,7 @@ type MyCurrencyConfig = Partial<
         AvailableCurrencies,
         {
             ADMIN_PUBLIC_KEY: string;
-            ADMIN_PRIVATE_KEY: string;
+            ADMIN_PRIVATE_KEY?: string;
         }
     >
 >;
@@ -29,4 +29,6 @@ export interface MyConfig extends MyCurrencyConfig {
 
     TESTNETS: boolean;
     USE_SO_CHAIN: boolean;
+
+    HOST?: string;
 }

@@ -1,6 +1,7 @@
 import { FastifyInstance } from 'fastify';
 import fastifySwagger from '@fastify/swagger';
 import fastifyPlugin from 'fastify-plugin';
+import config from '../config';
 
 export default fastifyPlugin(async function createInvoiceClientRoute(server: FastifyInstance) {
     server.register(fastifySwagger, {
@@ -29,7 +30,7 @@ export default fastifyPlugin(async function createInvoiceClientRoute(server: Fas
             ],
             servers: [
                 {
-                    url: 'https://YOUR_SERVER',
+                    url: config.getTyped('HOST') || 'http://YOUR_SERVER',
                 },
             ],
             security: [],
