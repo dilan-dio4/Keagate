@@ -216,10 +216,10 @@
 
     node packages/scripts/build/configure.js "$NODE_ARGS"
 
-    # pm2 stop Keagate || true
-    # pm2 del Keagate || true
-    # pm2 start packages/backend/build/index.js --name "Keagate" --time
-    # pm2 save
+    pm2 stop Keagate || true
+    pm2 del Keagate || true
+    pm2 start packages/backend/build/index.js --name "Keagate" --time
+    pm2 save
 
 } # this ensures the entire script is downloaded #
 
