@@ -122,6 +122,8 @@
             sudo apt -y install git-all
         elif keagate_has "dnf"; then
             sudo dnf -y install git-all
+        elif keagate_has "yum"; then
+            sudo yum -y install git
         else
             echo "Could not install git from bash. Please install git, then run this script again. (For more information: https://git-scm.com/download/linux)"
             exit 1
