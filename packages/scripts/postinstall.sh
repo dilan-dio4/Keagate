@@ -1,3 +1,3 @@
 #!/bin/bash
 
-node ./build/configure.js
+node $1

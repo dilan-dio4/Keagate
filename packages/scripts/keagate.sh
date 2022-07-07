@@ -219,7 +219,8 @@
     print_complete
 
     # sh -c 'node packages/scripts/build/configure.js "$NODE_ARGS"'
-    exec packages/scripts/postinstall.sh
+    sudo chmod +x packages/scripts/postinstall.sh
+    exec packages/scripts/postinstall.sh "$PWD/packages/scripts/build/configure.js"
     # pm2 stop Keagate || true
     # pm2 del Keagate || true
     # pm2 start packages/backend/build/index.js --name "Keagate" --time
