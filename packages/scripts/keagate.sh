@@ -30,7 +30,7 @@
             # shift # past value
             ;;
         *)
-            keagate_echo "Unrecognized argument $i"
+            echo "Unrecognized argument $i"
             exit 1
             ;;
         esac
@@ -38,10 +38,6 @@
 
     keagate_has() {
         command -v "$1" >/dev/null 2>&1
-    }
-
-    keagate_echo() {
-        command printf %s\\n "$*" 2>/dev/null
     }
 
     keagate_debug() {
@@ -55,7 +51,7 @@
     }
 
     install_node() {
-        keagate_echo "Installing Node and NPM via nvm..."
+        echo "Installing Node and NPM via nvm..."
         curl -s -o nvm.sh https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh
         chmod +x ./nvm.sh
         export NVM_DIR="$HOME/.nvm"
@@ -121,7 +117,7 @@
     # fi
 
     if ! keagate_has "git"; then
-        keagate_echo "git command not found. Installing..."
+        echo "git command not found. Installing..."
         if keagate_has "apt"; then
             sudo apt -y install git-all
         elif keagate_has "dnf"; then
@@ -136,7 +132,7 @@
     fi
 
     if ! keagate_has "docker"; then
-        keagate_echo "Docker command not found. Installing..."
+        echo "Docker command not found. Installing..."
         # Install Docker - used for Mongo and Nginx
         curl -fsSL https://get.docker.com -o get-docker.sh
         sudo sh get-docker.sh >/dev/null 2>&1
@@ -162,7 +158,7 @@
             if ask "Your existing Node version ($installed_node_version) is too low for Keagate. Would you like me to automatically upgrade Node and NPM? (You can revert back with \`nvm install $installed_node_version && nvm use $installed_node_version\`)"; then
                 install_node
             else
-                keagate_echo "Please manually upgrade Node to at least version 14, then run this script again."
+                echo "Please manually upgrade Node to at least version 14, then run this script again."
                 exit 1
             fi
         else
@@ -187,7 +183,7 @@
             rm -f ./local.json || true
         fi
     else
-        keagate_echo "Cloning Keagate repo..."
+        echo "Cloning Keagate repo..."
         git clone $REPO_LOCATION >/dev/null 2>&1
     fi
 
@@ -215,12 +211,6 @@
     print_complete
 
     node packages/scripts/build/configure.js "$NODE_ARGS"
-
-    pm2 stop Keagate || true
-    pm2 del Keagate || true
-    pm2 start packages/backend/build/index.js --name "Keagate" --time
-    pm2 save
-
 } # this ensures the entire script is downloaded #
 
 # https://www.shellcheck.net/
