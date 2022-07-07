@@ -50,6 +50,7 @@ async function main() {
         logger.log(prettyConfig);
     } else {
         if (existsSync(path.join(__dirname, '..', '..', '..', 'config/', 'local.json'))) {
+            // prettier-ignore
             logger.log(
                 `A ${kleur.italic(`config/local.json`)} already exists. To preserve the integrity ` +
                 `of your previous configuration. This new configuration will be ` +
@@ -62,13 +63,16 @@ async function main() {
         }
         await spawnAsync('pm2', ['stop', 'Keagate']);
         await spawnAsync('pm2', ['del', 'Keagate']);
-        const startSpawn = spawnAsync('pm2', ['start', 'packages/backend/build/index.js', '--name', 'Keagate', '--time'], { cwd: path.join(__dirname, '..', '..', '..') });
-        startSpawn.child.stderr.on('data', data => logger.error(data))
-        startSpawn.child.stdout.on('data', data => logger.debug(data))
+        const startSpawn = spawnAsync('pm2', ['start', 'packages/backend/build/index.js', '--name', 'Keagate', '--time'], {
+            cwd: path.join(__dirname, '..', '..', '..'),
+        });
+        startSpawn.child.stderr.on('data', (data) => logger.error(data));
+        startSpawn.child.stdout.on('data', (data) => logger.debug(data));
         await startSpawn;
         await spawnAsync('pm2', ['save'], { cwd: path.join(__dirname, '..', '..', '..') });
     }
 
+    // prettier-ignore
     logger.log(
         `\n\n ` +
         `Keagate is successfully running on this machine. If you're using a cloud provider like ` +

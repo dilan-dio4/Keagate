@@ -31,34 +31,34 @@ async function installMongo(): Promise<string> {
                 return DEFAULT_MONGO_CONN_STR;
             }
         } else {
-            logger.error(error)
+            logger.error(error);
             throw new Error(error);
         }
     }
-    logger.success()
+    logger.success();
     return DEFAULT_MONGO_CONN_STR;
 }
 
 async function mongoFromConnectionString(mongoConnectionString: string): Promise<Partial<MyConfig>> {
     // https://mongodb.github.io/node-mongodb-native/2.2/reference/faq/
-    logger.log('Testing MongoDB connection...')
+    logger.log('Testing MongoDB connection...');
     let client: MongoClient;
     try {
         client = new MongoClient(mongoConnectionString, { connectTimeoutMS: 2000, serverSelectionTimeoutMS: 3000, noDelay: true });
         await client.connect();
     } catch (error) {
         if (error.message.startsWith('connect ECONNREFUSED')) {
-            logger.log(kleur.bold().red(`Could not connect to mongo instance as provided with error "ECONNREFUSED".\nPlease try again`))
+            logger.log(kleur.bold().red(`Could not connect to mongo instance as provided with error "ECONNREFUSED".\nPlease try again`));
             return setupMongo();
         } else {
-            logger.log(kleur.bold().red(`Could not connect to mongo instance as provided with error "${error.message}".\nPlease try again`))
+            logger.log(kleur.bold().red(`Could not connect to mongo instance as provided with error "${error.message}".\nPlease try again`));
             return setupMongo();
         }
     }
 
     try {
         await client.db('keagate').collection('test').find({}).limit(1).toArray();
-        logger.success()
+        logger.success();
         return {
             MONGO_CONNECTION_STRING: mongoConnectionString,
         };
@@ -70,12 +70,12 @@ async function mongoFromConnectionString(mongoConnectionString: string): Promise
                     type: 'text',
                     name: 'mongoUsername',
                     message: `Enter MongoDB username ` + kleur.italic(`(e.g. admin)`),
-                    validate: val => val.length > 0 ? true : "An input is required. Please try again."
+                    validate: (val) => (val.length > 0 ? true : 'An input is required. Please try again.'),
                 },
                 {
                     type: 'password',
                     name: 'mongoPassword',
-                    message: (prev) => `Enter ${prev}'s password`
+                    message: (prev) => `Enter ${prev}'s password`,
                 },
             ]);
 
@@ -109,7 +109,7 @@ export default async function setupMongo(): Promise<Partial<MyConfig>> {
             type: 'text',
             name: 'mongoConnectionString',
             message: `Enter a MongoDB connection string ` + kleur.italic('(e.g mongodb://admin:password@localhost:27017)'),
-            validate: val => val.length > 0 ? true : "An input is required. Please try again."
+            validate: (val) => (val.length > 0 ? true : 'An input is required. Please try again.'),
         });
         return mongoFromConnectionString(mongoConnectionString);
     } else if (mongoConfig === 'INSTALL') {

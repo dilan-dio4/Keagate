@@ -9,18 +9,15 @@ async function _installNginx(dockerString: string, host: string): Promise<Partia
     logger.log('Installing Nginx via Docker...');
     if (!opts().dryrun) {
         try {
-            await spawnAsync(
-                'docker',
-                dockerString.split(' '),
-            );
+            await spawnAsync('docker', dockerString.split(' '));
         } catch (error) {
             if (error.output && error.output[1].startsWith('docker: Error response from daemon: Conflict. The container name')) {
-                logger.debug('Docker container already exists. Trying to remove and re-install...')
+                logger.debug('Docker container already exists. Trying to remove and re-install...');
                 await spawnAsync('docker', 'stop keagate-nginx'.split(' '));
                 await spawnAsync('docker', 'rm keagate-nginx'.split(' '));
                 return _installNginx(dockerString, host);
             } else {
-                logger.error(error)
+                logger.error(error);
                 throw new Error(error);
             }
         }
@@ -30,7 +27,8 @@ async function _installNginx(dockerString: string, host: string): Promise<Partia
 }
 
 async function installNginxNoSSL(): Promise<Partial<MyConfig>> {
-    const { ip } = await fGet("https://api.ipify.org?format=json")
+    const { ip } = await fGet('https://api.ipify.org?format=json');
+    // prettier-ignore
     return await _installNginx(
         `run ` +
         `-d ` +
@@ -46,6 +44,7 @@ async function installNginxNoSSL(): Promise<Partial<MyConfig>> {
 async function installNginxWithSSL(SSLDomains: string): Promise<Partial<MyConfig>> {
     // https://github.com/Valian/docker-nginx-auto-ssl
     // https://github.com/Valian/docker-nginx-auto-ssl/blob/master/snippets/server-proxy.conf
+    // prettier-ignore
     return await _installNginx(
         `run ` +
         `-d ` +
@@ -59,8 +58,6 @@ async function installNginxWithSSL(SSLDomains: string): Promise<Partial<MyConfig
     )
 }
 
-
-
 export default async function setupNginx(): Promise<Partial<MyConfig>> {
     const { nginxConfig } = await prompts({
         type: 'select',
@@ -68,13 +65,12 @@ export default async function setupNginx(): Promise<Partial<MyConfig>> {
         message: 'Are you using a manual Nginx setup or would you like us to configure it for you?',
         choices: [
             { title: `Configure it for me ` + kleur.white().bold('(Recommended)'), value: 'INSTALL' },
-            { title: `I'm using a manual setup for Keagate ` + kleur.white().bold('(Not recommended)'), value: 'MANUAL' }
+            { title: `I'm using a manual setup for Keagate ` + kleur.white().bold('(Not recommended)'), value: 'MANUAL' },
         ],
         initial: 0,
     });
 
-
-    if (nginxConfig === "INSTALL") {
+    if (nginxConfig === 'INSTALL') {
         const { SSLWanted, SSLDomains } = await prompts([
             {
                 type: 'toggle',
@@ -82,24 +78,23 @@ export default async function setupNginx(): Promise<Partial<MyConfig>> {
                 message: 'Do you want to enable SSL (a valid domain name must be pointing to this machine)?',
                 initial: false,
                 active: 'yes',
-                inactive: 'no'
+                inactive: 'no',
             },
             {
-                type: prev => (prev ? 'text' : null),
+                type: (prev) => (prev ? 'text' : null),
                 name: 'SSLDomains',
                 message: 'What is your domain name (e.g. (www|api).example.com or example.com)?',
-                validate: val => val.length > 0 ? true : "An input is required. Please try again."
-            }
-        ])
+                validate: (val) => (val.length > 0 ? true : 'An input is required. Please try again.'),
+            },
+        ]);
         if (SSLWanted) {
             return installNginxWithSSL(SSLDomains);
         } else {
             return installNginxNoSSL();
         }
-    } else if (nginxConfig === "MANUAL") {
-        return {}
+    } else if (nginxConfig === 'MANUAL') {
+        return {};
     } else {
         return setupNginx();
     }
-
 }
