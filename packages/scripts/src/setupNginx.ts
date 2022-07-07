@@ -9,7 +9,7 @@ async function _installNginx(dockerString: string, host: string): Promise<Partia
     logger.log('Installing Nginx via Docker...');
     if (!opts().dryrun) {
         try {
-            await spawnAsync('docker', dockerString.split(' '));
+            await spawnAsync('docker', dockerString.split(' '), { shell: true });
         } catch (error) {
             if (error.output && error.output[1].startsWith('docker: Error response from daemon: Conflict. The container name')) {
                 logger.debug('Docker container already exists. Trying to remove and re-install...');
