@@ -9,7 +9,7 @@ export default async function setupWallets(): Promise<Partial<MyConfig>> {
         message: 'Which currencies would you like to configure. (You can add more later)',
         choices: [...availableCoinlibCurrencies, ...availableNativeCurrencies].map((ele) => ({ title: currencies[ele].name, value: ele })),
         hint: '- Space to select. Return to submit',
-        min: 1
+        min: 1,
     });
 
     const keagateConfig: Partial<MyConfig> = {};

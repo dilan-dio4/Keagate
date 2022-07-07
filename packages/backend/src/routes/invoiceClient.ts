@@ -22,7 +22,7 @@ export default fastifyPlugin(async function createInvoiceClientRoute(server: Fas
                 invoiceId: Type.String({
                     description: `Invoice identifier. This is generated automatically as the internal id of the payment encrypted with aes-256-cbc plus your config's INVOICE_ENC_KEY.`,
                 }),
-            })
+            }),
         },
     };
 

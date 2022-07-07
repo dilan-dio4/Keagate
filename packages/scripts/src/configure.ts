@@ -66,7 +66,7 @@ async function main() {
             await spawnAsync('pm2', ['stop', 'Keagate']);
             await spawnAsync('pm2', ['del', 'Keagate']);
         } catch (error) {
-            logger.debug("Removing old process errored because it doesn't exist yet")
+            logger.debug("Removing old process errored because it doesn't exist yet");
         }
 
         const startSpawn = spawnAsync('pm2', ['start', 'packages/backend/build/index.js', '--name', 'Keagate', '--time'], {
