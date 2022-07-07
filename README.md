@@ -49,32 +49,60 @@ Keagate is a self-hosted, high-performance cryptocurrency payment gateway. Payme
 * Lightweight and highly performant
 * No IP Blocking
 
-Funds go directly to your wallet via a one-time addresses that is created for each payment.
+Funds go directly to your wallet via a one-time addresses that is generated for each payment.
 
 ## Getting Started
 
-### Prerequisites
-
-* Install [Docker Compose](https://docs.docker.com/compose/install/).
-* `git clone ...`
-
 ### Installation
 
-One-liner:
+#### One-liner:
 
 ```
 bash -c "$(curl -sSL https://raw.githubusercontent.com/dilan-dio4/Keagate/main/packages/scripts/keagate.sh)"
 ```
 
-Alternate:
+#### Alternate:
 ```
 curl -o keagate.sh https://raw.githubusercontent.com/dilan-dio4/Keagate/main/packages/scripts/keagate.sh
 chmod +x keagate.sh
 ./keagate.sh
 ```
 
-This should work on most popular flavors of Linux. Tested on Ubuntu 18+, Debian 10+.ls
+Tested on:
+Ubuntu 18+
+Debian 10+
 
+<!-- No Docker quick install on Redhat, CentOS -->
+
+This should work on most other flavors of Linux with some configuration. Otherwise, use the manual build.
+
+#### Manual Installation
+
+##### Prerequisites
+
+* MongoDB – [Install](https://www.mongodb.com/docs/manual/installation/)
+  * Running on your machine **OR** remotely via connection string
+* Web server (like Nginx or Apache2) – [Install](https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/)
+  * Serving as a reverse proxy to `localhost:8081`
+* Node > 14 and NPM – [Install](https://github.com/nvm-sh/nvm#installing-and-updating)
+  * Use of `nvm` to manage Node and NPM is recommended
+
+```bash
+npm i -g pnpm
+pnpm setup
+pnpm -g pm2
+
+git clone https://github.com/dilan-dio4/Keagate
+cd Keagate
+pnpm i
+pnpm run build
+
+# Configure Keagate with:
+node packages/scripts/build/configure.js
+# OR manually (see *Configuration* below)
+
+pm2 start packages/backend/build/index.js --name Keagate --time
+```
 
 ## Usage
 

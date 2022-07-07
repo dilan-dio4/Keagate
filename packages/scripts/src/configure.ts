@@ -81,7 +81,7 @@ async function main() {
     // prettier-ignore
     logger.log(
         `\n\n ` +
-        `Keagate is successfully running on this machine. If you're using a cloud provider like ` +
+        `Keagate has successfully launched on this machine. If you're using a cloud provider like ` +
         `AWS or Azure, please be sure to ${kleur.bold(`enable public access via HTTP(S)`)}. ` +
         `Then, you can locate your API documentation at ${kleur.underline(config.HOST + '/docs')} ` +
         `and OpenAPI schema with '${kleur.italic(`curl localhost:8081/docs/yaml`)}'. ` +

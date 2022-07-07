@@ -102,26 +102,12 @@
         done
     }
 
-    # https://stackoverflow.com/a/42876846
-    # if [[ "$EUID" = 0 ]]; then
-    #     keagate_debug "Privilege check: already root"
-    # else
-    #     sudo -k # make sure to ask for password on next sudo
-    #     if sudo true; then
-    #         keagate_debug "Privilege check: Correct password"
-    #     else
-    #         keagate_debug "Privilege check: wrong password"
-    #         echo "Wrong password. Please try again."
-    #         exit 1
-    #     fi
-    # fi
-
     if ! keagate_has "git"; then
         echo "git command not found. Installing..."
         if keagate_has "apt"; then
-            sudo apt -y install git-all
+            sudo apt -y install git
         elif keagate_has "dnf"; then
-            sudo dnf -y install git-all
+            sudo dnf -y install git
         elif keagate_has "yum"; then
             sudo yum -y install git
         else
@@ -148,8 +134,13 @@
         print_complete "Docker detected"
     fi
 
+    # +++ Permissions, ports, and flavors
+    if [ -f "/etc/debian_version" ]; then
+        sudo apachectl stop >/dev/null 2>&1 || true
+    fi
     # Fix permissions issue on certain ports from `docker run`
     sudo chmod 666 /var/run/docker.sock
+    # ---
 
     if keagate_has "node" && keagate_has "npm"; then
         print_complete "Node and NPM detected"
