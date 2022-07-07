@@ -63,14 +63,14 @@ Funds go directly to your wallet via a one-time addresses that is created for ea
 One-liner:
 
 ```
-curl -s -o- https://raw.githubusercontent.com/dilan-dio4/Keagate/main/packages/scripts/keagate.sh | sudo bash
+curl -s -o- https://raw.githubusercontent.com/dilan-dio4/Keagate/main/packages/scripts/keagate.sh | bash
 ```
 
 Alternate:
 ```
 curl -o keagate.sh https://raw.githubusercontent.com/dilan-dio4/Keagate/main/packages/scripts/keagate.sh
 chmod +x keagate.sh
-sudo ./keagate.sh
+./keagate.sh
 ```
 
 This should work on most popular flavors of Linux. Tested on Ubuntu 18+, Debian 10+.ls

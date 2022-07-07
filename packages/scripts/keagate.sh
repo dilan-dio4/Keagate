@@ -130,7 +130,6 @@ sudo chmod 666 /var/run/docker.sock
 if keagate_has "node" && keagate_has "npm"; then
     print_complete "Node and NPM detected"
     installed_node_version=$(node --version | cut -c 2-3)
-    keagate_echo "Installed node version: $installed_node_version"
     if (("$installed_node_version" < "14")); then
         clean_stdin
         read -p "Your existing Node version ($installed_node_version) is too low for Keagate. Would you like me to automatically upgrade Node and NPM? (You can revert back with \`nvm install $installed_node_version && nvm use $installed_node_version\`) [Y/n] " -n 1 -r
@@ -141,9 +140,10 @@ if keagate_has "node" && keagate_has "npm"; then
             keagate_echo "Please manually upgrade Node to at least version 14, then run this script again."
             exit 1
         fi
+    else
+        print_complete "Node and NPM version $installed_node_version satisfactory"
     fi
 else
-    keagate_echo "Node and NPM not detected on this machine."
     install_node
 fi
 
@@ -156,20 +156,20 @@ if [ -d "$FOLDER_NAME" ]; then
     echo # (optional) move to a new line
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         keagate_debug "Caching existing local.json to a temporary file..."
-        sudo chown -R $(whoami): $FOLDER_NAME .*
-        cp -f $FOLDER_NAME/config/local.json ./local.json || true
+        sudo chown -R $(whoami) $FOLDER_NAME/
+        cp -f $FOLDER_NAME/config/local.json ./local.json >/dev/null 2>&1 || true
         rm -rf $FOLDER_NAME
         echo "Cloning Keagate repo..."
         git clone $REPO_LOCATION >/dev/null 2>&1
-        cp -f ./local.json $FOLDER_NAME/config/local.json || true
+        cp -f ./local.json $FOLDER_NAME/config/local.json >/dev/null 2>&1 || true
         rm -f ./local.json || true
     fi
 else
-    echo "Cloning Keagate repo..."
+    keagate_echo "Cloning Keagate repo..."
     git clone $REPO_LOCATION >/dev/null 2>&1
 fi
 
-sudo chown -R $(whoami): $FOLDER_NAME .*
+sudo chown -R $(whoami) $FOLDER_NAME/
 print_complete
 
 cd $FOLDER_NAME
