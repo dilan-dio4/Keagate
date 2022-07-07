@@ -27,7 +27,7 @@ export const getNativeCurrencyToClient = (): Record<
 });
 
 export async function getCoinlibCurrencyToClient(): Promise<Record<typeof availableCoinlibCurrencies[number], AnyPayments<any>>> {
-    const coinPayments = new CoinPayments({ seed: config.getTyped('SEED'), network: NetworkType.Mainnet, /** logger: deadLogger */ });
+    const coinPayments = new CoinPayments({ seed: config.getTyped('SEED'), network: NetworkType.Mainnet /** logger: deadLogger */ });
     const coinlibCurrencyToClient: Partial<Record<typeof availableCoinlibCurrencies[number], AnyPayments<any>>> = {};
     for (const _currency of SUPPORTED_NETWORK_SYMBOLS) {
         const currClient = coinPayments.forNetwork(_currency);

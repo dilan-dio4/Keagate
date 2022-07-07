@@ -34,12 +34,12 @@ class ActivityLoop {
         const txsByCohort: Record<typeof availableNativeCurrencies[number] | 'coinlib', GenericTransactionalWallet[]> = {
             coinlib: [],
             MATIC: [],
-            SOL: []
+            SOL: [],
         };
 
         for (const aTrx of Object.values(context.activePayments)) {
             const { type, currency } = aTrx.getDetails();
-            if (type === "coinlib") {
+            if (type === 'coinlib') {
                 txsByCohort[type].push(aTrx);
             } else {
                 txsByCohort[currency].push(aTrx);

@@ -11,4 +11,3 @@ export function setOpts(newOpts: Opts) {
 }
 
 export default () => _opts;
-

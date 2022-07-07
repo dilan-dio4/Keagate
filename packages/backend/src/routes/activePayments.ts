@@ -5,7 +5,7 @@ import auth from '../middlewares/auth';
 import context from '../context';
 import { MongoTypeForRequest, cleanDetails, AdminRouteHeaders } from './types';
 
-const ActivePaymentsResponse = Type.Array(MongoTypeForRequest, { description: "Successful response of array of all active payments" });
+const ActivePaymentsResponse = Type.Array(MongoTypeForRequest, { description: 'Successful response of array of all active payments' });
 
 const opts: RouteShorthandOptions = {
     schema: {

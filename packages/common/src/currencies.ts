@@ -49,7 +49,7 @@ export const currencies: Record<AvailableCurrencies, { name: string; explorer: s
     ETH: {
         name: 'Ethereum',
         explorer: 'https://etherscan.io/',
-        networkName: 'Ethereum Mainnet'
+        networkName: 'Ethereum Mainnet',
     },
     // XLM: {
     //     name: 'Stellar',

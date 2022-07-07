@@ -22,7 +22,7 @@ export default class NowNodesProvider extends GenericProvider {
         });
         const bigBalanceSatoshiLike = Big(balance);
         let confirmedBalance: Big;
-        if (currency as any === 'DASH') {
+        if ((currency as any) === 'DASH') {
             confirmedBalance = bigBalanceSatoshiLike.times(Big(units.dash.duff));
         } else if (currency === 'LTC') {
             confirmedBalance = bigBalanceSatoshiLike.times(Big(units.ltc.litoshi));

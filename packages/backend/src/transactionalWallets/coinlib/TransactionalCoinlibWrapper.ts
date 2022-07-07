@@ -104,9 +104,9 @@ export default class TransactionalCoinlibWrapper extends GenericTransactionalWal
             if (balance && this.currency in minWalletBalances) {
                 createTx = await requestRetry<BaseUnsignedTransaction>(() =>
                     this.coinlibPayment.createTransaction(
-                        this.walletIndex, 
+                        this.walletIndex,
                         config.getTyped(this.currency).ADMIN_PUBLIC_KEY,
-                        '' + (balance - minWalletBalances[this.currency])
+                        '' + (balance - minWalletBalances[this.currency]),
                     ),
                 );
             } else {

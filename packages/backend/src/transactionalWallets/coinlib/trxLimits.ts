@@ -10,8 +10,7 @@ export const currencyDusts: Partial<Record<typeof availableCoinlibCurrencies[num
 };
 
 // In pure unit
-export const minWalletBalances: Partial<Record<typeof availableCoinlibCurrencies[number], number>> = {
-}
+export const minWalletBalances: Partial<Record<typeof availableCoinlibCurrencies[number], number>> = {};
 
 function randU32Sync() {
     return crypto.randomBytes(4).readUInt32BE(0);

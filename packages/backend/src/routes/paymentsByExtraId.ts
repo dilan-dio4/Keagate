@@ -7,7 +7,7 @@ import { MongoTypeForRequest, cleanDetails, AdminRouteHeaders } from './types';
 import { ForRequest, MongoPayment } from '../types';
 
 const PaymentsByExtraIdResponse = Type.Array(MongoTypeForRequest, {
-    description: `Successful response of payments`
+    description: `Successful response of payments`,
 });
 
 const PaymentsByExtraIdQueryString = Type.Object({

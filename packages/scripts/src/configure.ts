@@ -15,12 +15,11 @@ program
     .description('CLI for configuring keagate')
     .option('-q, --quiet', 'Install quietly without asking for configuration. Sensible defaults will be applied')
     .option('-v, --verbose', 'Verbose logging')
-    .option('-d --dryrun', 'Dry run. No downloading of programs or editing of your file system will occur.')
-
+    .option('-d --dryrun', 'Dry run. No downloading of programs or editing of your file system will occur.');
 
 async function main() {
     program.parse();
-    setOpts(program.opts())
+    setOpts(program.opts());
 
     let logLevel: LoggingLevels = 1;
     if (opts().quiet) {
@@ -35,10 +34,10 @@ async function main() {
     const assignConfig = (newOptions: Partial<MyConfig>) => {
         config = {
             ...config,
-            ...newOptions
-        }
-    }
-    
+            ...newOptions,
+        };
+    };
+
     assignConfig(await setupMongo());
     assignConfig(await setupNginx());
     assignConfig(await setupSeeds());
@@ -47,15 +46,18 @@ async function main() {
     const prettyConfig = JSON.stringify(config, null, 2);
 
     if (opts().dryrun) {
-        console.log(prettyConfig)
+        console.log(prettyConfig);
     } else {
         if (existsSync(path.join(__dirname, '..', '..', '..', 'config/', 'local.json'))) {
-            logger.log(1, 'A `config/local.json` already exists. To preserve the integrity of your previous configuration. This new configuration will be written to `config/local2.json`. Manually the new configuration into `config/local.json`, as needed.');
+            logger.log(
+                1,
+                'A `config/local.json` already exists. To preserve the integrity of your previous configuration. This new configuration will be written to `config/local2.json`. Manually the new configuration into `config/local.json`, as needed.',
+            );
             writeFileSync(path.join(__dirname, '..', '..', '..', 'config/', 'local2.json'), prettyConfig);
         } else {
             writeFileSync(path.join(__dirname, '..', '..', '..', 'config/', 'local.json'), prettyConfig);
         }
-        spawnAsync('pnpm', ['run', ''])
+        spawnAsync('pnpm', ['run', '']);
     }
 
     process.exit();

@@ -1,4 +1,4 @@
-import { AvailableCurrencies } from "./currencies";
+import { AvailableCurrencies } from './currencies';
 
 type MyCurrencyConfig = Partial<
     Record<

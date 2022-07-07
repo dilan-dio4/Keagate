@@ -6,18 +6,13 @@ import { ObjectId, WithId } from 'mongodb';
 import { decrypt } from '../utils';
 import { ErrorResponse, MongoTypeForRequest } from './types';
 
-const InvoiceStatusResponse = Type.Pick(MongoTypeForRequest, [
-    'publicKey',
-    'amount',
-    'amountPaid',
-    'expiresAt',
-    'status',
-    'currency',
-    'invoiceCallbackUrl',
-    'memo',
-], {
-    description: `Successful response of invoice status.`
-});
+const InvoiceStatusResponse = Type.Pick(
+    MongoTypeForRequest,
+    ['publicKey', 'amount', 'amountPaid', 'expiresAt', 'status', 'currency', 'invoiceCallbackUrl', 'memo'],
+    {
+        description: `Successful response of invoice status.`,
+    },
+);
 
 const InvoiceStatusQueryString = Type.Object({
     invoiceId: Type.String({
