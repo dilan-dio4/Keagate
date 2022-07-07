@@ -30,7 +30,7 @@ export default fastifyPlugin(async function createInvoiceClientRoute(server: Fas
             ],
             servers: [
                 {
-                    url: config.getTyped('HOST') || 'http://YOUR_SERVER',
+                    url: config.has('HOST') ? config.getTyped('HOST') : 'http://YOUR_SERVER',
                 },
             ],
             security: [],
