@@ -63,7 +63,7 @@ Funds go directly to your wallet via a one-time addresses that is created for ea
 One-liner:
 
 ```
-curl -s -o- https://raw.githubusercontent.com/dilan-dio4/Keagate/main/packages/scripts/keagate.sh | bash
+bash -c "$(curl -sSL https://raw.githubusercontent.com/dilan-dio4/Keagate/main/packages/scripts/keagate.sh)"
 ```
 
 Alternate:
