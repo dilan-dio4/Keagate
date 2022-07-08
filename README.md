@@ -52,7 +52,6 @@ Keagate is a self-hosted, high-performance cryptocurrency payment gateway. Payme
 
 Funds go directly to your wallet via a one-time address that is generated for each payment.
 
-
 ## Installation
 
 ### One-liner
@@ -63,7 +62,8 @@ The purpose of this installation script is to get Keagate up-and-running quickly
 bash -c "$(curl -sSL https://raw.githubusercontent.com/dilan-dio4/Keagate/main/packages/scripts/keagate.sh)"
 ```
 
-_Alternate_:
+*Alternate*:
+
 ```
 curl -o keagate.sh https://raw.githubusercontent.com/dilan-dio4/Keagate/main/packages/scripts/keagate.sh
 chmod +x keagate.sh
@@ -91,7 +91,7 @@ This script should run successfully on most flavors of Linux with some configura
   * Running on your machine **OR** remotely via a connection string
 * Web server (like Nginx or Apache2) – [Install](https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/)
   * Serving as a reverse proxy to `localhost:8081`
-  * `8081` is the default port that Keagate runs on, can be changed via the [_PORT_ configuration option](#custom).
+  * `8081` is the default port that Keagate runs on, can be changed via the [*PORT* configuration option](#custom).
 * Node > 14 and NPM – [Install](https://github.com/nvm-sh/nvm#installing-and-updating)
   * Use of `nvm` to manage Node and NPM is recommended
 
@@ -126,13 +126,13 @@ There are **two** methods to configure Keagate, and they can be used in conjunct
 
 ### CLI
 
-Keagate has a built-in CLI to build configurations in [packages/scripts](packages/scripts/src/configure.ts). After you've cloned and built the package. Head to the root _Keagate_ directory and execute the following:
+Keagate has a built-in CLI to build configurations in [packages/scripts](packages/scripts/src/configure.ts). After you've cloned and built the package. Head to the root *Keagate* directory and execute the following:
 
 ```bash
 node packages/scripts/build/configure.js
 ```
 
-_Note – this CLI is automatically launched in the one-liner installation script._
+*Note – this CLI is automatically launched in the one-liner installation script.*
 
 The CLI will write the `config/local.json` file upon completion unless one already exists. In that case, it will write to `config/local2.json` and ask that you manually merge your new parameters, as needed.
 
@@ -177,7 +177,6 @@ ts-node packages/scripts/src/setupSeeds.ts
 | `SEED`         | Seed for transactional wallet generator. Must be a 128-bit hex string. **Protect this value in production** | **Yes** | *null* (string) |
 | `KEAGATE_API_KEY`         | Api key that will be required in administrative request's `keagate-api-key` header. **Protect this value in production** | No | 'API-KEY' (string) |
 | `INVOICE_ENC_KEY`         | Key that will be used to encrypt payment IDs when distributed via invoice. **Protect this value in production** | **Yes** | *null* (string) |
-
 
 #### Other options
 
@@ -246,7 +245,7 @@ There's four steps in adding a currency to this package.
     1. Start by taking a look at [Solana's transactional wallet](packages/backend/src/transactionalWallets/Solana/index.ts) and note that you only need to implement three functions: `fromNew`, `getBalance` and `_cashOut`. The class that transactional wallets inherit from, [GenericTransactionalWallet](packages/backend/src/transactionalWallets/GenericTransactionalWallet.ts), handles the rest.  
 4. Add both the transactional and admin wallet classes to [packages/backend/src/currenciesToWallets.ts](packages/backend/src/currenciesToWallets.ts) so it can be referred to by ticker across the project
 
-**And that's it!** Start the dev environment and create a new payment of any amount with your new ticker.
+**And that's it!** Start the dev environment (`pnpm run dev`) and create a new payment of any amount with your new currency.
 
 </details>
 <details>
@@ -256,7 +255,6 @@ There's four steps in adding a currency to this package.
 ### Adding an API route
 
 </summary>
-
 
 </details>
 <details>
@@ -277,6 +275,8 @@ The source of `invoice-client`'s React project is pretty straightforward, so tho
 <details>
 
 <summary>
+
+<!--
 
 ### Adding a blockchain API provider
 
@@ -314,3 +314,5 @@ It's very easy to add a provider, see [TatumProvider.ts](packages/api-providers/
 Make sure that one of the available API providers cover each currency you plan on using.
 
 </details>
+
+-->
