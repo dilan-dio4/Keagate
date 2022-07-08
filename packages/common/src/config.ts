@@ -31,4 +31,5 @@ export interface MyConfig extends MyCurrencyConfig {
     USE_SO_CHAIN: boolean;
 
     HOST?: string;
+    PORT: number;
 }
