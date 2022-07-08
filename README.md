@@ -9,16 +9,18 @@
 Keagate *(&#107;&#105;&colon;&#103;&#101;&#618;&#116;)* – A High-Performance Cryptocurrency Payment Gateway
 
 </h2>
-
+<!--
 <h4 align="center">
   <b>🚧 This project is actively in development 🚧</b>
 </h4>
+--->
 
 <h4 align="center">
-    <img src="https://shields.io/snyk/vulnerabilities/github/dilan-dio4/keagate?style=flat-square" />
+    <img alt="Snyk vulnerabilities" src="https://shields.io/snyk/vulnerabilities/github/dilan-dio4/keagate?style=flat-square" />
     <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/dilan-dio4/Keagate?style=flat-square">
     <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/dilan-dio4/Keagate?style=flat-square">
     <a target="_blank" href="https://gitter.im/Keagate/community?utm_source=share-link&utm_medium=link&utm_campaign=share-link"><img alt="Gitter" src="https://img.shields.io/gitter/room/dilan-dio4/Keagate?style=flat-square"></a>
+    <a target="_blank" href="https://dilan-dio4.github.io/keagate-example-swagger/"><img alt="Swagger Validator" src="https://img.shields.io/swagger/valid/3.0?specUrl=https%3A%2F%2Fraw.githubusercontent.com%2Fdilan-dio4%2Fkeagate-example-swagger%2Fmain%2Fkeagate-openapi3.json&style=flat-square"></a>
 </h4>
 
 <br />
