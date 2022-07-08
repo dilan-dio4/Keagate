@@ -37,6 +37,7 @@ Keagate *(&#107;&#105;&colon;&#103;&#101;&#618;&#116;)* – A High-Performance 
 Keagate is a self-hosted, high-performance cryptocurrency payment gateway. Payments can be administered via [API](https://dilan-dio4.github.io/keagate-example-swagger/) for flexibility or with the built-in invoicing client (*image below*).
 
 **Currently support currencies: Bitcoin, Ethereum, Dogecoin, Solana, Litecoin, Polygon, and Dash.**
+**In development: Ripple, Tron**
 
 <p align="left">
   <img src="assets/invoice-frame.png" width="650" alt="Invoice Preview">
@@ -232,29 +233,31 @@ To get started:
 
 <summary>
 
-### Adding a currency
-
-</summary>
-
-There's four steps in adding a currency to this package.
-
-1. Add the ticker, along with some metadata, to the currencies type in [packages/common/src/currencies.ts](packages/common/src/currencies.ts).
-2. Create the admin wallet. This is where payments are finally sent to and presumably the real wallet of the client. Note that the admin wallet can also be used to programmatically send transactions as well.
-    * Start by taking a look at [Solana's admin wallet](packages/backend/src/adminWallets/Solana/index.ts) and note that you only need to implement two functions: `getBalance` and `sendTransaction`. The class that admin wallets inherit from, [GenericAdminWallet](packages/backend/src/adminWallets/GenericAdminWallet.ts), handles class inheritance.
-3. Create the transactional wallet. This class can be thought of a payment, since a new transactional wallet is created for every payment, along with a new Public Key and Private Key. Transactional wallets, and their associated payment data, are stored in Mongo.
-    1. Start by taking a look at [Solana's transactional wallet](packages/backend/src/transactionalWallets/Solana/index.ts) and note that you only need to implement three functions: `fromNew`, `getBalance` and `_cashOut`. The class that transactional wallets inherit from, [GenericTransactionalWallet](packages/backend/src/transactionalWallets/GenericTransactionalWallet.ts), handles the rest.  
-4. Add both the transactional and admin wallet classes to [packages/backend/src/currenciesToWallets.ts](packages/backend/src/currenciesToWallets.ts) so it can be referred to by ticker across the project
-
-**And that's it!** Start the dev environment (`pnpm run dev`) and create a new payment of any amount with your new currency.
-
-</details>
-<details>
-
-<summary>
-
 ### Adding an API route
 
 </summary>
+
+Keagate follows the [Fastify plugin pattern](https://www.fastify.io/docs/latest/Reference/Plugins/). Place your route in [`packages/backend/src/routes`](packages/backend/src/routes). The `default export` of the file should be a function that takes a *Fastify* instance as a parameter. In that function, add your route to the provided *Fastify* instance. **Be sure to add a schema to your route via the `RouteShorthandOptions` type exported from Fastify. Schemas should be built with [TypeBox](https://github.com/sinclairzx81/typebox).
+
+The schemas will appear in your Swagger docs for a unified developer experience.
+
+Finally, in [`packages/backend/src/index.ts`](packages/backend/src/index.ts), register your new route like so:
+
+```ts
+import createPaymentStatusRoute from './routes/paymentStatus';
+import createPaymentsByExtraIdRoute from './routes/paymentsByExtraId';
+import create_YOUR_FUNCTIONALITY_Route from './routes/YOUR_FUNCTIONALITY'; // <--
+
+// ...
+
+server.register(createPaymentStatusRoute);
+server.register(createPaymentsByExtraIdRoute);
+server.register(create_YOUR_FUNCTIONALITY_Route); // <--
+```
+
+Use [`packages/backend/src/routes/activePayments.ts`](packages/backend/src/routes/activePayments.ts) as a reference of an authenticated route.
+
+Use [`packages/backend/src/routes/invoiceStatus.ts`](packages/backend/src/routes/invoiceStatus.ts) as a reference of an unauthenticated route.
 
 </details>
 <details>
@@ -272,11 +275,32 @@ Editing the react package will automatically build to `packages/invoice-client/d
 The source of `invoice-client`'s React project is pretty straightforward, so those familiar with React (& TailwindCSS) should have an easy time making their desired alterations.
 
 </details>
+
+<!--
 <details>
 
 <summary>
 
-<!--
+### Adding a currency
+
+</summary>
+
+There's four steps in adding a currency to this package.
+
+1. Add the ticker, along with some metadata, to the currencies type in [packages/common/src/currencies.ts](packages/common/src/currencies.ts).
+2. Create the admin wallet. This is where payments are finally sent to and presumably the real wallet of the client. Note that the admin wallet can also be used to programmatically send transactions as well.
+    * Start by taking a look at [Solana's admin wallet](packages/backend/src/adminWallets/Solana/index.ts) and note that you only need to implement two functions: `getBalance` and `sendTransaction`. The class that admin wallets inherit from, [GenericAdminWallet](packages/backend/src/adminWallets/GenericAdminWallet.ts), handles class inheritance.
+3. Create the transactional wallet. This class can be thought of a payment, since a new transactional wallet is created for every payment, along with a new Public Key and Private Key. Transactional wallets, and their associated payment data, are stored in Mongo.
+    1. Start by taking a look at [Solana's transactional wallet](packages/backend/src/transactionalWallets/Solana/index.ts) and note that you only need to implement three functions: `fromNew`, `getBalance` and `_cashOut`. The class that transactional wallets inherit from, [GenericTransactionalWallet](packages/backend/src/transactionalWallets/GenericTransactionalWallet.ts), handles the rest.  
+4. Add both the transactional and admin wallet classes to [packages/backend/src/currenciesToWallets.ts](packages/backend/src/currenciesToWallets.ts) so it can be referred to by ticker across the project
+
+**And that's it!** Start the dev environment (`pnpm run dev`) and create a new payment of any amount with your new currency.
+
+</details>
+
+<details>
+
+<summary>
 
 ### Adding a blockchain API provider
 
