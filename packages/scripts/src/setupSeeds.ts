@@ -9,7 +9,9 @@ export default async function setupSeeds(): Promise<Partial<MyConfig>> {
     // TODO IP whitelist?
     return {
         INVOICE_ENC_KEY: randomSeedGenerator(16),
-        SEED: randomSeedGenerator(32),
+        SEED: randomSeedGenerator(16),
         KEAGATE_API_KEY: randomSeedGenerator(32),
     };
 }
+
+require.main && setupSeeds().then(res => console.log(JSON.stringify(res, null, 2)));

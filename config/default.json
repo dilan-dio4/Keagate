@@ -1,16 +1,14 @@
 {
     "some_ticker (e.g. 'DASH')": {
         "ADMIN_PUBLIC_KEY": "",
-        "ADMIN_PRIVATE_KEY": "",
-        "PROVIDER": "",
-        "PROVIDER_PARAMS": []
+        "ADMIN_PRIVATE_KEY": ""
     },
     
 
     "KEAGATE_API_KEY": "API-KEY",
     "IP_WHITELIST": [],
 
-    "TRANSACTION_TIMEOUT": 1000000,
+    "TRANSACTION_TIMEOUT": 1200000,
     "TRANSACTION_MIN_REFRESH_TIME": 30000,
     "TRANSACTION_SLIPPAGE_TOLERANCE": 0.02,
     "BLOCKBOOK_RETRY_DELAY": 5000,

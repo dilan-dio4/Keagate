@@ -20,12 +20,12 @@ Keagate *(&#107;&#105;&colon;&#103;&#101;&#618;&#116;)* – A High-Performance 
 
 * [About the Project](#about-the-project)
   * [Purpose](#purpose)
-* [Getting Started](#getting-started)
-  * [Prerequisites](#prerequisites)
-  * [Installation](#installation)
-    * [One-liner](#one-liner)
-    * [Manual](#manual-installation)
-* [Usage](#usage)
+* [Installation](#installation)
+  * [One-liner](#one-liner)
+  * [Manual](#manual-installation)
+* [Configuration](#configuration)
+  * [CLI](#cli)
+  * [Custom](#custom)
 * [Development](#development)
   * [Adding a currency](#adding-a-currency)
   * [Adding an API route](#adding-a-currency)
@@ -53,24 +53,25 @@ Keagate is a self-hosted, high-performance cryptocurrency payment gateway. Payme
 
 Funds go directly to your wallet via a one-time addresses that is generated for each payment.
 
-## Getting Started
 
-### Installation
+## Installation
 
-#### One-liner:
+### One-liner
+
+The purpose of this installation script is to get Keagate up-and-running quickly in a Linux environment. The CLI will guide you in configuring, managing, and securing the instance.
 
 ```
 bash -c "$(curl -sSL https://raw.githubusercontent.com/dilan-dio4/Keagate/main/packages/scripts/keagate.sh)"
 ```
 
-#### Alternate:
+_Alternate_:
 ```
 curl -o keagate.sh https://raw.githubusercontent.com/dilan-dio4/Keagate/main/packages/scripts/keagate.sh
 chmod +x keagate.sh
 ./keagate.sh
 ```
 
-Tested on:
+This helper script has been tested on:
 * Ubuntu 18+
 * Debian 10+
 * Amazon Linux 4.14+
@@ -80,20 +81,27 @@ Tested on:
 
 <!-- No Docker quick install on Redhat RHEL -->
 
-This should work on most other flavors of Linux with some configuration. Otherwise, use the manual build.
+This script should run successfully on most other flavors of Linux with some configuration. Otherwise, use the manual build as it's fairly straightforward.
 
-#### Manual Installation
+### Manual Installation
 
-##### Prerequisites
+#### Prerequisites
 
 * MongoDB – [Install](https://www.mongodb.com/docs/manual/installation/)
-  * Running on your machine **OR** remotely via connection string
+  * Running on your machine **OR** remotely via a connection string
 * Web server (like Nginx or Apache2) – [Install](https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/)
   * Serving as a reverse proxy to `localhost:8081`
+  * `8081` is the default port that Keagate runs on, can be changed via the _PORT_ config option.
 * Node > 14 and NPM – [Install](https://github.com/nvm-sh/nvm#installing-and-updating)
   * Use of `nvm` to manage Node and NPM is recommended
 
 ```bash
+# +++ Don't have Node?
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+nvm install 16
+nvm use 16
+# ---
+
 npm i -g pnpm
 pnpm setup
 pnpm -g pm2
@@ -103,49 +111,100 @@ cd Keagate
 pnpm i
 pnpm run build
 
-# Configure Keagate with:
+# +++ Configure Keagate with:
 node packages/scripts/build/configure.js
-# OR manually (see *Configuration* below)
+# --- OR manually (see Configuration section)
 
 pm2 start packages/backend/build/index.js --name Keagate --time
 ```
 
-## Usage
+## Configuration
 
-Keagate requires some configuration. Create a file called `local.json` in `/config`, next to `default.json`, to edit of the parameters below. Use the provided `default.json` file as a reference (your `local.json` will override these).
+Keagate requires some configuration. This is done via a file called `local.json` in `/config`, next to `default.json`. This file will automatically be used when you start Keagate. _Note that parameters in `local.json` will overwrite those in `default.json`_.
 
-To configure a single currency, add an object with the key of the currencies ticker with the following attributes:
+There are **two** methods to configure Keagate, and they can be used in conjunction with each-other.
+
+### CLI
+
+Keagate has a built-in CLI to build configurations in [packages/scripts](packages/scripts/src/configure.ts). After you've cloned and built the package. Head to the root _Keagate_ directory and execute the following:
+
+```bash
+node packages/scripts/build/configure.js
+```
+
+_Note – this CLI is automatically launched in the one-liner installation script._
+
+The CLI will write the `config/local.json` file upon completion, unless one already exists. In that case, it will write to `config/local2.json` and ask that you manually merge your new parameters, as needed.
+
+### Custom
+
+Create or open the file `local.json` in `/config`. You can use the provided `default.json` file as a reference **(your `local.json` will override these)**.
+
+_The schema of the Keagate configuration can be seen (in TypeScript) at [packages/common/src/config.ts](packages/common/src/config.ts)._
+
+#### Currencies
+
+To configure a single currency, add an object with the key of the currency's ticker with the following attributes:
+
+Ticker can be one of `'LTC', 'BTC', 'ETH', 'DOGE', 'SOL', or 'MATIC'`. [See example](#example).
 
 | Key                              | Description                    | Required | Default |
 |----------------------------------|----------------------------|----------------------------------|--|
-| `ADMIN_PUBLIC_KEY`             | Public key (address) of Litecoin admin wallet    | **Yes** | *null* (string) |
-| `ADMIN_PRIVATE_KEY`         | Private key of Litecoin admin wallet. Used for programmatically sending transactions from admin   | No | *null* (string) |
-| `PROVIDER`           | The `id` of a provider in packages/api-providers. | **Yes except SOL** | *null* ([AvailableProvider](packages/api-providers/src/index.ts)) |
-| `PROVIDER_PARAMS`         | Parameters for a particular provider's constructor. Could be [API_KEY, REGION] like [Tatum](packages/api-providers/src/TatumProvider.ts) | No | *null* (string[]) |
+| `ADMIN_PUBLIC_KEY`          | Public key (address) of your admin wallet    | **Yes** | *null* (string) |
+| `ADMIN_PRIVATE_KEY`         | Private key of admin wallet. Only needed if you plan on programmatically sending transactions  | No | *null* (string) |
 
-Other root configuration options:
+#### Protected options
+
+This section details certain configuration parameters that should be handled with extra care. A malicious actor could manipulate the integrity of payments if they had access to these parameters.
+
+**There's a built-in script to securely generate and print these values at random:**
+
+```bash
+node packages/scripts/build/setupSeeds.js
+# OR
+ts-node packages/scripts/src/setupSeeds.ts
+
+# Prints
+{
+  "INVOICE_ENC_KEY": "5036...9cc3",
+  "SEED": "eb08...3afc",
+  "KEAGATE_API_KEY": "9fac8f7d...c6568f97"
+}
+```
 
 | Key                              | Description                    | Required | Default |
 |----------------------------------|----------------------------|----------------------------------|--|
-| `KEAGATE_API_KEY`         | Custom key that will be required in the administrative requests `keagate-api-key` requests to Keagate | No | *null* (string) |
+| `SEED`         | Seed for transactional wallet generator. Must be a 128-bit hex string. **Protect this value in production** | **Yes** | *null* (string) |
+| `KEAGATE_API_KEY`         | Api key that will be required in administrative request's `keagate-api-key` header. **Protect this value in production** | No | 'API-KEY' (string) |
+| `INVOICE_ENC_KEY`         | Key that will be used to encrypt payment ID's when distributed via invoice. **Protect this value in production** | **Yes** | *null* (string) |
+
+
+#### Other options
+
+| Key                              | Description                    | Required | Default |
+|----------------------------------|----------------------------|----------------------------------|--|
 | `IP_WHITELIST`         | List of IP address ["1.1.1.1" , "2.2.2.2",...] to be whitelisted for administrative requests | No | [] (string[]) |
-| `TRANSACTION_TIMEOUT` | Milliseconds for which a transaction will be valid for  | No | 1200000 [20 Minutes] (number) |
-| `TRANSACTION_REFRESH_TIME` | Milliseconds for which each active transaction will be re-scanned | No | 10000 [10 Seconds] (number) |
-| `TRANSACTION_SLIPPAGE_TOLERANCE` | Percentage of a payment that discounted as from a total payment.<br /><br />Example: a TRANSACTION_SLIPPAGE_TOLERANCE of 0.02 for a 100 SOL payment will be fulfilled at 98 SOL. | No | 0.02 (number) |
-| `MONGO_CONNECTION_STRING` | Connection string for mongodb instance, which is installed automatically with docker | No | mongodb://localhost:27017 (string) |
-| `MONGO_KEAGATE_DB` | Mongo database to use for storing/managing payments | No | keagate (string) |
-| `USE_SO_CHAIN` | [SoChain](https://sochain.com/api/#introduction) is a free blockchain infrastructure API for that allows for 300 requests/minute free-of-charge.<br /><br />Setting this to `true` will utilize SoChain for part of the btc, dash, and ltc payment process. **Recommended** | No | true (boolean) |
+| `TRANSACTION_TIMEOUT` | Milliseconds by which a payment will be valid for. After that, the payment is expired | No | 1200000 [20 Minutes] (number) |
+| `TRANSACTION_MIN_REFRESH_TIME` | Minimum milliseconds by which each active transaction will idle between refreshes | No | 30000 [30 Seconds] (number) |
+| `TRANSACTION_SLIPPAGE_TOLERANCE` | Percentage of a total payment that is discounted as slippage.<br /><br />Example: a TRANSACTION_SLIPPAGE_TOLERANCE of 0.02 for a 100 SOL payment will be fulfilled at 98 SOL. | No | 0.02 (number) |
+| `BLOCKBOOK_RETRY_DELAY` | Milliseconds to wait before re-trying a failed Blockbook request. | No | 5000 (number) |
+| `MONGO_CONNECTION_STRING` | Connection string for MongoDB instance including any authentication. | No | 'mongodb://localhost:27017' (string) |
+| `MONGO_KEAGATE_DB` | Mongo database to use for storing/managing payments | No | 'keagate' (string) |
 | `TESTNETS` | **For development only**. Turn on testnets for given currencies | No | false (boolean) |
+| `HOST` | Your domain or IP that Keagate is running on. **This is used for aesthetics and has no functional effect on Keagate** | No | *null* (string) |
+| `PORT` | The port that Keagate's backend API will run on | No | 8081 (number) |
+
+<!-- | `USE_SO_CHAIN` | [SoChain](https://sochain.com/api/#introduction) is a free blockchain infrastructure API for that allows for 300 requests/minute free-of-charge.<br /><br />Setting this to `true` will utilize SoChain for part of the btc, dash, and ltc payment process. **Recommended** | No | true (boolean) | -->
+
+#### Example
 
 Your `config/local.json` could look something like:
 
 ```js
 {
-  "dash": {
+  "LTC": {
     "ADMIN_PUBLIC_KEY": "MY_WALLET_ADDRESS",
-    "ADMIN_PRIVATE_KEY": "MY_PRIVATE_KEY",
-    "PROVIDER": "NowNodes",
-    "PROVIDER_PARAMS": ["MY_API_KEY"]
+    "ADMIN_PRIVATE_KEY": "MY_PRIVATE_KEY"
   },
 
   "KEAGATE_API_KEY": "abcd123",
