@@ -34,7 +34,7 @@ Keagate *(&#107;&#105;&colon;&#103;&#101;&#618;&#116;)* – A High-Performance 
 
 ## About The Project
 
-Keagate is a self-hosted, high-performance cryptocurrency payment gateway. Payments can administered with the [API]() for flexibility or with the built-in invoicing client (*image below*).
+Keagate is a self-hosted, high-performance cryptocurrency payment gateway. Payments can administered with via [API](https://dilan-dio4.github.io/keagate-example-swagger/) for flexibility or with the built-in invoicing client (*image below*).
 
 **Currently support currencies: Bitcoin, Ethereum, Dogecoin, Solana, Litecoin, Polygon, and Dash.**
 
@@ -71,17 +71,18 @@ chmod +x keagate.sh
 ./keagate.sh
 ```
 
-This helper script has been tested on:
+This helper script has been tested on...
+
 * Ubuntu 18+
 * Debian 10+
 * Amazon Linux 4.14+
 * CentOS 7.9+
 
-...via AWS and Azure
+...via AWS and Azure.
 
 <!-- No Docker quick install on Redhat RHEL -->
 
-This script should run successfully on most other flavors of Linux with some configuration. Otherwise, use the manual build as it's fairly straightforward.
+This script should run successfully on most flavors of Linux with some configuration. Otherwise, use the manual build, as it's fairly straightforward.
 
 ### Manual Installation
 
@@ -91,7 +92,7 @@ This script should run successfully on most other flavors of Linux with some con
   * Running on your machine **OR** remotely via a connection string
 * Web server (like Nginx or Apache2) – [Install](https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/)
   * Serving as a reverse proxy to `localhost:8081`
-  * `8081` is the default port that Keagate runs on, can be changed via the _PORT_ config option.
+  * `8081` is the default port that Keagate runs on, can be changed via the [_PORT_ configuration option](#custom).
 * Node > 14 and NPM – [Install](https://github.com/nvm-sh/nvm#installing-and-updating)
   * Use of `nvm` to manage Node and NPM is recommended
 
