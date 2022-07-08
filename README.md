@@ -49,7 +49,6 @@ Keagate is a self-hosted, high-performance cryptocurrency payment gateway. Payme
 * Self-hosted/Private
 * Easily extensible
 * Lightweight and highly performant
-* No IP Blocking
 
 Funds go directly to your wallet via a one-time addresses that is generated for each payment.
 
@@ -214,16 +213,21 @@ Your `config/local.json` could look something like:
 }
 ```
 
-# Development
+## Development
 
-Development experience and extensibility are a high priority for this package.
+Development experience and extensibility are the upmost priority of this package.
 
-1. Git clone this package.
-2. `cd Keagate && npm i`
-3. Add a mongoDB connection to the `MONGO_CONNECTION_STRING` attribute in `config/local.json` along with some admin wallet credentials. For development, the [Mongo Atlas free tier](https://www.mongodb.com/cloud/atlas/signup) works great.
-4. `npm run dev` to start the invoice client and backend.
+To get started:
+
+1. Clone this repo.
+2. Install `pnpm` globally with `npm i -g pnpm`
+3. `cd Keagate && pnpm i`
+4. Add a MongoDB connection to the `MONGO_CONNECTION_STRING` attribute in `config/local.json`, along with some admin wallet credentials and the other [required configuration parameters](#custom). For development, the [Mongo Atlas free tier](https://www.mongodb.com/cloud/atlas/signup) works great.
+5. `pnpm run dev` to start the invoice client and backend.
     * Any changes in `packages/invoice-client/src` will be automatically reflected on refresh.
     * Any changes to the source of `packages/backend/src` will be reflected automatically via `ts-node-dev`.
+    * Any changes to `config/local.json` has to be manually refreshed.
+6. The backend will run at `127.0.0.1:8081`. See your API docs at `http://127.0.0.1/docs`.
 
 <details>
 
