@@ -18,7 +18,7 @@ Keagate *(&#107;&#105;&colon;&#103;&#101;&#618;&#116;)* – A High-Performance 
     <img src="https://shields.io/snyk/vulnerabilities/github/dilan-dio4/keagate?style=flat-square" />
     <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/dilan-dio4/Keagate?style=flat-square">
     <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/dilan-dio4/Keagate?style=flat-square">
-    <a href="https://gitter.im/Keagate/community?utm_source=share-link&utm_medium=link&utm_campaign=share-link"><img alt="Gitter" src="https://img.shields.io/gitter/room/dilan-dio4/Keagate?style=flat-square"></a>
+    <a target="_blank" href="https://gitter.im/Keagate/community?utm_source=share-link&utm_medium=link&utm_campaign=share-link"><img alt="Gitter" src="https://img.shields.io/gitter/room/dilan-dio4/Keagate?style=flat-square"></a>
 </h4>
 
 <br />
