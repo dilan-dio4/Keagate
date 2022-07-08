@@ -27,10 +27,8 @@ Keagate *(&#107;&#105;&colon;&#103;&#101;&#618;&#116;)* – A High-Performance 
   * [CLI](#cli)
   * [Custom](#custom)
 * [Development](#development)
-  * [Adding a currency](#adding-a-currency)
-  * [Adding an API route](#adding-a-currency)
+  * [Adding an API route](#adding-an-api-route)
   * [Customizing the invoice interface](#customizing-the-invoice-interface)
-* [Troubleshoot](#troubleshoot)
 
 ## About The Project
 
