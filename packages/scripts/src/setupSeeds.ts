@@ -14,4 +14,4 @@ export default async function setupSeeds(): Promise<Partial<MyConfig>> {
     };
 }
 
-require.main && setupSeeds().then(res => console.log(JSON.stringify(res, null, 2)));
+require.main === module && setupSeeds().then(res => console.log(JSON.stringify(res, null, 2)));
