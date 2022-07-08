@@ -96,7 +96,7 @@ async function main() {
 
     await server.ready();
     server.swagger();
-    server.listen({ port: 8081 }, (err, address) => {
+    server.listen({ port: config.getTyped('PORT') }, (err, address) => {
         if (err) {
             console.error(err);
             process.exit(1);
