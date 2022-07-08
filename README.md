@@ -34,7 +34,7 @@ Keagate *(&#107;&#105;&colon;&#103;&#101;&#618;&#116;)* – A High-Performance 
 
 ## About The Project
 
-Keagate is a self-hosted, high-performance cryptocurrency payment gateway. Payments can administered with via [API](https://dilan-dio4.github.io/keagate-example-swagger/) for flexibility or with the built-in invoicing client (*image below*).
+Keagate is a self-hosted, high-performance cryptocurrency payment gateway. Payments can be administered via [API](https://dilan-dio4.github.io/keagate-example-swagger/) for flexibility or with the built-in invoicing client (*image below*).
 
 **Currently support currencies: Bitcoin, Ethereum, Dogecoin, Solana, Litecoin, Polygon, and Dash.**
 
@@ -50,7 +50,7 @@ Keagate is a self-hosted, high-performance cryptocurrency payment gateway. Payme
 * Easily extensible
 * Lightweight and highly performant
 
-Funds go directly to your wallet via a one-time addresses that is generated for each payment.
+Funds go directly to your wallet via a one-time address that is generated for each payment.
 
 
 ## Installation
@@ -122,7 +122,7 @@ pm2 start packages/backend/build/index.js --name Keagate --time
 
 Keagate requires some configuration. This is done via a file called `local.json` in `/config`, next to `default.json`. This file will automatically be used when you start Keagate. _Note that parameters in `local.json` will overwrite those in `default.json`_.
 
-There are **two** methods to configure Keagate, and they can be used in conjunction with each-other.
+There are **two** methods to configure Keagate, and they can be used in conjunction with each other.
 
 ### CLI
 
@@ -134,7 +134,7 @@ node packages/scripts/build/configure.js
 
 _Note – this CLI is automatically launched in the one-liner installation script._
 
-The CLI will write the `config/local.json` file upon completion, unless one already exists. In that case, it will write to `config/local2.json` and ask that you manually merge your new parameters, as needed.
+The CLI will write the `config/local.json` file upon completion unless one already exists. In that case, it will write to `config/local2.json` and ask that you manually merge your new parameters, as needed.
 
 ### Custom
 
@@ -155,7 +155,7 @@ Ticker can be one of `'LTC', 'BTC', 'ETH', 'DOGE', 'SOL', or 'MATIC'`. [See exam
 
 #### Protected options
 
-This section details certain configuration parameters that should be handled with extra care. A malicious actor could manipulate the integrity of payments if they had access to these parameters.
+This section details specific configuration parameters that should be handled with extra care. A malicious actor could manipulate the integrity of payments if they had access to these parameters.
 
 **There's a built-in script to securely generate and print these values at random:**
 
@@ -176,7 +176,7 @@ ts-node packages/scripts/src/setupSeeds.ts
 |----------------------------------|----------------------------|----------------------------------|--|
 | `SEED`         | Seed for transactional wallet generator. Must be a 128-bit hex string. **Protect this value in production** | **Yes** | *null* (string) |
 | `KEAGATE_API_KEY`         | Api key that will be required in administrative request's `keagate-api-key` header. **Protect this value in production** | No | 'API-KEY' (string) |
-| `INVOICE_ENC_KEY`         | Key that will be used to encrypt payment ID's when distributed via invoice. **Protect this value in production** | **Yes** | *null* (string) |
+| `INVOICE_ENC_KEY`         | Key that will be used to encrypt payment IDs when distributed via invoice. **Protect this value in production** | **Yes** | *null* (string) |
 
 
 #### Other options
@@ -184,8 +184,8 @@ ts-node packages/scripts/src/setupSeeds.ts
 | Key                              | Description                    | Required | Default |
 |----------------------------------|----------------------------|----------------------------------|--|
 | `IP_WHITELIST`         | List of IP address ["1.1.1.1" , "2.2.2.2",...] to be whitelisted for administrative requests | No | [] (string[]) |
-| `TRANSACTION_TIMEOUT` | Milliseconds by which a payment will be valid for. After that, the payment is expired | No | 1200000 [20 Minutes] (number) |
-| `TRANSACTION_MIN_REFRESH_TIME` | Minimum milliseconds by which each active transaction will idle between refreshes | No | 30000 [30 Seconds] (number) |
+| `TRANSACTION_TIMEOUT` | Milliseconds by which payments will be valid for. After that, the payment is expired | No | 1200000 [20 Minutes] (number) |
+| `TRANSACTION_MIN_REFRESH_TIME` | Minimum milliseconds by which transactions will idle between refreshes | No | 30000 [30 Seconds] (number) |
 | `TRANSACTION_SLIPPAGE_TOLERANCE` | Percentage of a total payment that is discounted as slippage.<br /><br />Example: a TRANSACTION_SLIPPAGE_TOLERANCE of 0.02 for a 100 SOL payment will be fulfilled at 98 SOL. | No | 0.02 (number) |
 | `BLOCKBOOK_RETRY_DELAY` | Milliseconds to wait before re-trying a failed Blockbook request. | No | 5000 (number) |
 | `MONGO_CONNECTION_STRING` | Connection string for MongoDB instance including any authentication. | No | 'mongodb://localhost:27017' (string) |
@@ -215,7 +215,7 @@ Your `config/local.json` could look something like:
 
 ## Development
 
-Development experience and extensibility are the upmost priority of this package.
+Development experience and extensibility are the utmost priority of this package.
 
 To get started:
 
@@ -226,7 +226,7 @@ To get started:
 5. `pnpm run dev` to start the invoice client and backend.
     * Any changes in `packages/invoice-client/src` will be automatically reflected on refresh.
     * Any changes to the source of `packages/backend/src` will be reflected automatically via `ts-node-dev`.
-    * Any changes to `config/local.json` has to be manually refreshed.
+    * Any changes to `config/local.json` have to be manually refreshed.
 6. The backend will run at `127.0.0.1:8081`. See your API docs at `http://127.0.0.1/docs`.
 
 <details>
@@ -269,9 +269,9 @@ There's four steps in adding a currency to this package.
 
 The invoice client is a statically built React package (via Vite). This static build is served in `backend`. This functionality can be seen [here](packages/backend/src/routes/invoiceClient.ts).
 
-Editing the react package will automatically build to `dist`, so just refresh the page to see the changes.
+Editing the react package will automatically build to `packages/invoice-client/dist`, so just refresh the page to see any changes.
 
-The source code in invoice client is pretty straight-forward, so anyone familiar with React (& TailwindCSS) should have an easy time making their desired alterations.
+The source of `invoice-client`'s React project is pretty straightforward, so those familiar with React (& TailwindCSS) should have an easy time making their desired alterations.
 
 </details>
 <details>
