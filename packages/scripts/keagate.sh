@@ -126,8 +126,18 @@
         sudo sh get-docker.sh >/dev/null 2>&1
         rm get-docker.sh
         if ! keagate_has "docker"; then
-            echo "Could not install Docker from bash. Please install Docker, then run this script again. (For more information: https://docs.docker.com/desktop/linux/install/)"
-            exit 1
+            keagate_debug "Falling back to native Docker install (yum only)..."
+
+            if keagate_has "yum"; then
+                sudo yum update -y
+                sudo yum -y install docker
+                sudo service docker start
+            fi
+
+            if ! keagate_has "docker"; then
+                echo "Could not install Docker from bash. Please install Docker, then run this script again. (For more information: https://docs.docker.com/desktop/linux/install/)"
+                exit 1
+            fi
         fi
         print_complete
     else
@@ -138,7 +148,11 @@
     if [ -f "/etc/debian_version" ]; then
         sudo apachectl stop >/dev/null 2>&1 || true
     fi
+
     # Fix permissions issue on certain ports from `docker run`
+    if [ ! -f "/var/run/docker.sock" ]; then
+        sudo service docker start
+    fi
     sudo chmod 666 /var/run/docker.sock
     # ---
 

@@ -92,7 +92,8 @@ async function main() {
         `The Keagate server is running via ${kleur.italic(`pm2`)}. To restart the server ` +
         `execute '${kleur.italic(`pm2 restart Keagate`)}'. To monitor the server ` +
         `execute '${kleur.italic(`pm2 monit Keagate`)}'. Read more about ${kleur.italic(`pm2`)} ` +
-        `at ${kleur.underline(`https://pm2.keymetrics.io/`)}.` +
+        `at ${kleur.underline(`https://pm2.keymetrics.io/`)}. You may have to close and ` +
+        `re-open your terminal to start using the ${kleur.italic(`pm2`)} command.` +
         `\n\n `
     )
 

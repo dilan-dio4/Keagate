@@ -71,10 +71,14 @@ chmod +x keagate.sh
 ```
 
 Tested on:
-Ubuntu 18+
-Debian 10+
+* Ubuntu 18+
+* Debian 10+
+* Amazon Linux 4.14+
+* CentOS 7.9+
 
-<!-- No Docker quick install on Redhat, CentOS -->
+...via AWS and Azure
+
+<!-- No Docker quick install on Redhat RHEL -->
 
 This should work on most other flavors of Linux with some configuration. Otherwise, use the manual build.
 
