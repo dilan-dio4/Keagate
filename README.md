@@ -1,3 +1,5 @@
+<!-- markdownlint-disable MD033 MD041 -->
+
 <br />
 
 <!-- http://ipa-reader.xyz/?text=ki%3Age%C9%AAt&voice=Joey --->
@@ -10,6 +12,13 @@ Keagate *(&#107;&#105;&colon;&#103;&#101;&#618;&#116;)* – A High-Performance 
 
 <h4 align="center">
   <b>🚧 This project is actively in development 🚧</b>
+</h4>
+
+<h4 align="center">
+    <img src="https://shields.io/snyk/vulnerabilities/github/dilan-dio4/keagate?style=flat-square" />
+    <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/dilan-dio4/Keagate?style=flat-square">
+    <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/dilan-dio4/Keagate?style=flat-square">
+    <a href="https://gitter.im/Keagate/community?utm_source=share-link&utm_medium=link&utm_campaign=share-link"><img alt="Gitter" src="https://img.shields.io/gitter/room/dilan-dio4/Keagate?style=flat-square"></a>
 </h4>
 
 <br />
@@ -57,13 +66,13 @@ Funds go directly to your wallet via a one-time address that is generated for ea
 
 The purpose of this installation script is to get Keagate up-and-running quickly in a Linux environment. The CLI will guide you in configuring, managing, and securing the instance.
 
-```
+```bash
 bash -c "$(curl -sSL https://raw.githubusercontent.com/dilan-dio4/Keagate/main/packages/scripts/keagate.sh)"
 ```
 
 *Alternate*:
 
-```
+```bash
 curl -o keagate.sh https://raw.githubusercontent.com/dilan-dio4/Keagate/main/packages/scripts/keagate.sh
 chmod +x keagate.sh
 ./keagate.sh
@@ -119,7 +128,7 @@ pm2 start packages/backend/build/index.js --name Keagate --time
 
 ## Configuration
 
-Keagate requires some configuration. This is done via a file called `local.json` in `/config`, next to `default.json`. This file will automatically be used when you start Keagate. _Note that parameters in `local.json` will overwrite those in `default.json`_.
+Keagate requires some configuration. This is done via a file called `local.json` in `/config`, next to `default.json`. This file will automatically be used when you start Keagate. *Note that parameters in `local.json` will overwrite those in `default.json`*.
 
 There are **two** methods to configure Keagate, and they can be used in conjunction with each other.
 
@@ -139,7 +148,7 @@ The CLI will write the `config/local.json` file upon completion unless one alrea
 
 Create or open the file `local.json` in `/config`. You can use the provided `default.json` file as a reference **(your `local.json` will override these)**.
 
-_The schema of the Keagate configuration can be seen (in TypeScript) at [packages/common/src/config.ts](packages/common/src/config.ts)._
+*The schema of the Keagate configuration can be seen (in TypeScript) at [packages/common/src/config.ts](packages/common/src/config.ts).*
 
 #### Currencies
 
