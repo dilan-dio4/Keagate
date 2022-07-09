@@ -4,7 +4,7 @@
     "pureDev": "vite",
     "dev": "tsc --project tsconfig.package.json && vite build --watch",
     "prebuild": "shx rm -f tsconfig.package.tsbuildinfo",
-    "build": "tsc --project tsconfig.package.json && vite build",
+    "build": "vite build",
     "clean": "shx rm -rf build dist pnpm-lock.yaml node_modules tsconfig.package.tsbuildinfo"
   },
   "dependencies": {
