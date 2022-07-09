@@ -62,20 +62,13 @@ async function main() {
         } else {
             writeFileSync(path.join(__dirname, '..', '..', '..', 'config/', 'local.json'), prettyConfig);
         }
-        try {
-            await spawnAsync('pm2', ['stop', 'Keagate']);
-            await spawnAsync('pm2', ['del', 'Keagate']);
-        } catch (error) {
-            logger.debug("Removing old process errored because it doesn't exist yet");
-        }
 
-        const startSpawn = spawnAsync('pm2', ['start', 'packages/backend/build/index.js', '--name', 'Keagate', '--time'], {
+        const startSpawn = spawnAsync('pnpm', ['run', 'start'], {
             cwd: path.join(__dirname, '..', '..', '..'),
         });
         startSpawn.child.stderr.on('data', (data) => logger.error(data));
         startSpawn.child.stdout.on('data', (data) => logger.debug(data));
         await startSpawn;
-        await spawnAsync('pm2', ['save'], { cwd: path.join(__dirname, '..', '..', '..') });
     }
 
     // prettier-ignore
