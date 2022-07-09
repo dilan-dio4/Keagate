@@ -63,12 +63,20 @@ async function main() {
             writeFileSync(path.join(__dirname, '..', '..', '..', 'config/', 'local.json'), prettyConfig);
         }
 
-        const startSpawn = spawnAsync('pnpm', ['run', 'start'], {
-            cwd: path.join(__dirname, '..', '..', '..'),
-        });
-        startSpawn.child.stderr.on('data', (data) => logger.error(data));
-        startSpawn.child.stdout.on('data', (data) => logger.debug(data));
-        await startSpawn;
+
+        try {
+            await spawnAsync('pnpm', ['run', 'start'], {
+                cwd: path.join(__dirname, '..', '..', '..'),
+            });
+        } catch (error) {
+            // prettier-ignore
+            logger.error(
+                `\n\n ` +
+                `Error launching '${kleur.italic(`pm2`)}'. Make sure it's installed via` +
+                `'${kleur.italic(`pnpm i -g pm2`)}', then start the Keagate server with` +
+                `'${kleur.italic(`pnpm run start`)}'.`
+            )
+        }
     }
 
     // prettier-ignore
