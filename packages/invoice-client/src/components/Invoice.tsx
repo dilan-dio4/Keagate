@@ -2,7 +2,7 @@ import { Spinner, Alert } from 'flowbite-react';
 import { ReactComponent as BtcIcon } from 'cryptocurrency-icons/svg/color/btc.svg';
 import { ReactComponent as SolIcon } from 'cryptocurrency-icons/svg/color/sol.svg';
 import { ReactComponent as LtcIcon } from 'cryptocurrency-icons/svg/color/ltc.svg';
-// import { ReactComponent as DashIcon } from 'cryptocurrency-icons/svg/color/dash.svg';
+import { ReactComponent as DashIcon } from 'cryptocurrency-icons/svg/color/dash.svg';
 import { ReactComponent as MaticIcon } from 'cryptocurrency-icons/svg/color/matic.svg';
 import { ReactComponent as EthIcon } from 'cryptocurrency-icons/svg/color/eth.svg';
 import { ReactComponent as DogeIcon } from 'cryptocurrency-icons/svg/color/doge.svg';
@@ -25,6 +25,7 @@ export default function Invoice() {
         MATIC: <MaticIcon width={50} height={50} />,
         DOGE: <DogeIcon width={50} height={50} />,
         ETH: <EthIcon width={50} height={50} />,
+        DASH: <DashIcon width={50} height={50} />,
     };
 
     const [isBlockchainInfoOpen, setIsBlockchainInfoOpen] = useState<boolean>(false);

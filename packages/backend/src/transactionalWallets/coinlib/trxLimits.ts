@@ -7,6 +7,7 @@ export const currencyDusts: Partial<Record<typeof availableCoinlibCurrencies[num
     LTC: 0.00000546,
     DOGE: 1,
     ETH: 0.00000001,
+    DASH: 0.00000546
 };
 
 // In pure unit
@@ -23,4 +24,5 @@ export const walletIndexGenerator: Record<typeof availableCoinlibCurrencies[numb
     BTC: safeRand,
     DOGE: safeRand,
     ETH: safeRand,
+    DASH: safeRand
 };
