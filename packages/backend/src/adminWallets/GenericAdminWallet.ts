@@ -18,9 +18,7 @@ export default abstract class GenericAdminWallet {
 
     protected setFromObject(update: CoinlibAdminConstructor | NativeAdminConstructor) {
         for (const [key, val] of Object.entries(update)) {
-            if (this[key] === undefined) {
-                this[key] = val;
-            }
+            this[key] = val;
         }
     }
 }

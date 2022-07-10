@@ -81,9 +81,7 @@ export default abstract class GenericTransactionalWallet {
 
     protected setFromObject(update: Partial<MongoPayment> | NativePaymentConstructor | CoinlibPaymentConstructor) {
         for (const [key, val] of Object.entries(update)) {
-            if (this[key] === undefined) {
-                this[key] = val;
-            }
+            this[key] = val;
         }
     }
 
