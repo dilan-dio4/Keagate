@@ -230,13 +230,13 @@ To be notified of payment updates in real-time, use instant payment notification
 
 ### Use IPNs
 
-1. Make sure you have configured the *IPN_HMAC_SECRET* attribute in [Configuration](#protected-options). This will allow you to guarantee the origin and trust the integrity of incoming messages.
+1. Make sure you have configured the *IPN_HMAC_SECRET* attribute in [Configuration](#protected-options). This will allow you to guarantee the origin and trust in the integrity of incoming messages.
 2. Have access to some API or serverless function that can be invoked publicly via URL.
-3. Pass this url into the `ipnCallbackUrl` attribute of your [*createPayment*](https://dilan-dio4.github.io/keagate-example-swagger/#/Payment/post_createPayment) requests.
+3. Pass this URL into the `ipnCallbackUrl` attribute of your [*createPayment*](https://dilan-dio4.github.io/keagate-example-swagger/#/Payment/post_createPayment) requests.
 
-Just like that, IPNs are all setup on Keagate. A POST request will be sent to the `ipnCallbackUrl` with a JSON object like that of [*TypeForRequest*](https://dilan-dio4.github.io/keagate-example-swagger/#model-def-0).
+Just like that, IPNs are all set up on Keagate. A POST request will be sent to the `ipnCallbackUrl` with a JSON object like that of [*TypeForRequest*](https://dilan-dio4.github.io/keagate-example-swagger/#model-def-0).
 
-The last thing you should do before using these notifications is validate all incoming messages via HMAC.
+The last thing to do before using these notifications is validate all incoming messages via HMAC.
 
 ### Validate IPN Messages
 
