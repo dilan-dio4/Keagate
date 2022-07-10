@@ -18,7 +18,7 @@ export default class AdminPolygon extends GenericNativeAdminWallet {
     }
 
     private getRandomRPC() {
-        if (config.getTyped('TESTNETS')) {
+        if (config.getTyped('IS_DEV')) {
             return 'https://rpc.ankr.com/polygon_mumbai';
         } else {
             return 'https://rpc.ankr.com/polygon';

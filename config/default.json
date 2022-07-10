@@ -18,7 +18,7 @@
 
     "INVOICE_ENC_KEY": "D(G+KbPeShVmYq3s6v9y$B&E)H@McQfT",
 
-    "TESTNETS": false,
+    "IS_DEV": false,
     "USE_SO_CHAIN": true,
     "PORT": 8081
 }

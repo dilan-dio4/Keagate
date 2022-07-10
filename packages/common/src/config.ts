@@ -28,7 +28,7 @@ export interface MyConfig extends MyCurrencyConfig {
     INVOICE_ENC_KEY: string;
     IPN_HMAC_SECRET?: string;
 
-    TESTNETS: boolean;
+    IS_DEV: boolean;
     USE_SO_CHAIN: boolean;
 
     HOST?: string;

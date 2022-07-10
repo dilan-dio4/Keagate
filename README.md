@@ -202,7 +202,7 @@ ts-node packages/scripts/src/setupSeeds.ts
 | `BLOCKBOOK_RETRY_DELAY` | Milliseconds to wait before re-trying a failed Blockbook request. | No | 5000 (number) |
 | `MONGO_CONNECTION_STRING` | Connection string for MongoDB instance including any authentication. | No | 'mongodb://localhost:27017' (string) |
 | `MONGO_KEAGATE_DB` | Mongo database to use for storing/managing payments | No | 'keagate' (string) |
-| `TESTNETS` | **For development only**. Turn on testnets for given currencies | No | false (boolean) |
+| `IS_DEV` | **For development only**. Turn on testnets for given currencies and activate development features | No | false (boolean) |
 | `HOST` | Your domain or IP that Keagate is running on. **This is used for aesthetics and has no functional effect on Keagate** | No | *null* (string) |
 | `PORT` | The port that Keagate's backend API will run on | No | 8081 (number) |
 
