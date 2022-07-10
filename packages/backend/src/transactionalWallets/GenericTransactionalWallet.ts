@@ -7,6 +7,7 @@ import config from '../config';
 import GenericAdminWallet from '../adminWallets/GenericAdminWallet';
 import { AnyPayments } from 'coinlib-port';
 import crypto from 'crypto';
+import fetch from 'cross-fetch';
 
 export default abstract class GenericTransactionalWallet {
     public currency: AvailableCurrencies;
@@ -98,6 +99,16 @@ export default abstract class GenericTransactionalWallet {
             db.collection('payments').updateOne({ _id: new ObjectId(this.id) }, { $set: update });
         }
         if (this.ipnCallbackUrl) {
+            const sendIPN = (body: Record<string, any>, sig?: string) => {
+                fetch(this.ipnCallbackUrl, {
+                    method: 'POST',
+                    body: JSON.stringify(body),
+                    headers: {
+                        'x-keagate-sig': sig,
+                        'Content-Type': 'application/json',
+                    },
+                }).catch(err => console.log("IPN Invoke failed with: ", JSON.stringify(err)));
+            }
             if (config.has('IPN_HMAC_SECRET')) {
                 const details: MongoPayment = this.getDetails();
                 delete details['privateKey'];
@@ -106,21 +117,11 @@ export default abstract class GenericTransactionalWallet {
                 }
                 const hmac = crypto.createHmac('sha512', config.getTyped('IPN_HMAC_SECRET'));
                 hmac.update(JSON.stringify(details, Object.keys(details).sort()));
-
-                fetch(this.ipnCallbackUrl, {
-                    method: 'POST',
-                    body: JSON.stringify(details),
-                    headers: {
-                        'x-keagate-sig': hmac.digest('hex'),
-                    },
-                });
+                sendIPN(details, hmac.digest('hex'))
             } else {
-                fetch(this.ipnCallbackUrl, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        error: 'No IPN_HMAC_SECRET configuration parameter set. Please set this up before using instant payment notifications. More information here: https://github.com/dilan-dio4/coinlib-port#instant-payment-notifications',
-                    }),
-                });
+                sendIPN({
+                    error: 'No IPN_HMAC_SECRET configuration parameter set. Please set this up before using instant payment notifications. More information here: https://github.com/dilan-dio4/coinlib-port#instant-payment-notifications',
+                }, undefined)
             }
         }
     }

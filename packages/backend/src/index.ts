@@ -114,28 +114,37 @@ async function main() {
         const ipnConsumer = fastify({
             trustProxy: true,
         });
-        ipnConsumer.post('/ipnCallback', (request, reply) => {
+        ipnConsumer.post<{ Body: Record<string, any> }>('/ipnCallback', (request, reply) => {
             const send = (status: string) => {
                 console.log(`[IPN CALLBACK DEV]: ${status}`);
                 reply.send(status);
             };
             if (request.headers['x-keagate-sig']) {
                 const hmac = crypto.createHmac('sha512', config.getTyped('IPN_HMAC_SECRET'));
-                const body = JSON.stringify(request.body);
-                hmac.update(JSON.stringify(body, Object.keys(body).sort()));
+                hmac.update(JSON.stringify(request.body, Object.keys(request.body).sort()));
                 const signature = hmac.digest('hex');
 
                 if (signature === request.headers['x-keagate-sig']) {
                     send(
                         'x-keagate-sig matches calculated signature. Can authenticate origin and validate message integrity.\n\n' +
-                            JSON.stringify(body, null, 2),
+                            JSON.stringify(request.body, null, 2),
                     );
                 } else {
-                    send('x-keagate-sig header does not match calculated signature. Cannot authenticate origin and validate message integrity.');
+                    send(
+                        `x-keagate-sig header (${request.headers['x-keagate-sig']}) does not match calculated signature (${signature}). Cannot authenticate origin and validate message integrity.` + 
+                            JSON.stringify(request.body, null, 2),
+                    );
                 }
             } else {
                 send('No x-keagate-sig found on POST request. Cannot authenticate origin and validate message integrity.');
             }
+        });
+        ipnConsumer.listen({ port: 8082 }, (err, address) => {
+            if (err) {
+                console.error(err);
+                process.exit(1);
+            }
+            console.log(`[IPN CALLBACK DEV]: IPN callback server listening at ${address}`);
         });
     }
 }
