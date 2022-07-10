@@ -2,6 +2,7 @@ import { FastifyInstance } from 'fastify';
 import fastifySwagger from '@fastify/swagger';
 import fastifyPlugin from 'fastify-plugin';
 import config from '../config';
+import { MongoTypeForRequest } from './types';
 
 export default fastifyPlugin(async function createInvoiceClientRoute(server: FastifyInstance) {
     server.register(fastifySwagger, {
@@ -50,4 +51,9 @@ export default fastifyPlugin(async function createInvoiceClientRoute(server: Fas
         },
         exposeRoute: true,
     });
+
+    server.addSchema({
+        $id: "TypeForRequest",
+        ...MongoTypeForRequest
+    })
 });

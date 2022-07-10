@@ -44,10 +44,9 @@ Keagate *(&#107;&#105;&colon;&#103;&#101;&#618;&#116;)* – A High-Performance 
 
 ## About The Project
 
-Keagate is a self-hosted, high-performance cryptocurrency payment gateway. Payments can be administered via [API](https://dilan-dio4.github.io/keagate-example-swagger/) for flexibility or with the built-in invoicing client (*image below*).
+Keagate is a self-hosted, high-performance cryptocurrency payment gateway. Payments can be administered [via API](https://dilan-dio4.github.io/keagate-example-swagger/) for flexibility or with the built-in invoicing client (*image below*).
 
-**Currently support currencies: Bitcoin, Ethereum, Dogecoin, Solana, Litecoin, Polygon, and Dash.**
-**In development: Ripple, Tron**
+**Supported currencies: Bitcoin, Ethereum, Dogecoin, Solana, Litecoin, Polygon, Dash,** *Ripple (coming soon), Tron (coming soon)*.
 
 <p align="left">
   <img src="assets/invoice-frame.png" width="650" alt="Invoice Preview">
@@ -226,6 +225,48 @@ Your `config/local.json` could look something like:
 ```
 
 ## Instant Payment Notifications
+
+To be notified of payment updates in real-time, use instant payment notifications (IPN).
+
+### Use IPNs
+
+1. Make sure you have configured the *IPN_HMAC_SECRET* attribute in [Configuration](#protected-options). This will allow you to guarantee the origin and trust the integrity of incoming messages.
+2. Have access to some API or serverless function that can be invoked publicly via URL.
+3. Pass this url into the `ipnCallbackUrl` attribute of your [*createPayment*](https://dilan-dio4.github.io/keagate-example-swagger/#/Payment/post_createPayment) requests.
+
+Just like that, IPNs are all setup on Keagate. A POST request will be sent to the `ipnCallbackUrl` with a JSON object like that of [*TypeForRequest*](https://dilan-dio4.github.io/keagate-example-swagger/#model-def-0).
+
+The last thing you should do before using these notifications is validate all incoming messages via HMAC.
+
+### Validate IPN Messages
+
+The previously configured *IPN_HMAC_SECRET* is used as a key in the sha-512 HMAC signature generated for the `x-keagate-sig` header of each notification.
+
+*Note: be sure to sort the request body alphabetically before generating your HMAC.*
+
+Here's a NodeJS example of validating this header in Express.
+
+```js
+var crypto = require('crypto')
+var express = require('express')
+
+const app = express()
+app.use(express.json())
+
+app.post('/ipnCallback', (req, res) => {
+  // +++ Generate my signature
+  const hmac = crypto.createHmac('sha512', IPN_HMAC_SECRET);
+  hmac.update(JSON.stringify(req.body, Object.keys(req.body).sort()));
+  const signature = hmac.digest('hex');
+  // ---
+
+  if (signature === req.headers['x-keagate-sig']) {
+    // Good to go!
+  } else {
+    // This notification may be spoofed...
+  }
+});
+```
 
 ## Development
 
