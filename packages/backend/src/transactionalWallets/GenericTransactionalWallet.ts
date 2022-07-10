@@ -111,16 +111,17 @@ export default abstract class GenericTransactionalWallet {
                     method: 'POST',
                     body: JSON.stringify(details),
                     headers: {
-                        "x-keagate-sig": hmac.digest('hex')
+                        'x-keagate-sig': hmac.digest('hex'),
                     },
                 });
             } else {
                 fetch(this.ipnCallbackUrl, {
                     method: 'POST',
-                    body: JSON.stringify({ "error": "No IPN_HMAC_SECRET configuration parameter set. Please set this up before using instant payment notifications. More information here: https://github.com/dilan-dio4/coinlib-port#instant-payment-notifications" }),
+                    body: JSON.stringify({
+                        error: 'No IPN_HMAC_SECRET configuration parameter set. Please set this up before using instant payment notifications. More information here: https://github.com/dilan-dio4/coinlib-port#instant-payment-notifications',
+                    }),
                 });
             }
-
         }
     }
 }

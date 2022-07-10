@@ -107,7 +107,7 @@ async function main() {
 
     if (config.getTyped('IS_DEV') && config.has('IPN_HMAC_SECRET')) {
         /**
-         * For receiving IPN callbacks locally. Never use in production. Ideally, use 
+         * For receiving IPN callbacks locally. Never use in production. Ideally, use
          * something like lambda or Azure functions.
          * More information here: https://github.com/dilan-dio4/coinlib-port#instant-payment-notifications
          */
@@ -116,23 +116,27 @@ async function main() {
         });
         ipnConsumer.post('/ipnCallback', (request, reply) => {
             const send = (status: string) => {
-                console.log(`[IPN CALLBACK DEV]: ${status}`)
+                console.log(`[IPN CALLBACK DEV]: ${status}`);
                 reply.send(status);
-            }
+            };
             if (request.headers['x-keagate-sig']) {
                 const hmac = crypto.createHmac('sha512', config.getTyped('IPN_HMAC_SECRET'));
                 const body = JSON.stringify(request.body);
                 hmac.update(JSON.stringify(body, Object.keys(body).sort()));
                 const signature = hmac.digest('hex');
+
                 if (signature === request.headers['x-keagate-sig']) {
-                    send("x-keagate-sig matches calculated signature. Can authenticate origin and validate message integrity.\n\n" + JSON.stringify(body, null, 2))
+                    send(
+                        'x-keagate-sig matches calculated signature. Can authenticate origin and validate message integrity.\n\n' +
+                            JSON.stringify(body, null, 2),
+                    );
                 } else {
-                    send("x-keagate-sig header does not match calculated signature. Cannot authenticate origin and validate message integrity.")
+                    send('x-keagate-sig header does not match calculated signature. Cannot authenticate origin and validate message integrity.');
                 }
             } else {
-                send("No x-keagate-sig found on POST request. Cannot authenticate origin and validate message integrity.")
+                send('No x-keagate-sig found on POST request. Cannot authenticate origin and validate message integrity.');
             }
-        })
+        });
     }
 }
 

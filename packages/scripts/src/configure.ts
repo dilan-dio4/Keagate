@@ -63,7 +63,6 @@ async function main() {
             writeFileSync(path.join(__dirname, '..', '..', '..', 'config/', 'local.json'), prettyConfig);
         }
 
-
         try {
             await spawnAsync('pnpm', ['run', 'start'], {
                 cwd: path.join(__dirname, '..', '..', '..'),
