@@ -37,6 +37,7 @@ Keagate *(&#107;&#105;&colon;&#103;&#101;&#618;&#116;)* – A High-Performance 
 * [Configuration](#configuration)
   * [CLI](#cli)
   * [Custom](#custom)
+* [Instant Payment Notifications](#instant-payment-notifications)
 * [Development](#development)
   * [Adding an API route](#adding-an-api-route)
   * [Customizing the invoice interface](#customizing-the-invoice-interface)
@@ -178,7 +179,8 @@ ts-node packages/scripts/src/setupSeeds.ts
 {
   "INVOICE_ENC_KEY": "5036...9cc3",
   "SEED": "eb08...3afc",
-  "KEAGATE_API_KEY": "9fac8f7d...c6568f97"
+  "KEAGATE_API_KEY": "9fac8f7d...c6568f97",
+  "IPN_HMAC_SECRET": "e50dd645...ea5baf54"
 }
 ```
 
@@ -187,6 +189,7 @@ ts-node packages/scripts/src/setupSeeds.ts
 | `SEED`         | Seed for transactional wallet generator. Must be a 128-bit hex string. **Protect this value in production** | **Yes** | *null* (string) |
 | `KEAGATE_API_KEY`         | Api key that will be required in administrative request's `keagate-api-key` header. **Protect this value in production** | No | 'API-KEY' (string) |
 | `INVOICE_ENC_KEY`         | Key that will be used to encrypt payment IDs when distributed via invoice. **Protect this value in production** | **Yes** | *null* (string) |
+| `IPN_HMAC_SECRET`         | Key of the HMAC signature that is set in the `x-keagate-sig` header of each POST request when using [Instant Payment Notifications](#instant-payment-notifications). **Protect this value in production** | No | *null* (string) |
 
 #### Other options
 
@@ -221,6 +224,8 @@ Your `config/local.json` could look something like:
   // ...
 }
 ```
+
+## Instant Payment Notifications
 
 ## Development
 

@@ -16,7 +16,7 @@ export const currencies: Record<AvailableCurrencies, { name: string; explorer: s
     DASH: {
         networkName: 'Dash Mainnet',
         name: 'Dash',
-        explorer: 'https://explorer.dash.org/insight/',
+        explorer: 'https://chainz.cryptoid.info/dash/',
     },
     BTC: {
         networkName: 'Bitcoin Network Mainnet',

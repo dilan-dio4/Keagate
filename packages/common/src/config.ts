@@ -26,6 +26,7 @@ export interface MyConfig extends MyCurrencyConfig {
     MONGO_KEAGATE_DB: string;
 
     INVOICE_ENC_KEY: string;
+    IPN_HMAC_SECRET?: string;
 
     TESTNETS: boolean;
     USE_SO_CHAIN: boolean;

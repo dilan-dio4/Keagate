@@ -6,6 +6,7 @@ import { MongoPayment, IFromNew, INativeInitInDatabase, ICoinlibInitInDatabase }
 import config from '../config';
 import GenericAdminWallet from '../adminWallets/GenericAdminWallet';
 import { AnyPayments } from 'coinlib-port';
+import crypto from 'crypto';
 
 export default abstract class GenericTransactionalWallet {
     public currency: AvailableCurrencies;
@@ -97,18 +98,29 @@ export default abstract class GenericTransactionalWallet {
             db.collection('payments').updateOne({ _id: new ObjectId(this.id) }, { $set: update });
         }
         if (this.ipnCallbackUrl) {
-            const details: MongoPayment = this.getDetails();
-            delete details['privateKey'];
-            if (error) {
-                (details as any).error = error;
+            if (config.has('IPN_HMAC_SECRET')) {
+                const details: MongoPayment = this.getDetails();
+                delete details['privateKey'];
+                if (error) {
+                    (details as any).error = error;
+                }
+                const hmac = crypto.createHmac('sha512', config.getTyped('IPN_HMAC_SECRET'));
+                hmac.update(JSON.stringify(details, Object.keys(details).sort()));
+
+                fetch(this.ipnCallbackUrl, {
+                    method: 'POST',
+                    body: JSON.stringify(details),
+                    headers: {
+                        "x-keagate-sig": hmac.digest('hex')
+                    },
+                });
+            } else {
+                fetch(this.ipnCallbackUrl, {
+                    method: 'POST',
+                    body: JSON.stringify({ "error": "No IPN_HMAC_SECRET configuration parameter set. Please set this up before using instant payment notifications. More information here: https://github.com/dilan-dio4/coinlib-port#instant-payment-notifications" }),
+                });
             }
-            fetch(this.ipnCallbackUrl, {
-                method: 'POST',
-                body: JSON.stringify(details),
-                headers: {
-                    /** TODO: Hmac Verification */
-                },
-            });
+
         }
     }
 }

@@ -11,6 +11,7 @@ export default async function setupSeeds(): Promise<Partial<MyConfig>> {
         INVOICE_ENC_KEY: randomSeedGenerator(16),
         SEED: randomSeedGenerator(16),
         KEAGATE_API_KEY: randomSeedGenerator(32),
+        IPN_HMAC_SECRET: randomSeedGenerator(32),
     };
 }
 
