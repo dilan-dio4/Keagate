@@ -24,6 +24,11 @@ Keagate *(&#107;&#105;&colon;&#103;&#101;&#618;&#116;)* – A High-Performance 
 </h4>
 
 <br />
+
+<p align="center">
+  <img src="assets/icon-tiny.png" width="150" alt="Keagate Icon">
+</p>
+
 <!-- TODO: Keagate Vector --->
 
 <!-- TABLE OF CONTENTS -->
