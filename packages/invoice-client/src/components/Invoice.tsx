@@ -73,8 +73,8 @@ export default function Invoice() {
             ) {
                 clearInterval(interval);
                 setIsTransactionDead(true);
-                if (invoiceObject.invoiceCallbackUrl) {
-                    window.location.href = invoiceObject.invoiceCallbackUrl + `?status=${_invoiceObj.status}`;
+                if (_invoiceObj.invoiceCallbackUrl) {
+                    window.location.href = _invoiceObj.invoiceCallbackUrl + `?status=${_invoiceObj.status}`;
                 }
             }
         }

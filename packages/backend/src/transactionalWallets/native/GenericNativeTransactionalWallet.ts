@@ -91,7 +91,8 @@ export default abstract class GenericNativeTransactionalWallet extends GenericTr
             const { result } = await this.adminWalletMask.sendTransaction(config.getTyped(this.currency).ADMIN_PUBLIC_KEY, balance);
             return result;
         } catch (error) {
-            throw new Error(error);
+            const details = this.getDetails();
+            throw new Error(`Error during cash out: ${JSON.stringify(error)} \n\n\ton payment: ${details} \n\n, `);
         }
     }
 }
