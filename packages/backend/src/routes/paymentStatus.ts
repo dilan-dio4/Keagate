@@ -4,10 +4,11 @@ import auth from '../middlewares/auth';
 import mongoGenerator from '../mongo/generator';
 import { ObjectId, WithId } from 'mongodb';
 import { MongoTypeForRequest, cleanDetails, AdminRouteHeaders, ErrorResponse } from './types';
+import { decrypt } from '../utils';
 
 const PaymentStatusQueryString = Type.Object({
     id: Type.String({
-        description: `The id of an existing payment`,
+        description: `The database id or invoice id of an existing payment`,
     }),
 });
 
@@ -36,11 +37,12 @@ export default async function createPaymentStatusRoute(server: FastifyInstance) 
         Reply: Static<typeof MongoTypeForRequest> | Static<typeof ErrorResponse>;
         Querystring: Static<typeof PaymentStatusQueryString>;
     }>('/getPaymentStatus', opts, async (request, reply) => {
-        const id = request.query.id;
+        const providedId = request.query.id;
+        const databaseId = providedId.length === 64 ? decrypt(providedId) : providedId;
         const { db } = await mongoGenerator();
-        const selectedPayment = (await db.collection('payments').findOne({ _id: new ObjectId(id) })) as WithId<Record<string, any>> | null;
+        const selectedPayment = (await db.collection('payments').findOne({ _id: new ObjectId(databaseId) })) as WithId<Record<string, any>> | null;
         if (!selectedPayment) {
-            return reply.status(300).send({ error: 'No payment found with given id' });
+            return reply.status(300).send({ error: 'No payment found with given database id or invoice id' });
         }
         reply.status(200).send(cleanDetails(selectedPayment as any));
     });

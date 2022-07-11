@@ -13,7 +13,7 @@ import createPaymentsByExtraIdRoute from './routes/paymentsByExtraId';
 import context from './context';
 import activityLoop from './activityLoop';
 import AdminCoinlibWrapper from './adminWallets/coinlib/AdminCoinlibWrapper';
-import crypto from 'crypto';
+import devServer from './devServer';
 
 const server = fastify({
     trustProxy: true,
@@ -95,6 +95,10 @@ async function main() {
     // Start the processing intervals
     activityLoop.start();
 
+    if (config.getTyped('IS_DEV') && config.has('IPN_HMAC_SECRET')) {
+        server.register(devServer)
+    }
+
     await server.ready();
     server.swagger();
     server.listen({ port: config.getTyped('PORT') }, (err, address) => {
@@ -102,51 +106,9 @@ async function main() {
             console.error(err);
             process.exit(1);
         }
-        console.log(`Server listening at ${address}`);
+        console.log(`Keagate backend server listening at ${address}`);
     });
 
-    if (config.getTyped('IS_DEV') && config.has('IPN_HMAC_SECRET')) {
-        /**
-         * For receiving IPN callbacks locally. Never use in production. Ideally, use
-         * something like lambda or Azure functions.
-         * More information here: https://github.com/dilan-dio4/coinlib-port#instant-payment-notifications
-         */
-        const ipnConsumer = fastify({
-            trustProxy: true,
-        });
-        ipnConsumer.post<{ Body: Record<string, any> }>('/ipnCallback', (request, reply) => {
-            const send = (status: string) => {
-                console.log(`[IPN CALLBACK DEV]: ${status}`);
-                reply.send(status);
-            };
-            if (request.headers['x-keagate-sig']) {
-                const hmac = crypto.createHmac('sha512', config.getTyped('IPN_HMAC_SECRET'));
-                hmac.update(JSON.stringify(request.body, Object.keys(request.body).sort()));
-                const signature = hmac.digest('hex');
-
-                if (signature === request.headers['x-keagate-sig']) {
-                    send(
-                        'x-keagate-sig matches calculated signature. Can authenticate origin and validate message integrity.\n\n' +
-                            JSON.stringify(request.body, null, 2),
-                    );
-                } else {
-                    send(
-                        `x-keagate-sig header (${request.headers['x-keagate-sig']}) does not match calculated signature (${signature}). Cannot authenticate origin and validate message integrity.` + 
-                            JSON.stringify(request.body, null, 2),
-                    );
-                }
-            } else {
-                send('No x-keagate-sig found on POST request. Cannot authenticate origin and validate message integrity.');
-            }
-        });
-        ipnConsumer.listen({ port: 8082 }, (err, address) => {
-            if (err) {
-                console.error(err);
-                process.exit(1);
-            }
-            console.log(`[IPN CALLBACK DEV]: IPN callback server listening at ${address}`);
-        });
-    }
 }
 
 main();
