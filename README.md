@@ -161,7 +161,7 @@ Create or open the file `local.json` in `/config`. You can use the provided `def
 
 To configure a single currency, add an object with the key of the currency's ticker with the following attributes:
 
-Ticker can be one of `'LTC', 'BTC', 'ETH', 'DOGE', 'SOL', or 'MATIC'`. [See example](#example).
+Ticker can be one of `'LTC', 'BTC', 'ETH', 'DOGE', 'SOL', 'DASH', or 'MATIC'`. [See example](#example).
 
 | Key                              | Description                    | Required | Default |
 |----------------------------------|----------------------------|----------------------------------|--|
