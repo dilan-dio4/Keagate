@@ -81,13 +81,21 @@ async function main() {
     // prettier-ignore
     logger.log(
         `\n\n ` +
-        `Keagate has successfully launched on this machine. If you're using a cloud provider like ` +
+        `Keagate has successfully deployed on this machine. If you're using a cloud provider like ` +
         `AWS or Azure, please be sure to ${kleur.bold(`enable public access via HTTP(S)`)}. ` +
-        `Then, you can locate your API documentation at ${kleur.underline(config.HOST + '/docs')} ` +
+        `You can then locate your API documentation at ${kleur.underline(config.HOST + '/docs')} ` +
         `and OpenAPI schema with '${kleur.italic(`curl localhost:8081/docs/yaml`)}'. ` +
-        `Most of the API routes require a ${kleur.bold(`KEAGATE_API_KEY`)} header. Your has ` +
-        `been randomly generated as: "${config.KEAGATE_API_KEY}". You can always find and edit ` +
-        `this value [and many others] in ${kleur.italic(`config/local.json`)}. ` +
+        `Most API routes require a ${kleur.bold(`KEAGATE_API_KEY`)} header. Yours has ` +
+        `been randomly generated as: "${config.KEAGATE_API_KEY}". More information on the payment ` +
+        `lifecycle is available at ${kleur.underline(`https://bit.ly/3ALFxYO`)}. ` +
+        `\n\n ` +
+        `Instant Payment Notifications should be verified via HMAC. Your ` +
+        `${kleur.bold(`IPN_HMAC_SECRET`)} has been randomly generated ` +
+        `as: "${config.IPN_HMAC_SECRET}". More information on IPNs is available ` +
+        `at ${kleur.underline(`https://bit.ly/3IuGZ3H`)}. ` +
+        `\n\n ` +
+        `You can always find and edit these configuration values ` +
+        `[and many others] in ${kleur.italic(`config/local.json`)}. ` +
         `\n\n ` +
         `The Keagate server is running via ${kleur.italic(`pm2`)}. To restart the server ` +
         `execute '${kleur.italic(`pm2 restart Keagate`)}'. To monitor the server ` +
