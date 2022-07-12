@@ -10,4 +10,4 @@
     * Blockbook and other providers have changing rate-limits
   * Based on number of active payments(?)
 * Invoice client unconfirmed balance view
-  * Only needed for certain chains (Dash, LTC, BTC, DOGE)
+  * Only needed for certain chains (DASH, LTC, BTC, DOGE)
