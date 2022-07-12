@@ -238,16 +238,16 @@ Your `config/local.json` could look something like:
 
 The workflow for creating & confirming payments in the API-driven method is as follows:
 
-1. Invoke the [`createPayment`](https://dilan-dio4.github.io/keagate-example-swagger/#/Payment/post_createPayment) route. Pass the following parameters:
+1. Invoke the [`createPayment`](https://dilan-dio4.github.io/keagate-example-swagger/#/Payment/post_createPayment) route. Pass the following parameters in the JSON body:
 
-    * *amount*: The total value of the payment.
-    * *currency*: Shorthand name of the desired currency (e.g. `"LTC"`)
-    * [*ipnCallbackUrl*: URL to synchronously send payment status updates to](#instant-payment-notifications)
-    * **Optional** *extraId*: Some external identification string (useful for manually managing the identity of payment with [`getPaymentsByExtraId`](https://dilan-dio4.github.io/keagate-example-swagger/#/Payment/get_getPaymentsByExtraId))
+    * *amount* – The total value of the payment
+    * *currency* – Shorthand name of the desired currency (e.g. `"LTC"`)
+    * [*ipnCallbackUrl* – URL to synchronously send payment status updates to](#instant-payment-notifications)
+    * **Optional** *extraId* – Some external identification string (useful for manually managing the identity of payment with [`getPaymentsByExtraId`](https://dilan-dio4.github.io/keagate-example-swagger/#/Payment/get_getPaymentsByExtraId))
 
 2. Notify your customer to send the *amount* to the *publicKey* returned from [`createPayment`](https://dilan-dio4.github.io/keagate-example-swagger/#/Payment/post_createPayment).
   
-    * **Optional** Display [other metadata](https://dilan-dio4.github.io/keagate-example-swagger/#model-def-0) as well, for a streamlined user experience. Use the screenshot above as reference.
+    * **Optional** Display [other metadata](https://dilan-dio4.github.io/keagate-example-swagger/#model-def-0) as well, for a streamlined user experience. Use the screenshot above as a reference.
 
 3. Wait for your customer to send the payment.
 
@@ -259,34 +259,34 @@ The workflow for creating & confirming payments in the API-driven method is as f
 
 The workflow for creating & confirming payments with the built-in invoice client is as follows:
 
-1. Invoke the [`createPayment`](https://dilan-dio4.github.io/keagate-example-swagger/#/Payment/post_createPayment) route. Pass the following parameters:
+1. Invoke the [`createPayment`](https://dilan-dio4.github.io/keagate-example-swagger/#/Payment/post_createPayment) route. Pass the following parameters in the JSON body:
 
-    * *amount*: The total value of the payment.
-    * *currency*: Shorthand name of the desired currency (e.g. `"LTC"`)
+    * *amount* – The total value of the payment
+    * *currency* – Shorthand name of the desired currency (e.g. `"LTC"`)
     * Either or both of:
-      * [*invoiceCallbackUrl*: Route that your customers will be directed to after their payment finishes](#invoice-client-callback-url)
-      * [*ipnCallbackUrl*: URL to synchronously send payment status updates to](#instant-payment-notifications)
-    * **Optional** *extraId*: Some external identification string (useful for manually managing the identity of payment with [`getPaymentsByExtraId`](https://dilan-dio4.github.io/keagate-example-swagger/#/Payment/get_getPaymentsByExtraId))
+      * [*invoiceCallbackUrl* – Route that your customers will be directed to after their payment finishes](#invoice-client-callback-url)
+      * [*ipnCallbackUrl* – URL to synchronously send payment status updates to](#instant-payment-notifications)
+    * **Optional** *extraId* – Some external identification string (useful for manually managing the identity of payment with [`getPaymentsByExtraId`](https://dilan-dio4.github.io/keagate-example-swagger/#/Payment/get_getPaymentsByExtraId))
 
-2. Direct users to the url route provided in the `invoiceUrl` attribute returned from [`createPayment`](https://dilan-dio4.github.io/keagate-example-swagger/#/Payment/post_createPayment).
+2. Direct users to the URL route provided in the `invoiceUrl` attribute returned from [`createPayment`](https://dilan-dio4.github.io/keagate-example-swagger/#/Payment/post_createPayment).
 
-    * *Note: this is not a full url, just a url path. It should be appended to the URL of your Keagate server*.
+    * *Note: this is not a full URL, just a path. It should be appended to the URL of your Keagate server*.
 
 3. Confirm and process the payment with either method:
 
-    * If you set *ipnCallbackUrl*, in your [IPN](#instant-payment-notifications) route after receiving a **CONFIRMED** status of a payment of the same *id* or *extraId*.
-    * If you set *invoiceCallbackUrl*, in the [Invoice Client Callback Url](#invoice-client-callback-url) page that customers are directed to after the invoice interface gets a finished payment.
+    * If you set *ipnCallbackUrl*, with your [IPN](#instant-payment-notifications) route after receiving a **CONFIRMED** status of a payment of the same *id* or *extraId*.
+    * If you set *invoiceCallbackUrl*, with the [Invoice Client Callback Url](#invoice-client-callback-url) page that customers are directed to after the invoice client observes a finished payment.
 
 ### Invoice Client Callback Url
 
-Two query parameters are appended to this url:
+Two query parameters are appended to this URL when customers are directed to it from the invoice client:
 
-* *invoice_id*: The encrypted id of the payment (as seen in the `invoiceUrl` attribute of [`createPayment`](https://dilan-dio4.github.io/keagate-example-swagger/#/Payment/post_createPayment)).
-* *status*: The [*assumed*] status of the payment: "CONFIRMED", "FAILED", "EXPIRED", etc. **This is just to help you visually notify the customer in the page that they are directed to, but cannot be trusted (see below)**.
+* *invoice_id* – The encrypted id of the payment (as seen in the `invoiceUrl` attribute of [`createPayment`](https://dilan-dio4.github.io/keagate-example-swagger/#/Payment/post_createPayment)).
+* *status* – The [*assumed*] status of the payment: "CONFIRMED", "FAILED", "EXPIRED", etc. **This is just to help you visually notify the customer in your site, but cannot be trusted (see below)**.
 
-**You must still confirm the payment server-side**. This is because a customer could just manually go to this route and set the status to **CONFIRMED**. On your backend, use [`getPaymentStatus`](https://dilan-dio4.github.io/keagate-example-swagger/#/Payment/get_getPaymentStatus) to truly validate the status.
+**You must still confirm the payment server-side**. This is because a malicious customer could just manually go to this route and set the status to **CONFIRMED**. On your backend, use [`getPaymentStatus`](https://dilan-dio4.github.io/keagate-example-swagger/#/Payment/get_getPaymentStatus) to actually validate the status.
 
-*Note: you can send either a true database id or invoice_id [which are encryped database ids] to [`getPaymentStatus`](https://dilan-dio4.github.io/keagate-example-swagger/#/Payment/get_getPaymentStatus). Keagate can figure out which id it is based on the input length.*
+*Note: you can send either a true database id or invoice_id [which are just encrypted database ids] to [`getPaymentStatus`](https://dilan-dio4.github.io/keagate-example-swagger/#/Payment/get_getPaymentStatus). Keagate can figure out which id it is based on the input length.*
 
 Once you've validated the payment status via a server-side request from the *invoiceCallbackUrl* page, you can confirm and process the payment as normal.
 
@@ -302,7 +302,7 @@ To be notified of payment updates in real-time, use instant payment notification
 
 Just like that, IPNs are all set up on Keagate. A POST request will be sent to the `ipnCallbackUrl` with a JSON object like that of [*TypeForRequest*](https://dilan-dio4.github.io/keagate-example-swagger/#model-def-0).
 
-The last thing to do before using these notifications is validate all incoming messages via HMAC.
+Before using these notifications, the last thing to do is validate all incoming messages via HMAC.
 
 #### Validate IPN Messages
 
@@ -321,13 +321,15 @@ app.use(express.json())
 
 app.post('/ipnCallback', (req, res) => {
   // +++ Generate my signature
-  const hmac = crypto.createHmac('sha512', IPN_HMAC_SECRET);
-  hmac.update(JSON.stringify(req.body, Object.keys(req.body).sort()));
-  const signature = hmac.digest('hex');
+  const hmac = crypto.createHmac('sha512', IPN_HMAC_SECRET)
+  hmac.update(JSON.stringify(req.body, Object.keys(req.body).sort()))
+  const signature = hmac.digest('hex')
   // ---
 
   if (signature === req.headers['x-keagate-sig']) {
     // Good to go!
+    const id = req.body.id
+    // ...
   } else {
     // This notification may be spoofed...
   }
