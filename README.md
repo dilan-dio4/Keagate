@@ -350,7 +350,8 @@ To get started:
     * Any changes in `packages/invoice-client/src` will be automatically reflected on refresh.
     * Any changes to the source of `packages/backend/src` will be reflected automatically via `ts-node-dev`.
     * Any changes to `config/local.json` have to be manually refreshed.
-6. The backend will run at `127.0.0.1:8081`. See your API docs at `http://127.0.0.1/docs`.
+
+The backend will run at `127.0.0.1:8081`. You can see your Swagger API docs at `http://127.0.0.1/docs`. Also, a test IPN callback server will run at `127.0.0.1:8082/ipnCallback` and a test invoice client redirect static site will be available at `http://127.0.0.1/dev-callback-site`.
 
 <details>
 
