@@ -294,7 +294,7 @@ Once you've validated the payment status via a server-side request from the *inv
 
 To be notified of payment updates in real-time, use instant payment notifications (IPN).
 
-#### Use IPNs
+### Use IPNs
 
 1. Make sure you have configured the *IPN_HMAC_SECRET* attribute in [Configuration](#protected-options). This will allow you to guarantee the origin and trust in the integrity of incoming messages.
 2. Have access to some API or serverless function that can be invoked publicly via URL.
@@ -304,7 +304,7 @@ Just like that, IPNs are all set up on Keagate. A POST request will be sent to t
 
 Before using these notifications, the last thing to do is validate all incoming messages via HMAC.
 
-#### Validate IPN Messages
+### Validate IPN Messages
 
 The previously configured *IPN_HMAC_SECRET* is used as a key in the sha-512 HMAC signature generated for the `x-keagate-sig` header of each notification.
 
