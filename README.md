@@ -74,7 +74,7 @@ Funds go directly to your wallet via a one-time address that is generated for ea
 
 <p align="left">
   <a href="https://www.youtube.com/watch?v=dxMZIbeRJac">
-    <img src="assets/yt-screenshot.png" width="750" alt="Keagate Youtube Preview">
+    <img src="assets/yt-screenshot.png" width="700" alt="Keagate Youtube Preview">
   </a>
 </p>
 
