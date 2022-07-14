@@ -57,7 +57,7 @@ Keagate is a self-hosted, high-performance cryptocurrency payment gateway. Payme
 **Supported currencies: Bitcoin, Ethereum, Dogecoin, Solana, Litecoin, Polygon, Dash,** *Ripple (coming soon), Tron (coming soon)*.
 
 <p align="left">
-  <img src="assets/invoice-frame.png" width="650" alt="Invoice Preview">
+  <img src="assets/invoice-frame.png" width="600" alt="Invoice Preview">
 </p>
 
 ### Purpose
@@ -74,7 +74,7 @@ Funds go directly to your wallet via a one-time address that is generated for ea
 
 <p align="left">
   <a href="https://www.youtube.com/watch?v=dxMZIbeRJac">
-    <img src="assets/yt-screenshot.png" width="650" alt="Keagate Youtube Preview">
+    <img src="assets/yt-screenshot.png" width="750" alt="Keagate Youtube Preview">
   </a>
 </p>
 
