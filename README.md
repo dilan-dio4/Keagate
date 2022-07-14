@@ -19,8 +19,8 @@ Keagate *(&#107;&#105;&colon;&#103;&#101;&#618;&#116;)* – A High-Performance 
     <img alt="Snyk vulnerabilities" src="https://shields.io/snyk/vulnerabilities/github/dilan-dio4/keagate?style=flat-square" />
     <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/dilan-dio4/Keagate?style=flat-square">
     <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/dilan-dio4/Keagate?style=flat-square">
-    <a target="_blank" href="https://gitter.im/Keagate/community?utm_source=share-link&utm_medium=link&utm_campaign=share-link"><img alt="Gitter" src="https://img.shields.io/gitter/room/dilan-dio4/Keagate?style=flat-square"></a>
-    <a target="_blank" href="https://dilan-dio4.github.io/keagate-example-swagger/"><img alt="Swagger Validator" src="https://img.shields.io/swagger/valid/3.0?specUrl=https%3A%2F%2Fraw.githubusercontent.com%2Fdilan-dio4%2Fkeagate-example-swagger%2Fmain%2Fkeagate-openapi3.json&style=flat-square"></a>
+    <a href="https://gitter.im/Keagate/community?utm_source=share-link&utm_medium=link&utm_campaign=share-link"><img alt="Gitter" src="https://img.shields.io/gitter/room/dilan-dio4/Keagate?style=flat-square"></a>
+    <a href="https://dilan-dio4.github.io/keagate-example-swagger/"><img alt="Swagger Validator" src="https://img.shields.io/swagger/valid/3.0?specUrl=https%3A%2F%2Fraw.githubusercontent.com%2Fdilan-dio4%2Fkeagate-example-swagger%2Fmain%2Fkeagate-openapi3.json&style=flat-square"></a>
 </h4>
 
 <br />
@@ -71,6 +71,12 @@ Keagate is a self-hosted, high-performance cryptocurrency payment gateway. Payme
 Funds go directly to your wallet via a one-time address that is generated for each payment.
 
 ## Installation
+
+<p align="left">
+  <a href="https://www.youtube.com/watch?v=dxMZIbeRJac">
+    <img src="assets/yt-screenshot.png" width="650" alt="Keagate Youtube Preview">
+  </a>
+</p>
 
 ### One-liner
 
