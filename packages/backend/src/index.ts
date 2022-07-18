@@ -97,7 +97,7 @@ async function main() {
     activityLoop.start();
 
     if (config.getTyped('IS_DEV') && config.has('IPN_HMAC_SECRET')) {
-        server.register(devServer)
+        server.register(devServer);
     }
 
     await server.ready();
@@ -109,7 +109,6 @@ async function main() {
         }
         logger.log(`Keagate backend server listening at ${address}`);
     });
-
 }
 
 main();

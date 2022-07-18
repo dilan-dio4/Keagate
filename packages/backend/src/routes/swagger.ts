@@ -53,7 +53,7 @@ export default fastifyPlugin(async function createInvoiceClientRoute(server: Fas
     });
 
     server.addSchema({
-        $id: "TypeForRequest",
-        ...MongoTypeForRequest
-    })
+        $id: 'TypeForRequest',
+        ...MongoTypeForRequest,
+    });
 });

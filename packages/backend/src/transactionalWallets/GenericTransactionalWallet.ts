@@ -106,8 +106,8 @@ export default abstract class GenericTransactionalWallet {
                         'x-keagate-sig': sig,
                         'Content-Type': 'application/json',
                     },
-                }).catch(err => logger.log("IPN Invoke failed with: ", JSON.stringify(err)));
-            }
+                }).catch((err) => logger.log('IPN Invoke failed with: ', JSON.stringify(err)));
+            };
             if (config.has('IPN_HMAC_SECRET')) {
                 const details: MongoPayment = this.getDetails();
                 delete details['privateKey'];
@@ -116,11 +116,14 @@ export default abstract class GenericTransactionalWallet {
                 }
                 const hmac = crypto.createHmac('sha512', config.getTyped('IPN_HMAC_SECRET'));
                 hmac.update(JSON.stringify(details, Object.keys(details).sort()));
-                sendIPN(details, hmac.digest('hex'))
+                sendIPN(details, hmac.digest('hex'));
             } else {
-                sendIPN({
-                    error: 'No IPN_HMAC_SECRET configuration parameter set. Please set this up before using instant payment notifications. More information here: https://github.com/dilan-dio4/coinlib-port#instant-payment-notifications',
-                }, undefined)
+                sendIPN(
+                    {
+                        error: 'No IPN_HMAC_SECRET configuration parameter set. Please set this up before using instant payment notifications. More information here: https://github.com/dilan-dio4/coinlib-port#instant-payment-notifications',
+                    },
+                    undefined,
+                );
             }
         }
     }

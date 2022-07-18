@@ -1,11 +1,11 @@
-import fastify, { FastifyInstance } from "fastify";
+import fastify, { FastifyInstance } from 'fastify';
 import crypto from 'crypto';
 import config from './config';
 
 interface IDevServer {
-    server: FastifyInstance,
-    name: string,
-    port: number
+    server: FastifyInstance;
+    name: string;
+    port: number;
 }
 
 function createIPNCallbackServer(): IDevServer {
@@ -30,12 +30,12 @@ function createIPNCallbackServer(): IDevServer {
             if (signature === request.headers['x-keagate-sig']) {
                 send(
                     'x-keagate-sig matches calculated signature. Can authenticate origin and validate message integrity.\n\n' +
-                    JSON.stringify(request.body, null, 2),
+                        JSON.stringify(request.body, null, 2),
                 );
             } else {
                 send(
                     `x-keagate-sig header (${request.headers['x-keagate-sig']}) does not match calculated signature (${signature}). Cannot authenticate origin and validate message integrity.` +
-                    JSON.stringify(request.body, null, 2),
+                        JSON.stringify(request.body, null, 2),
                 );
             }
         } else {
@@ -45,8 +45,8 @@ function createIPNCallbackServer(): IDevServer {
 
     return {
         server: ipnConsumer,
-        name: "IPN CALLBACK DEV",
-        port: 8082
+        name: 'IPN CALLBACK DEV',
+        port: 8082,
     };
 }
 
@@ -122,7 +122,6 @@ export default async function devServer(server: FastifyInstance) {
 </script>
 
 </html>
-        `)
-    })
-
+        `);
+    });
 }

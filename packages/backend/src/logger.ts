@@ -1,4 +1,4 @@
-import config from "./config";
+import config from './config';
 
 class DelegateLogger {
     log = (...args: any[]) => console.log('[KEAGATE LOG]: ', ...args);
