@@ -14,6 +14,7 @@ import context from './context';
 import activityLoop from './activityLoop';
 import AdminCoinlibWrapper from './adminWallets/coinlib/AdminCoinlibWrapper';
 import devServer from './devServer';
+import logger from './logger';
 
 const server = fastify({
     trustProxy: true,
@@ -106,7 +107,7 @@ async function main() {
             console.error(err);
             process.exit(1);
         }
-        console.log(`Keagate backend server listening at ${address}`);
+        logger.log(`Keagate backend server listening at ${address}`);
     });
 
 }

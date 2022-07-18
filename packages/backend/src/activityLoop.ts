@@ -4,6 +4,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import { PaymentStatusType, availableNativeCurrencies } from '@keagate/common';
 import { delay } from './utils';
 import config from './config';
+import logger from './logger';
 
 class ActivityLoop {
     private needsToStop = false;
@@ -50,7 +51,7 @@ class ActivityLoop {
 
         const howLongTheBatchTook = dayjs().diff(this.lastBatchStart, 'millisecond');
         if (howLongTheBatchTook < config.getTyped('TRANSACTION_MIN_REFRESH_TIME')) {
-            console.log('Waiting for min refresh time');
+            logger.log('Waiting for min refresh time');
             await delay(config.getTyped('TRANSACTION_MIN_REFRESH_TIME') - howLongTheBatchTook);
         }
         this.startBatch();
@@ -72,7 +73,7 @@ class ActivityLoop {
                     runner();
                 }
             };
-            console.log('Checking transaction: ', trx.getDetails().id);
+            logger.log('Checking transaction: ', trx.getDetails().id);
             runner();
         });
     }

@@ -8,6 +8,7 @@ import GenericAdminWallet from '../adminWallets/GenericAdminWallet';
 import { AnyPayments } from 'coinlib-port';
 import crypto from 'crypto';
 import fetch from 'cross-fetch';
+import logger from '../logger';
 
 export default abstract class GenericTransactionalWallet {
     public currency: AvailableCurrencies;
@@ -90,10 +91,10 @@ export default abstract class GenericTransactionalWallet {
         update.updatedAt = dayjs().toDate();
         this.setFromObject(update);
         if (error) {
-            console.log(`Status updated on ${this.currency} payment ${this.id} error: `, error);
+            logger.log(`Status updated on ${this.currency} payment ${this.id} error: `, error);
             db.collection('payments').updateOne({ _id: new ObjectId(this.id) }, { $set: update });
         } else {
-            console.log(`Status updated on ${this.currency} payment ${this.id}: `, update.status);
+            logger.log(`Status updated on ${this.currency} payment ${this.id}: `, update.status);
             db.collection('payments').updateOne({ _id: new ObjectId(this.id) }, { $set: update });
         }
         if (this.ipnCallbackUrl) {
@@ -105,7 +106,7 @@ export default abstract class GenericTransactionalWallet {
                         'x-keagate-sig': sig,
                         'Content-Type': 'application/json',
                     },
-                }).catch(err => console.log("IPN Invoke failed with: ", JSON.stringify(err)));
+                }).catch(err => logger.log("IPN Invoke failed with: ", JSON.stringify(err)));
             }
             if (config.has('IPN_HMAC_SECRET')) {
                 const details: MongoPayment = this.getDetails();
