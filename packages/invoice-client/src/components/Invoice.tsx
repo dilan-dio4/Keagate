@@ -11,11 +11,14 @@ import { BiTimer, BiCopy, BiErrorAlt } from 'react-icons/bi';
 import { FiChevronUp, FiChevronDown } from 'react-icons/fi';
 import { HiInformationCircle } from 'react-icons/hi';
 import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 import clsx from 'clsx';
 import React, { useState, useEffect } from 'react';
 import { copyToClipboard } from '../utils/utils';
 import { AvailableCurrencies, currencies, fGet, PaymentStatusType } from '@keagate/common';
 import ThreeDotsOverlay from './ThreeDotsOverlay';
+
+dayjs.extend(relativeTime);
 
 export default function Invoice() {
     const currencyToIcon: Record<AvailableCurrencies, React.ReactChild> = {
@@ -148,6 +151,16 @@ export default function Invoice() {
         }
     }
 
+    function formatExpiresAtTime(expiresAtString: string) {
+        const expiresObj = dayjs(expiresAtString);
+        if (expiresObj.isAfter(dayjs().add(10, 'm'))) {
+            return dayjs().to(expiresObj, true);
+        } else {
+            return expiresObj.format('h:mm A');
+        }
+
+    }
+
     return (
         <>
             <div className='overflow-hidden max-w-full mx-auto sm:mt-14 sm:border sm:rounded-lg sm:max-w-[500px]'>
@@ -175,12 +188,12 @@ export default function Invoice() {
                         </div>
                     </div>
                     <div>
-                        <p className='tracking-tight'>
-                            <b>Expires at</b>
+                        <p className='tracking-tight text-end'>
+                            <b>Expires</b>
                         </p>
                         <p className='flex items-center text-slate-600 tracking-tight'>
                             <BiTimer size={20} className='mr-1' />
-                            {dayjs(invoiceObject.expiresAt).format('h:mm A')}
+                            {formatExpiresAtTime(invoiceObject.expiresAt)}
                         </p>
                     </div>
                 </div>
