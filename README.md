@@ -38,6 +38,7 @@ Keagate *(&#107;&#105;&colon;&#103;&#101;&#618;&#116;)* – A High-Performance 
   * [Purpose](#purpose)
 * [Installation](#installation)
   * [One-liner](#one-liner)
+  * [Docker Compose](#docker-compose)
   * [Manual](#manual-installation)
 * [Configuration](#configuration)
   * [CLI](#cli)
@@ -106,6 +107,30 @@ This helper script has been tested on...
 <!-- No Docker quick install on Redhat RHEL -->
 
 This script should run successfully on most flavors of Linux with some configuration. Otherwise, use the manual build, as it's fairly straightforward.
+
+### Docker compose
+
+Keagate can be run completely in Docker via Docker Compose.
+
+Get setup seeds:
+
+```bash
+docker build -t keagate .
+docker run --rm keagate node packages/scripts/build/setupSeeds.js
+```
+
+Adjust `config/local.json` as needed and make sure to set following options there:
+
+```json
+"MONGO_CONNECTION_STRING": "mongodb://db:27017",
+"HOST": "0.0.0.0"
+```
+
+Then, run the following:
+
+```bash
+docker compose up -d
+```
 
 ### Manual Installation
 
