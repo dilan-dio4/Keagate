@@ -20,5 +20,6 @@
 
     "IS_DEV": false,
     "USE_SO_CHAIN": true,
-    "PORT": 8081
+    "PORT": 8081,
+    "BIND_HOST": "127.0.0.1"
 }

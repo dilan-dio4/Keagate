@@ -33,4 +33,6 @@ export interface MyConfig extends MyCurrencyConfig {
 
     HOST?: string;
     PORT: number;
+
+    BIND_HOST?: string;
 }
