@@ -11,6 +11,17 @@ RUN npm install --global pnpm && \
     pnpm install -g pm2 && \
     mkdir /app/config
 
+# Install nginx
+RUN apt-get update && \
+    apt-get install -y nginx && \
+    rm -rf /var/lib/apt/lists/* && \
+    rm -rf /etc/nginx/sites-enabled/default && \
+    rm -rf /etc/nginx/sites-available/default && \
+    rm -rf /etc/nginx/nginx.conf
+
+# Add nginx config
+COPY config/nginx.conf /etc/nginx/nginx.conf
+
 # Add src
 COPY assets assets
 COPY config/default.json config/default.json

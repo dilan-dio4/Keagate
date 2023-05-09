@@ -10,7 +10,7 @@ services:
     volumes:
       - ./config:/app/config
     ports:
-      - "8081:8081"
+      - "8081:8100"
 
     depends_on:
       - db
