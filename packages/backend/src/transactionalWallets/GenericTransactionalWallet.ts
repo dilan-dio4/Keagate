@@ -115,7 +115,7 @@ export default abstract class GenericTransactionalWallet {
                     (details as any).error = error;
                 }
                 const hmac = crypto.createHmac('sha512', config.getTyped('IPN_HMAC_SECRET'));
-                hmac.update(JSON.stringify(details));
+                hmac.update(JSON.stringify(details, Object.keys(details).sort()));
                 sendIPN(details, hmac.digest('hex'));
             } else {
                 sendIPN(
