@@ -45,9 +45,10 @@ class KeagateContext {
         }
     }
 
-    private async initActivePayments() {
+    public async initActivePayments() {
         // Collect all existing native payments in mongo and initalize them in the activePayments maps
         const _activeNativePayments = (await getExistingPayments()) as WithId<NativePayment | CoinlibPayment>[];
+        this.activePayments = {};
         for (const _currActivePayment of _activeNativePayments) {
             const currTxCurrency = _currActivePayment.currency as AvailableCurrencies;
 

@@ -27,6 +27,7 @@ const opts: RouteShorthandOptions = {
 
 export default async function createActivePaymentsRoute(server: FastifyInstance) {
     server.get<{ Reply: Static<typeof ActivePaymentsResponse> }>('/activePayments', opts, async (request, reply) => {
+        await context.initActivePayments();
         const cleanedTransactions: ForRequest<MongoPayment>[] = Object.values(context.activePayments).map((ele) => cleanDetails(ele.getDetails()));
         reply.status(200).send(cleanedTransactions);
     });

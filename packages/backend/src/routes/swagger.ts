@@ -1,12 +1,12 @@
 import { FastifyInstance } from 'fastify';
 import fastifySwagger from '@fastify/swagger';
+import fastifySwaggerUi from '@fastify/swagger-ui';
 import fastifyPlugin from 'fastify-plugin';
 import config from '../config';
 import { MongoTypeForRequest } from './types';
 
 export default fastifyPlugin(async function createInvoiceClientRoute(server: FastifyInstance) {
     server.register(fastifySwagger, {
-        routePrefix: '/docs',
         openapi: {
             info: {
                 title: 'Keagate – A high-performance crypto payment gateway',
@@ -44,12 +44,15 @@ export default fastifyPlugin(async function createInvoiceClientRoute(server: Fas
                     },
                 },
             },
-        },
+        }
+    });
+
+    server.register(fastifySwaggerUi, {
+        routePrefix: '/docs',
         uiConfig: {
             // docExpansion: 'full',
             deepLinking: false,
         },
-        exposeRoute: true,
     });
 
     server.addSchema({

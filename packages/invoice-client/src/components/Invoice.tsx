@@ -56,11 +56,11 @@ export default function Invoice() {
         setCurrency(_currency as AvailableCurrencies);
 
         // eslint-disable-next-line prefer-const
-        let interval: NodeJS.Timer;
+        let interval: NodeJS.Timeout;
         async function runner() {
             const _invoiceObj = (await fGet(`/getInvoiceStatus?invoiceId=${_invoiceId}`)) as IInvoiceObject;
             if ('error' in _invoiceObj) {
-                setPaymentMajorError(_invoiceObj['error']);
+                setPaymentMajorError(String(_invoiceObj['error']));
                 clearInterval(interval);
                 return;
             }
