@@ -20,7 +20,11 @@ class ActivityLoop {
 
     private async runTxsCohort(cohort: GenericTransactionalWallet[]) {
         for (const aTrx of cohort) {
-            await this.checkSingleTransaction(aTrx);
+            try {
+                await this.checkSingleTransaction(aTrx);
+            } catch (e) {
+                logger.log('Promise failed', e, aTrx);
+            }
         }
     }
 
@@ -59,6 +63,9 @@ class ActivityLoop {
 
     private checkSingleTransaction(trx: GenericTransactionalWallet): Promise<PaymentStatusType> {
         return new Promise((resolve, reject) => {
+            const timer = setTimeout(() => {
+                reject(new Error(`Promise timed out after 60s`));
+            }, 60000);
             const runner = async () => {
                 let _status: PaymentStatusType;
                 try {
@@ -67,6 +74,7 @@ class ActivityLoop {
                     _status = undefined;
                 }
                 if (_status) {
+                    clearTimeout(timer);
                     resolve(_status);
                 } else {
                     await delay(config.getTyped('BLOCKBOOK_RETRY_DELAY'));

@@ -21,7 +21,7 @@ export default class AdminSolana extends GenericNativeAdminWallet {
         if (config.getTyped('IS_DEV')) {
             return sample([clusterApiUrl('devnet'), 'https://rpc.ankr.com/solana_devnet']);
         } else {
-            return sample([clusterApiUrl('mainnet-beta'), 'https://rpc.ankr.com/solana']);
+            return sample([clusterApiUrl('mainnet-beta'), 'https://api.mainnet-beta.solana.com']);
         }
     }
 
