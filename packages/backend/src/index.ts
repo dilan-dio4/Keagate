@@ -102,7 +102,7 @@ async function main() {
 
     await server.ready();
     server.swagger();
-    server.listen({ port: config.getTyped('PORT') }, (err, address) => {
+    server.listen({ port: config.getTyped('PORT'), host: config.getTyped('BIND_HOST') ?? '127.0.0.1' }, (err, address) => {
         if (err) {
             console.error(err);
             process.exit(1);
